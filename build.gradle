@@ -18,12 +18,14 @@ buildscript {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'kotlin'
 
 group = 'club.cpacket.solaros'
 version = '0.1'
@@ -36,7 +38,7 @@ minecraft {
 	version = '1.12.2-14.23.5.2768'
 	runDir = 'run'
 	mappings = 'snapshot_20180814'
-	coreMod = 'club.cpacket.solaros.impl.mixin.MixinLoader'
+	coreMod = 'club.cpacket.solaros.impl.mixin.loader.MixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -58,12 +60,17 @@ dependencies {
 	implementation 'org.jetbrains:annotations:19.0.0'
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
+
 	compile('org.spongepowered:mixin:0.7.4-SNAPSHOT') {
 		exclude module: 'launchwrapper'
 		exclude module: 'guava'
 		exclude module: 'gson'
 		exclude module: 'commons-io'
 	}
+
+	compile("org.jetbrains.kotlin:kotlin-stdlib:1.3.72")
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72")
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72")
 
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
@@ -91,6 +98,9 @@ shadowJar {
 		include(dependency('club.minnced:java-discord-rpc:2.0.1'))
 		include(dependency('net.jodah:typetools'))
 		include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
+		include(dependency("org.jetbrains.kotlin:kotlin-stdlib:1.3.72"))
+		include(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"))
+		include(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"))
 	}
 	exclude 'dummyThing'
 	exclude 'LICENSE.txt'
@@ -107,7 +117,7 @@ jar.manifest.attributes(
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 		'TweakOrder': 0,
 		'FMLCorePluginContainsFMLMod': true,
-		'FMLCorePlugin': 'club.cpacket.solaros.impl.mixin.MixinLoader',
+		'FMLCorePlugin': 'club.cpacket.solaros.impl.mixin.loader.MixinLoader',
 		'ForceLoadAsMod': true,
 		'FMLAT': 'solaros_at.cfg'
 )
@@ -121,6 +131,18 @@ reobf {
 
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
+}
+
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
+}
+
+compileTestKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
 }
 
 build.dependsOn(shadowJar)

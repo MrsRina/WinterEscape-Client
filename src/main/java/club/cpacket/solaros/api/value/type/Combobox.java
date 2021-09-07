@@ -2,6 +2,7 @@ package club.cpacket.solaros.api.value.type;
 
 import club.cpacket.solaros.api.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ public class Combobox extends Value {
 
     public Combobox(String tag, String description, String value, String... values) {
         super(tag, description, COMBOBOX);
+
+        this.list = new ArrayList<>();
 
         this.setValue(value);
         this.implement(values);
@@ -43,6 +46,10 @@ public class Combobox extends Value {
 
     public String getValue() {
         return value;
+    }
+
+    public boolean is(String v) {
+        return this.getValue().equalsIgnoreCase(v);
     }
 
     public void setList(List<String> list) {

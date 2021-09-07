@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
  * @since 06/09/2021 at 18:43
  **/
 public class Feature {
-    private final Minecraft mc = Minecraft.getMinecraft();
+    public final Minecraft mc = Minecraft.getMinecraft();
 
     private String tag;
     private String description;

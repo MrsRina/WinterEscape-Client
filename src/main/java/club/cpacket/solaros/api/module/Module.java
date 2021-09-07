@@ -1,7 +1,11 @@
 package club.cpacket.solaros.api.module;
 
+import club.cpacket.solaros.Client;
 import club.cpacket.solaros.api.feature.Feature;
 import club.cpacket.solaros.api.value.Value;
+import club.cpacket.solaros.api.value.type.BindBox;
+import club.cpacket.solaros.api.value.type.CheckBox;
+import club.cpacket.solaros.api.value.type.Combobox;
 
 import java.util.HashMap;
 
@@ -13,10 +17,16 @@ public class Module extends Feature {
     private final HashMap<String, Value> register = new HashMap<String, Value>();
     private int type;
 
+    private Combobox toggleMessage;
+    private BindBox keyBind;
+
     public Module(final String tag, final String description, int type) {
         super(tag, description);
 
         this.setType(type);
+
+        this.registry(this.keyBind = new BindBox("KeyBind", "Set module key bind.", false));
+        this.registry(this.toggleMessage = new Combobox("Toggle Message", "ToggleMessage", "Silent", "Silent", "Static", "Disabled"));
     }
 
     public void registry(Value value) {
@@ -37,5 +47,55 @@ public class Module extends Feature {
 
     public int getType() {
         return type;
+    }
+
+    public void setKey(int key) {
+        this.keyBind.setKey(key);
+    }
+
+    public boolean equalsKeyBind(int key) {
+        return keyBind.getKey() == key;
+    }
+
+    public boolean isEnabled() {
+        return keyBind.getValue();
+    }
+
+    public void reload(boolean state) {
+        if (keyBind.getValue() != state) {
+            if (state) {
+                this.setListener();
+            } else {
+                this.unsetListener();
+            }
+        }
+    }
+
+    public void setListener() {
+        this.keyBind.setValue(true);
+
+        if (this.toggleMessage.is("Silent")) {
+            Client.info(this.getTag() + " enabled");
+        } else if (this.toggleMessage.is("Static")) {
+            Client.log(this.getTag() + " " + " enabled");
+        }
+
+        Client.EVENT_BUS.register(this);
+    }
+
+    public void unsetListener() {
+        this.keyBind.setValue(false);
+
+        if (this.toggleMessage.is("Silent")) {
+            Client.info(this.getTag() + " disabled");
+        } else if (this.toggleMessage.is("Static")) {
+            Client.log(this.getTag() + " " + " disabled");
+        }
+
+        Client.EVENT_BUS.unregister(this);
+    }
+
+    protected boolean nullable() {
+        return mc.player == null || mc.world == null;
     }
 }

@@ -1,4 +1,4 @@
-package club.cpacket.solaros.impl.mixin;
+package club.cpacket.solaros.impl.mixin.loader;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;

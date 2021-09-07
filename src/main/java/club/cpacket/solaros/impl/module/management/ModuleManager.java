@@ -2,8 +2,11 @@ package club.cpacket.solaros.impl.module.management;
 
 import club.cpacket.solaros.api.feature.Feature;
 import club.cpacket.solaros.api.module.Module;
+import club.cpacket.solaros.impl.module.impl.combat.ModuleKillAura;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author SrRina
@@ -12,7 +15,7 @@ import java.util.HashMap;
 public class ModuleManager extends Feature {
     public static ModuleManager INSTANCE;
 
-    private final HashMap<String, Module> register = new HashMap<String, Module>();
+    private final List<Module> moduleList = new ArrayList<>();
 
     public ModuleManager() {
         super("Module", "Process all modules from Solaros client.");
@@ -20,24 +23,46 @@ public class ModuleManager extends Feature {
         INSTANCE = this;
     }
 
-    public void registry(Module module) {
-        this.register.put(module.getTag(), module);
+    public void preInitAll() {
+        this.add(new ModuleKillAura());
+    }
+
+    public void onKeyboard(int key) {
+        for (Module modules : this.getModuleList()) {
+            if (modules.equalsKeyBind(key)) {
+                modules.reload(!modules.isEnabled());
+            }
+        }
+    }
+
+    public void add(Module module) {
+        this.moduleList.add(module);
     }
 
     public void remove(Module module) {
-        this.register.remove(module.getTag());
+        this.moduleList.remove(module);
     }
 
     public static Module get(String tag) {
-        return INSTANCE.getRegister().get(tag);
+        Module module = null;
+
+        for (Module modules : INSTANCE.getModuleList()) {
+            if (modules.getTag().equalsIgnoreCase(tag)) {
+                module = modules;
+
+                break;
+            }
+        }
+
+        return module;
     }
 
     // lol
     public static Module get(Module module) {
-        return INSTANCE.getRegister().get(module.getTag());
+        return get(module.getTag());
     }
 
-    public HashMap<String, Module> getRegister() {
-        return register;
+    public List<Module> getModuleList() {
+        return moduleList;
     }
 }

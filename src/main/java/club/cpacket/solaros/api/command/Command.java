@@ -1,5 +1,6 @@
 package club.cpacket.solaros.api.command;
 
+import club.cpacket.solaros.Client;
 import club.cpacket.solaros.api.feature.Feature;
 
 /**
@@ -15,12 +16,20 @@ public class Command extends Feature {
         this.alias = alias;
     }
 
+    public String syntax() {
+        return null;
+    }
+
     public String[] getAlias() {
         return alias;
     }
 
     public void setAlias(String[] alias) {
         this.alias = alias;
+    }
+
+    public void splash() {
+        Client.log("Unknown syntax, try '" + this.syntax() + "'");
     }
 
     public boolean contains(String string) {
