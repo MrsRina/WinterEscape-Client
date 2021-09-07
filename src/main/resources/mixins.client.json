@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "club.cpacket.solaros.impl.mixin.mixins",
+  "refmap": "mixins.client.refmap.json",
+  "mixins": [
+
+    ]
+}

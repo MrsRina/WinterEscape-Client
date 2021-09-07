@@ -1,23 +1,84 @@
-# Compiled class file
-*.class
+# Build #
+#########
+MANIFEST.MF
+dependency-reduced-pom.xml
 
-# Log file
+# Compiled #
+############
+bin
+build
+classes
+dist
+lib
+libs
+out
+run
+target
+*.com
+*.class
+*.exe
+*.o
+
+# Databases #
+#############
+*.db
+*.sql
+*.sqlite
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# Repository #
+##############
+.git
+
+# Logging #
+###########
+/logs
 *.log
 
-# BlueJ files
-*.ctxt
+# Misc #
+########
+*.bak
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# System #
+##########
+.DS_Store
+ehthumbs.db
+Thumbs.db
+*.sh
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Project #
+###########
+.checkstyle
+.classpath
+.externalToolBuilders
+.gradle
+.nb-gradle
+.idea
+.project
+.settings
+eclipse
+nbproject
+atlassian-ide-plugin.xml
+build.xml
+nb-configuration.xml
+*.iml
+*.ipr
+*.iws
+*.launch
+*.number
+.gradle/4.8.1/fileContent/annotation-processors.bin
+.gradle/4.8.1/fileContent/annotation-processors.bin
+.gradle/4.8.1/fileContent/fileContent.lock
+.gradle/4.8.1/fileContent/annotation-processors.bin
+.gradle/4.8.1/fileContent/fileContent.lock
+.gradle/4.8.1/taskHistory/taskHistory.lock
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
