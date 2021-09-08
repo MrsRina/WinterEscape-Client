@@ -4,6 +4,7 @@ import club.cpacket.solaros.api.command.Command;
 import club.cpacket.solaros.api.feature.Feature;
 import club.cpacket.solaros.api.value.ValueGeneric;
 import club.cpacket.solaros.impl.command.impl.CommandPrefix;
+import club.cpacket.solaros.impl.command.impl.CommandSocial;
 import club.cpacket.solaros.impl.command.impl.CommandToggle;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class CommandManager extends Feature {
     public void preInitAll() {
         this.add(new CommandPrefix());
         this.add(new CommandToggle());
+        this.add(new CommandSocial());
     }
 
     public void setPrefix(String prefix) {
