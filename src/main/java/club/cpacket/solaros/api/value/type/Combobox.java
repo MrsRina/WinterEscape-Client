@@ -20,8 +20,8 @@ public class Combobox extends Value {
 
         this.list = new ArrayList<>();
 
-        this.setValue(value);
         this.implement(values);
+        this.setValue(value);
     }
 
     public void setValue(String value) {

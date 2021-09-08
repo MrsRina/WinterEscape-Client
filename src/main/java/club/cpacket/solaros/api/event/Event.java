@@ -6,19 +6,10 @@ import javax.swing.plaf.PanelUI;
  * @author SrRina
  * @since 07/09/2021 at 15:50
  **/
-public class Event { // Its not a feature...
-    private boolean cancelled;
+public class Event extends event.bus.Event { // Its not a feature...
     private int stage;
 
     public Event() {}
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
 
     public void setPre() {
         this.stage = 0;

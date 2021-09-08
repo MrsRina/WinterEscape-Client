@@ -15,7 +15,7 @@ import java.util.Map;
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.client.json");
+        Mixins.addConfiguration("mixins.solaros.json");
         MixinEnvironment.getDefaultEnvironment().setObfuscationContext("searge");
     }
 

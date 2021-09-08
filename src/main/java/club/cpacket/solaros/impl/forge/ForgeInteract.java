@@ -7,6 +7,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventListener;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,7 +24,17 @@ public class ForgeInteract extends Feature {
         super("Interact", "Interact with all events in client.");
     }
 
-    @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
+    @SubscribeEvent
+    public void onWorldRenderEvent(RenderWorldLastEvent event) {
+        Client.INSTANCE.moduleManager.onWorldRender(event.getPartialTicks());
+    }
+
+    @SubscribeEvent
+    public void onOverlayRenderEvent(RenderGameOverlayEvent event) {
+        Client.INSTANCE.moduleManager.onOverlayRender(event.getPartialTicks());
+    }
+
+    @SubscribeEvent(receiveCanceled = true)
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (Keyboard.getEventKeyState()) {
             Client.INSTANCE.moduleManager.onKeyboard(Keyboard.getEventKey());

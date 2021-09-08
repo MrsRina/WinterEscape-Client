@@ -82,3 +82,7 @@ nb-configuration.xml
 .gradle/4.8.1/fileContent/fileContent.lock
 .gradle/4.8.1/taskHistory/taskHistory.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
+*.dat
+*.dat
+*.dat
+*.mca

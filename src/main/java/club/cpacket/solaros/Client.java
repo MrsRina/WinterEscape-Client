@@ -1,5 +1,6 @@
 package club.cpacket.solaros;
 
+import club.cpacket.solaros.api.social.management.SocialManager;
 import club.cpacket.solaros.impl.command.management.CommandManager;
 import club.cpacket.solaros.impl.forge.ForgeInteract;
 import club.cpacket.solaros.impl.module.management.ModuleManager;
@@ -23,6 +24,7 @@ public class Client {
     public ModuleManager moduleManager;
     public CommandManager commandManager;
 
+    public SocialManager socialManager;
     public ForgeInteract forgeInteract;
 
     public static EventBus EVENT_BUS = EventBus.INSTANCE;
@@ -40,6 +42,7 @@ public class Client {
     public void createClassesInClient() {
         this.moduleManager = new ModuleManager();
         this.commandManager = new CommandManager();
+        this.socialManager = new SocialManager();
         this.forgeInteract = new ForgeInteract();
     }
 

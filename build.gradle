@@ -109,11 +109,11 @@ shadowJar {
 
 mixin {
 	defaultObfuscationEnv searge
-	add sourceSets.main, 'mixins.client.refmap.json'
+	add sourceSets.main, 'mixins.solaros.refmap.json'
 }
 
 jar.manifest.attributes(
-		'MixinConfigs': 'mixins.client.json',
+		'MixinConfigs': 'mixins.solaros.json',
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 		'TweakOrder': 0,
 		'FMLCorePluginContainsFMLMod': true,

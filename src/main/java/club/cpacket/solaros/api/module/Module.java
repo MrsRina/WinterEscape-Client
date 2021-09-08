@@ -74,6 +74,8 @@ public class Module extends Feature {
     public void setListener() {
         this.keyBind.setValue(true);
 
+        this.onEnable();
+
         if (this.toggleMessage.is("Silent")) {
             Client.info(this.getTag() + " enabled");
         } else if (this.toggleMessage.is("Static")) {
@@ -86,6 +88,8 @@ public class Module extends Feature {
     public void unsetListener() {
         this.keyBind.setValue(false);
 
+        this.onDisable();
+
         if (this.toggleMessage.is("Silent")) {
             Client.info(this.getTag() + " disabled");
         } else if (this.toggleMessage.is("Static")) {
@@ -97,5 +101,16 @@ public class Module extends Feature {
 
     protected boolean nullable() {
         return mc.player == null || mc.world == null;
+    }
+
+    public void onEnable() {}
+    public void onDisable() {}
+
+    public void onOverlayRender(float partialTicks) {
+
+    }
+
+    public void onWorldRender(float partialTicks) {
+
     }
 }

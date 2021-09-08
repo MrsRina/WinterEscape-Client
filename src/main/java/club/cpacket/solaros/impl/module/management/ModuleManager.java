@@ -2,10 +2,10 @@ package club.cpacket.solaros.impl.module.management;
 
 import club.cpacket.solaros.api.feature.Feature;
 import club.cpacket.solaros.api.module.Module;
+import club.cpacket.solaros.impl.module.impl.client.ModuleUserInterface;
 import club.cpacket.solaros.impl.module.impl.combat.ModuleKillAura;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,12 +25,29 @@ public class ModuleManager extends Feature {
 
     public void preInitAll() {
         this.add(new ModuleKillAura());
+        this.add(new ModuleUserInterface());
     }
 
     public void onKeyboard(int key) {
         for (Module modules : this.getModuleList()) {
             if (modules.equalsKeyBind(key)) {
                 modules.reload(!modules.isEnabled());
+            }
+        }
+    }
+
+    public void onWorldRender(float partialTicks) {
+        for (Module modules : this.getModuleList()) {
+            if (modules.isEnabled()) {
+                modules.onWorldRender(partialTicks);
+            }
+        }
+    }
+
+    public void onOverlayRender(float partialTicks) {
+        for (Module modules: this.getModuleList()) {
+            if (modules.isEnabled()) {
+                modules.onOverlayRender(partialTicks);
             }
         }
     }
