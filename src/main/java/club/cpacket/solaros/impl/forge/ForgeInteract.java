@@ -3,6 +3,7 @@ package club.cpacket.solaros.impl.forge;
 import club.cpacket.solaros.Client;
 import club.cpacket.solaros.api.command.Command;
 import club.cpacket.solaros.api.feature.Feature;
+import club.cpacket.solaros.impl.event.ClientTickEvent;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventListener;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -27,6 +29,11 @@ public class ForgeInteract extends Feature {
     @SubscribeEvent
     public void onWorldRenderEvent(RenderWorldLastEvent event) {
         Client.INSTANCE.moduleManager.onWorldRender(event.getPartialTicks());
+    }
+
+    @SubscribeEvent
+    public void onClientTickEvent(TickEvent.ClientTickEvent event) {
+        Client.EVENT_BUS.post(new ClientTickEvent());
     }
 
     @SubscribeEvent
