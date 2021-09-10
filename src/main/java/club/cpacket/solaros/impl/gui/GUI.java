@@ -2,9 +2,11 @@ package club.cpacket.solaros.impl.gui;
 
 import club.cpacket.solaros.impl.event.ClientTickEvent;
 import club.cpacket.solaros.impl.gui.api.IGUI;
+import club.cpacket.solaros.impl.gui.api.base.Flag;
 import event.bus.EventListener;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.util.TurokDisplay;
+import me.rina.turok.util.TurokRect;
 import net.minecraft.client.gui.GuiScreen;
 
 /**
@@ -74,8 +76,13 @@ public class GUI extends GuiScreen implements IGUI {
     }
 
     @Override
-    public boolean isEnabled() {
-        return false;
+    public TurokRect getRect() {
+        return null;
+    }
+
+    @Override
+    public Flag getFlag() {
+        return null;
     }
 
     @Override

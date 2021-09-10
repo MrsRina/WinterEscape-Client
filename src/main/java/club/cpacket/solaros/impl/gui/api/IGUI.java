@@ -1,11 +1,17 @@
 package club.cpacket.solaros.impl.gui.api;
 
+import club.cpacket.solaros.impl.gui.GUI;
+import club.cpacket.solaros.impl.gui.api.base.Flag;
+import me.rina.turok.util.TurokRect;
+
 /**
  * @author SrRina
  * @since 09/09/2021 at 17:14
  **/
 public interface IGUI {
-    boolean isEnabled();
+    TurokRect getRect();
+    Flag getFlag();
+    GUI getGUI();
 
     void onOpen();
     void onClose();

@@ -1,6 +1,8 @@
 package club.cpacket.solaros.impl.gui.api.base.frame;
 
+import club.cpacket.solaros.impl.gui.GUI;
 import club.cpacket.solaros.impl.gui.api.IGUI;
+import club.cpacket.solaros.impl.gui.api.base.Flag;
 import me.rina.turok.util.TurokRect;
 
 /**
@@ -9,18 +11,28 @@ import me.rina.turok.util.TurokRect;
  **/
 public class Frame implements IGUI {
     protected final TurokRect rect;
+    protected final Flag flag;
+    protected final GUI master;
 
-    public Frame(String tag) {
+    public Frame(GUI gui, String tag) {
         this.rect = new TurokRect(tag, 0, 0, 0, 0);
+        this.flag = new Flag();
+        this.master = gui;
     }
 
+    @Override
     public TurokRect getRect() {
         return rect;
     }
 
     @Override
-    public boolean isEnabled() {
-        return false;
+    public Flag getFlag() {
+        return this.flag;
+    }
+
+    @Override
+    public GUI getGUI() {
+        return this.master;
     }
 
     @Override

@@ -1,38 +1,17 @@
-package club.cpacket.solaros.impl.gui.api.base.container;
+package club.cpacket.solaros.impl.gui.impl.module.frame;
 
 import club.cpacket.solaros.impl.gui.GUI;
-import club.cpacket.solaros.impl.gui.api.IGUI;
-import club.cpacket.solaros.impl.gui.api.base.Flag;
-import me.rina.turok.util.TurokRect;
+import club.cpacket.solaros.impl.gui.api.imperador.frame.ImperadorFrame;
 
 /**
  * @author SrRina
- * @since 09/09/2021 at 18:30
+ * @since 10/09/2021 at 15:45
  **/
-public class Container implements IGUI {
-    protected final TurokRect rect;
-    protected final Flag flag;
-    protected final GUI master;
+public class MotherFrame extends ImperadorFrame {
+    public MotherFrame(GUI gui) {
+        super(gui, "mother:frame");
 
-    public Container(GUI gui, String tag) {
-        this.rect = new TurokRect(tag, 0, 0, 0, 0);
-        this.flag = new Flag();
-        this.master = gui;
-    }
-
-    @Override
-    public TurokRect getRect() {
-        return rect;
-    }
-
-    @Override
-    public Flag getFlag() {
-        return this.flag;
-    }
-
-    @Override
-    public GUI getGUI() {
-        return this.master;
+        this.flag.setDraggable(true);
     }
 
     @Override
