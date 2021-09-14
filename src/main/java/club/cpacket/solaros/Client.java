@@ -3,6 +3,8 @@ package club.cpacket.solaros;
 import club.cpacket.solaros.api.social.management.SocialManager;
 import club.cpacket.solaros.impl.command.management.CommandManager;
 import club.cpacket.solaros.impl.forge.ForgeInteract;
+import club.cpacket.solaros.impl.gui.GUI;
+import club.cpacket.solaros.impl.gui.impl.module.ModuleGUI;
 import club.cpacket.solaros.impl.module.management.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventBus;
@@ -27,6 +29,8 @@ public class Client {
     public SocialManager socialManager;
     public ForgeInteract forgeInteract;
 
+    public GUI guiModule;
+
     public static EventBus EVENT_BUS = EventBus.INSTANCE;
 
     @Mod.Instance
@@ -35,7 +39,7 @@ public class Client {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         this.createClassesInClient();
-        this.registryClassesInForgeEventListener();
+        this.registryClassesInEventListener();
         this.initClient();
     }
 
@@ -44,10 +48,12 @@ public class Client {
         this.commandManager = new CommandManager();
         this.socialManager = new SocialManager();
         this.forgeInteract = new ForgeInteract();
+        this.guiModule = new ModuleGUI();
     }
 
-    public void registryClassesInForgeEventListener() {
+    public void registryClassesInEventListener() {
         MinecraftForge.EVENT_BUS.register(this.forgeInteract);
+        EVENT_BUS.register(this.guiModule);
     }
 
     public void initClient() {

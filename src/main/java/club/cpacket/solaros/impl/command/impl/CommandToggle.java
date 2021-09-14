@@ -3,6 +3,7 @@ package club.cpacket.solaros.impl.command.impl;
 import club.cpacket.solaros.Client;
 import club.cpacket.solaros.api.command.Command;
 import club.cpacket.solaros.api.module.Module;
+import club.cpacket.solaros.api.value.type.Combobox;
 import club.cpacket.solaros.impl.module.management.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
@@ -42,7 +43,14 @@ public class CommandToggle extends Command {
             return;
         }
 
+        final Combobox combobox = (Combobox) module.getValue("ToggleMessage");
+        final String save = combobox.getValue();
+
+        combobox.setValue("Disabled");
+
         module.reload(!module.isEnabled());
         Client.log("Module " + module.getTag() + " " + (module.isEnabled() ? "toggled" : "disabled") + "!");
+
+        combobox.setValue(save);
     }
 }

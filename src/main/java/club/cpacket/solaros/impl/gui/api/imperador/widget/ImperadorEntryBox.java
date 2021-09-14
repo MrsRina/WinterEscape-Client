@@ -5,6 +5,7 @@ package club.cpacket.solaros.impl.gui.api.imperador.widget;
  * @since 09/09/2021 at 19:00
  **/
 
+import club.cpacket.solaros.impl.gui.GUI;
 import club.cpacket.solaros.impl.gui.api.base.widget.Widget;
 import club.cpacket.solaros.impl.gui.api.engine.Processor;
 import club.cpacket.solaros.impl.gui.api.imperador.ImperadorUtil;
@@ -85,8 +86,8 @@ public class ImperadorEntryBox extends Widget {
 
     private final TurokRect scissor = new TurokRect(0, 0);
 
-    public ImperadorEntryBox(TurokFont font, String text) {
-        super("Imperador:Entry:Box");
+    public ImperadorEntryBox(GUI gui, TurokFont font, String text) {
+        super(gui, "Imperador:Entry:Box");
 
         this.font = font;
         this.text = text;

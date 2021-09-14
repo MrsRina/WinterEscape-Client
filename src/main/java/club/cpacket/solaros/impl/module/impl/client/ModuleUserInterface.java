@@ -1,7 +1,9 @@
 package club.cpacket.solaros.impl.module.impl.client;
 
+import club.cpacket.solaros.Client;
 import club.cpacket.solaros.api.module.Module;
 import club.cpacket.solaros.api.module.type.ModuleType;
+import club.cpacket.solaros.impl.gui.impl.module.ModuleGUI;
 
 /**
  * @author SrRina
@@ -13,7 +15,9 @@ public class ModuleUserInterface extends Module {
     }
 
     @Override
-    public void onEnable() {}
+    public void onEnable() {
+        mc.displayGuiScreen(Client.INSTANCE.guiModule);
+    }
 
     @Override
     public void onDisable() {}

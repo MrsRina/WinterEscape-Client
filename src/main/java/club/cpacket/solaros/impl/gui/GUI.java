@@ -86,6 +86,11 @@ public class GUI extends GuiScreen implements IGUI {
     }
 
     @Override
+    public GUI getGUI() {
+        return null;
+    }
+
+    @Override
     public void onOpen() {
 
     }
