@@ -1,9 +1,0 @@
-{
-  "required": true,
-  "compatibilityLevel": "JAVA_8",
-  "package": "club.cpacket.solaros.impl.mixin.impl",
-  "refmap": "mixins.solaros.refmap.json",
-  "mixins": [
-    "MixinMinecraft"
-  ]
-}

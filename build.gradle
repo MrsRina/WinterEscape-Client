@@ -27,7 +27,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 
-group = 'club.cpacket.solaros'
+group = 'me.rina.hyperop'
 version = '0.1'
 
 compileJava {
@@ -38,7 +38,7 @@ minecraft {
 	version = '1.12.2-14.23.5.2768'
 	runDir = 'run'
 	mappings = 'snapshot_20180814'
-	coreMod = 'club.cpacket.solaros.impl.mixin.loader.MixinLoader'
+	coreMod = 'me.rina.hyperop.impl.mixin.loader.MixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -109,7 +109,7 @@ shadowJar {
 
 mixin {
 	defaultObfuscationEnv searge
-	add sourceSets.main, 'mixins.solaros.refmap.json'
+	add sourceSets.main, 'mixins.hyperop.refmap.json'
 }
 
 jar.manifest.attributes(
@@ -117,7 +117,7 @@ jar.manifest.attributes(
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 		'TweakOrder': 0,
 		'FMLCorePluginContainsFMLMod': true,
-		'FMLCorePlugin': 'club.cpacket.solaros.impl.mixin.loader.MixinLoader',
+		'FMLCorePlugin': 'me.rina.hyperop.impl.mixin.loader.MixinLoader',
 		'ForceLoadAsMod': true,
 		'FMLAT': 'solaros_at.cfg'
 )
