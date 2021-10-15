@@ -38,7 +38,7 @@ minecraft {
 	version = '1.12.2-14.23.5.2768'
 	runDir = 'run'
 	mappings = 'snapshot_20180814'
-	coreMod = 'me.rina.hyperop.impl.mixin.loader.MixinLoader'
+	coreMod = 'me.rina.hyperpop.impl.mixin.loader.MixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -109,17 +109,17 @@ shadowJar {
 
 mixin {
 	defaultObfuscationEnv searge
-	add sourceSets.main, 'mixins.hyperop.refmap.json'
+	add sourceSets.main, 'mixins.hyperpop.refmap.json'
 }
 
 jar.manifest.attributes(
-		'MixinConfigs': 'mixins.solaros.json',
+		'MixinConfigs': 'mixins.hyperpop.json',
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 		'TweakOrder': 0,
 		'FMLCorePluginContainsFMLMod': true,
-		'FMLCorePlugin': 'me.rina.hyperop.impl.mixin.loader.MixinLoader',
+		'FMLCorePlugin': 'me.rina.hyperpop.impl.mixin.loader.MixinLoader',
 		'ForceLoadAsMod': true,
-		'FMLAT': 'solaros_at.cfg'
+		'FMLAT': 'hyperpop_at.cfg'
 )
 
 reobf {

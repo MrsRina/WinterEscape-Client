@@ -1,5 +1,6 @@
 package me.rina.hyperpop.impl.forge;
 
+import event.bus.EventBus;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.command.Command;
 import me.rina.hyperpop.api.feature.Feature;
@@ -29,7 +30,7 @@ public class ForgeInteract extends Feature {
 
     @SubscribeEvent
     public void onClientTickEvent(TickEvent.ClientTickEvent event) {
-        Client.EVENT_BUS.post(new ClientTickEvent());
+        EventBus.post(new ClientTickEvent());
     }
 
     @SubscribeEvent

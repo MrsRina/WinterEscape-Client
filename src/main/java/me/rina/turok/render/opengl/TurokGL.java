@@ -18,6 +18,10 @@ public class TurokGL {
         return new Color(clampColor(array[0]), clampColor(array[1]), clampColor(array[2]), clampColor(array[3]));
     }
 
+    public static int[] colorClassToArrayColor(Color color) {
+        return new int[] {color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()};
+    }
+
     public static void scissor(int x, int y, int w, int h) {
         GL11.glScissor(x, y, w, h);
     }

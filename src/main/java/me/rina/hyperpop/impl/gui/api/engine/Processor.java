@@ -4,11 +4,17 @@ import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.turok.util.TurokRect;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+
 /**
  * @author SrRina
  * @since 09/09/2021 at 17:40
  **/
 public class Processor {
+    public static void prepare(Color color) {
+        prepare(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
     public static void prepare(int red, int green, int blue, int alpha) {
         Statement.matrix();
         Statement.blend();
@@ -30,7 +36,6 @@ public class Processor {
         Statement.vertex2d(x + w, y);
 
         Statement.draw();
-
         Statement.refresh();
     }
 

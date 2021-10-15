@@ -1,7 +1,8 @@
 package me.rina.hyperpop.impl.mixin.impl;
 
+import event.bus.Event;
+import event.bus.EventBus;
 import me.rina.hyperpop.Client;
-import me.rina.hyperpop.api.event.Event;
 import me.rina.hyperpop.impl.event.RunTickEvent;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +20,6 @@ public class MixinMinecraft {
     public void onRunTick(CallbackInfo ci) {
         final Event event = new RunTickEvent();
 
-        event.setPre();
-
-        Client.EVENT_BUS.post(event);
+        EventBus.post(event);
     }
 }

@@ -3,6 +3,8 @@ package me.rina.hyperpop.impl.module.impl.client;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.impl.gui.impl.module.ModuleGUI;
+import net.minecraft.client.gui.GuiScreen;
 
 /**
  * @author SrRina
@@ -15,7 +17,9 @@ public class ModuleUserInterface extends Module {
 
     @Override
     public void onEnable() {
-        mc.displayGuiScreen(Client.INSTANCE.guiModule);
+        if (!(mc.currentScreen instanceof ModuleGUI)) {
+            mc.displayGuiScreen(Client.INSTANCE.guiModule);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package me.rina.hyperpop.api.module;
 
+import event.bus.EventBus;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.feature.Feature;
 import me.rina.hyperpop.api.value.Value;
@@ -81,7 +82,7 @@ public class Module extends Feature {
             Client.log(this.getTag() + " " + " enabled");
         }
 
-        Client.EVENT_BUS.register(this);
+        EventBus.INSTANCE.register(this);
     }
 
     public void unsetListener() {
@@ -95,7 +96,7 @@ public class Module extends Feature {
             Client.log(this.getTag() + " " + " disabled");
         }
 
-        Client.EVENT_BUS.unregister(this);
+        EventBus.INSTANCE.unregister(this);
     }
 
     protected boolean nullable() {
