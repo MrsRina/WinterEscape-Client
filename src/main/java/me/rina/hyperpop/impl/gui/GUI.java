@@ -1,19 +1,31 @@
 package me.rina.hyperpop.impl.gui;
 
-import me.rina.hyperpop.impl.event.ClientTickEvent;
-import me.rina.hyperpop.impl.gui.api.IGUI;
-import me.rina.hyperpop.impl.gui.api.base.Flag;
 import event.bus.EventListener;
+import me.rina.hyperpop.api.module.Module;
+import me.rina.hyperpop.impl.event.ClientTickEvent;
+import me.rina.hyperpop.impl.gui.GUI;
+import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
+import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
+import me.rina.hyperpop.impl.module.management.ModuleManager;
 import me.rina.turok.hardware.mouse.TurokMouse;
+import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.util.TurokDisplay;
-import me.rina.turok.util.TurokRect;
 import net.minecraft.client.gui.GuiScreen;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author SrRina
- * @since 08/09/2021 at 15:19
+ * @since 10/09/2021 at 15:30
  **/
-public class GUI extends GuiScreen implements IGUI {
+public class GUI extends GuiScreen {
+    public static TurokFont FONT_BIG_NORMAL = new TurokFont(new Font("Verdana", 0, 18), true, true);
+    public static TurokFont FONT_NORMAL = new TurokFont(new Font("Verdana", 0, 16), true, true);
+
+    private final List<Frame> loadedFrameList = new ArrayList<>();
+
     private final TurokMouse mouse;
     private final TurokDisplay display;
 
@@ -22,131 +34,82 @@ public class GUI extends GuiScreen implements IGUI {
         this.display = new TurokDisplay(mc);
     }
 
-    public TurokDisplay getDisplay() {
-        return display;
-    }
-
     public TurokMouse getMouse() {
         return mouse;
     }
 
+    public TurokDisplay getDisplay() {
+        return display;
+    }
+
+    public void init() {
+        int offsetSpace = 10;
+
+        for (Module modules : ModuleManager.INSTANCE.getModuleList()) {
+            ModuleFrame frame = new ModuleFrame(this, modules);
+
+            frame.getRect().setX(offsetSpace);
+            frame.getRect().setY(10);
+
+            offsetSpace += frame.getRect().getWidth();
+
+            this.loadedFrameList.add(frame);
+        }
+    }
+
     @EventListener
-    public void onClientTickEvent(ClientTickEvent event) {
-        this.onUpdate();
-        this.onCustomUpdate();
+    public void onUpdateEvent(ClientTickEvent event) {
+        for (Frame frames : this.loadedFrameList) {
+            frames.onUpdate();
+            frames.onCustomUpdate();
+        }
     }
 
     @Override
     public void initGui() {
-        this.onOpen();
+        for (Frame frames : this.loadedFrameList) {
+            frames.onOpen();
+        }
     }
 
     @Override
     public void onGuiClosed() {
-        this.onClose();
+        for (Frame frames : this.loadedFrameList) {
+            frames.onClose();
+        }
     }
 
     @Override
     public void keyTyped(char charCode, int keyCode) {
-        this.onKeyboard(charCode, keyCode);
-        this.onCustomKeyboard(charCode, keyCode);
+        for (Frame frames : this.loadedFrameList) {
+            frames.onKeyboard(charCode, keyCode);
+            frames.onCustomKeyboard(charCode, keyCode);
+        }
     }
 
     @Override
     public void mouseReleased(int mx, int my, int button) {
-        this.onMouseReleased(button);
-        this.onCustomMouseReleased(button);
+        for (Frame frames : this.loadedFrameList) {
+            frames.onMouseReleased(button);
+            frames.onCustomMouseReleased(button);
+        }
     }
 
     @Override
     public void mouseClicked(int mx, int my, int button) {
-        this.onMouseClicked(button);
-        this.onCustomMouseClicked(button);
+        for (Frame frames : this.loadedFrameList) {
+            frames.onMouseClicked(button);
+            frames.onCustomMouseClicked(button);
+        }
     }
 
     @Override
     public void drawScreen(int mx, int my, float partialTicks) {
+        this.display.setPartialTicks(partialTicks);
         this.mouse.setPos(mx, my);
 
-        this.display.update();
-        this.display.setPartialTicks(partialTicks);
-
-        this.onRender();
-        this.onCustomRender();
-    }
-
-    @Override
-    public TurokRect getRect() {
-        return null;
-    }
-
-    @Override
-    public Flag getFlag() {
-        return null;
-    }
-
-    @Override
-    public GUI getGUI() {
-        return null;
-    }
-
-    @Override
-    public void onOpen() {
-
-    }
-
-    @Override
-    public void onClose() {
-
-    }
-
-    @Override
-    public void onKeyboard(char charCode, int keyCode) {
-
-    }
-
-    @Override
-    public void onCustomKeyboard(char charCode, int keyCode) {
-
-    }
-
-    @Override
-    public void onMouseReleased(int button) {
-
-    }
-
-    @Override
-    public void onCustomMouseReleased(int button) {
-
-    }
-
-    @Override
-    public void onMouseClicked(int button) {
-
-    }
-
-    @Override
-    public void onCustomMouseClicked(int button) {
-
-    }
-
-    @Override
-    public void onUpdate() {
-
-    }
-
-    @Override
-    public void onCustomUpdate() {
-
-    }
-
-    @Override
-    public void onRender() {
-
-    }
-
-    @Override
-    public void onCustomRender() {
-
+        for (Frame frames : this.loadedFrameList) {
+            frames.onRender();
+        }
     }
 }

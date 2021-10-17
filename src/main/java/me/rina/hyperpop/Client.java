@@ -3,18 +3,15 @@ package me.rina.hyperpop;
 import me.rina.hyperpop.api.social.management.SocialManager;
 import me.rina.hyperpop.impl.command.management.CommandManager;
 import me.rina.hyperpop.impl.forge.ForgeInteract;
-import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
-import me.rina.hyperpop.impl.gui.impl.module.ModuleGUI;
+import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.module.management.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventBus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -32,7 +29,7 @@ public class Client {
     public SocialManager socialManager;
     public ForgeInteract forgeInteract;
 
-    public GuiScreen guiModule;
+    public GUI userInterfaceGUI;
     public Theme guiTheme;
 
     @Mod.Instance
@@ -50,20 +47,20 @@ public class Client {
         this.commandManager = new CommandManager();
         this.socialManager = new SocialManager();
         this.forgeInteract = new ForgeInteract();
-        this.guiModule = new ModuleGUI();
+        this.userInterfaceGUI = new GUI();
         this.guiTheme = new Theme();
     }
 
     public void registryClassesInEventListener() {
         MinecraftForge.EVENT_BUS.register(this.forgeInteract);
-        EventBus.INSTANCE.register(this.guiModule);
+        EventBus.INSTANCE.register(this.userInterfaceGUI);
     }
 
     public void initClient() {
         this.moduleManager.preInitAll();
         this.commandManager.preInitAll();
 
-        final ModuleGUI userInterface = (ModuleGUI) this.guiModule;
+        final GUI userInterface = (GUI) this.userInterfaceGUI;
         userInterface.init();
     }
 

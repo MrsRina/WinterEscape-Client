@@ -5,11 +5,7 @@ import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
-import me.rina.hyperpop.impl.gui.impl.module.ModuleGUI;
 import me.rina.turok.render.font.management.TurokFontManager;
-import me.rina.turok.render.opengl.TurokGL;
-import me.rina.turok.render.opengl.TurokRenderGL;
-import me.rina.turok.render.opengl.TurokShaderGL;
 import me.rina.turok.util.TurokRect;
 
 /**
@@ -30,7 +26,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.flag.setResizable(true);
 
         this.theModule = module;
-        this.titleHeight = 6 + TurokFontManager.getStringHeight(ModuleGUI.FONT_NORMAL, this.rect.getTag());
+        this.titleHeight = 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag());
 
         this.rect.setWidth(100);
     }
