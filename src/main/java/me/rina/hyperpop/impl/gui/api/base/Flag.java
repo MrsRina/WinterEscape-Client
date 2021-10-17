@@ -1,5 +1,6 @@
 package me.rina.hyperpop.impl.gui.api.base;
 
+import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.util.TurokRect;
 
 /**
@@ -20,10 +21,22 @@ public class Flag {
     private boolean isDragging;
     private boolean isDraggable;
 
+    private boolean isMouseClickedLeft;
+    private boolean isMouseClickedRight;
+    private boolean isMouseClickedMiddle;
+
     private TurokRect.Dock resizeDock;
     private String resize = "left-right-top-down";
 
     public Flag() {}
+
+    public boolean isFocusing() {
+        if (this.isLocked()) {
+            return false;
+        }
+
+        return this.isMouseOver();
+    }
 
     public void setMouseOver(boolean mouseOver) {
         isMouseOver = mouseOver;
@@ -111,5 +124,29 @@ public class Flag {
 
     public boolean isResizable() {
         return isResizable;
+    }
+
+    public void setMouseClickedLeft(boolean mouseClickedLeft) {
+        isMouseClickedLeft = mouseClickedLeft;
+    }
+
+    public boolean isMouseClickedLeft() {
+        return isMouseClickedLeft;
+    }
+
+    public void setMouseClickedRight(boolean mouseClickedRight) {
+        isMouseClickedRight = mouseClickedRight;
+    }
+
+    public boolean isMouseClickedRight() {
+        return isMouseClickedRight;
+    }
+
+    public void setMouseClickedMiddle(boolean mouseClickedMiddle) {
+        isMouseClickedMiddle = mouseClickedMiddle;
+    }
+
+    public boolean isMouseClickedMiddle() {
+        return isMouseClickedMiddle;
     }
 }

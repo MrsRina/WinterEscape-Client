@@ -18,17 +18,17 @@ public class ModuleUserInterface extends Module {
 
     @EventListener
     public void onClientTickEvent(ClientTickEvent event) {
+        if (mc.world == null) {
+            return;
+        }
+
         if (mc.currentScreen != Client.INSTANCE.userInterfaceGUI) {
             mc.displayGuiScreen(Client.INSTANCE.userInterfaceGUI);
         }
     }
 
     @Override
-    public void onEnable() {
-        if (mc.currentScreen != Client.INSTANCE.userInterfaceGUI) {
-            mc.displayGuiScreen(Client.INSTANCE.userInterfaceGUI);
-        }
-    }
+    public void onEnable() {}
 
     @Override
     public void onDisable() {}

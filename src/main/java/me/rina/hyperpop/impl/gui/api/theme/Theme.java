@@ -15,8 +15,14 @@ public class Theme {
     public Color highlight = new Color(255, 255, 255, 50);
     public Color pressed = new Color(255, 255, 0, 50);
 
+    public Color string = new Color(255, 255, 255, 255);
+
     public Theme() {
         INSTANCE = this;
+    }
+
+    public Color getBackground(int alpha) {
+        return new Color(this.background.getRed(), this.background.getGreen(), this.background.getBlue(), alpha);
     }
 
     public void setBackground(int red, int green, int blue, int alpha) {
@@ -25,10 +31,18 @@ public class Theme {
         }
     }
 
+    public Color getSelected(int alpha) {
+        return new Color(this.selected.getRed(), this.selected.getGreen(), this.selected.getBlue(), alpha);
+    }
+
     public void setSelected(int red, int green, int blue, int alpha) {
         if (this.selected.getRed() != red || this.selected.getGreen() != green || this.selected.getBlue() != blue || this.selected.getAlpha() != alpha) {
             this.selected = new Color(red, green, blue, alpha);
         }
+    }
+
+    public Color getHighlight(int alpha) {
+        return new Color(this.highlight.getRed(), this.highlight.getGreen(), this.highlight.getBlue(), alpha);
     }
 
     public void setHighlight(int red, int green, int blue, int alpha) {
@@ -37,10 +51,28 @@ public class Theme {
         }
     }
 
+    public Color getPressed(int alpha) {
+        return new Color(this.pressed.getRed(), this.pressed.getGreen(), this.pressed.getBlue(), alpha);
+    }
+
     public void setPressed(int red, int green, int blue, int alpha) {
         if (this.pressed.getRed() != red || this.pressed.getGreen() != green || this.pressed.getBlue() != blue || this.pressed.getAlpha() != alpha) {
             this.pressed = new Color(red, green, blue, alpha);
         }
+    }
+
+    public Color getString(int alpha) {
+        return new Color(this.string.getRed(), this.string.getGreen(), this.string.getBlue(), alpha);
+    }
+
+    public void setString(int red, int green, int blue, int alpha) {
+        if (this.string.getRed() != red || this.string.getGreen() != green || this.string.getBlue() != blue || this.string.getAlpha() != alpha) {
+            this.string = new Color(red, green, blue, alpha);
+        }
+    }
+
+    public boolean shadow$True$False(Color background) {
+        return background.getAlpha() <= 100;
     }
 
     public void updateAllColor() {

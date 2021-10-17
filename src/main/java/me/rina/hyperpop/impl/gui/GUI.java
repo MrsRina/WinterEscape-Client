@@ -2,15 +2,20 @@ package me.rina.hyperpop.impl.gui;
 
 import event.bus.EventListener;
 import me.rina.hyperpop.api.module.Module;
+import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
+import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
 import me.rina.hyperpop.impl.module.management.ModuleManager;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.util.TurokDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,13 +30,16 @@ public class GUI extends GuiScreen {
     public static TurokFont FONT_NORMAL = new TurokFont(new Font("Verdana", 0, 16), true, true);
 
     private final List<Frame> loadedFrameList = new ArrayList<>();
+    private Frame focusedFrame;
 
     private final TurokMouse mouse;
     private final TurokDisplay display;
 
+    private boolean isUpdate;
+
     public GUI() {
         this.mouse = new TurokMouse();
-        this.display = new TurokDisplay(mc);
+        this.display = new TurokDisplay(Minecraft.getMinecraft());
     }
 
     public TurokMouse getMouse() {
@@ -42,16 +50,30 @@ public class GUI extends GuiScreen {
         return display;
     }
 
+    public boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate() {
+        this.isUpdate = true;
+    }
+
+    public void unsetUpdate() {
+        this.isUpdate = false;
+    }
+
     public void init() {
         int offsetSpace = 10;
 
-        for (Module modules : ModuleManager.INSTANCE.getModuleList()) {
-            ModuleFrame frame = new ModuleFrame(this, modules);
+        for (int i = 0; i < ModuleType.SIZE; i++) {
+            ModuleFrame frame = new ModuleFrame(this, i);
+
+            frame.init();
 
             frame.getRect().setX(offsetSpace);
             frame.getRect().setY(10);
 
-            offsetSpace += frame.getRect().getWidth();
+            offsetSpace += frame.getRect().getWidth() + 1;
 
             this.loadedFrameList.add(frame);
         }
@@ -61,7 +83,14 @@ public class GUI extends GuiScreen {
     public void onUpdateEvent(ClientTickEvent event) {
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
-            frames.onCustomUpdate();
+
+            if (frames.getFlag().isFocusing()) {
+                this.focusedFrame = frames;
+            }
+        }
+
+        if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomUpdate();
         }
     }
 
@@ -81,6 +110,15 @@ public class GUI extends GuiScreen {
 
     @Override
     public void keyTyped(char charCode, int keyCode) {
+        if (!this.isUpdate() && keyCode == Keyboard.KEY_ESCAPE) {
+            ModuleManager.get("UserInterface").unsetListener();
+
+            mc.currentScreen = null;
+            mc.setIngameFocus();
+
+            return;
+        }
+
         for (Frame frames : this.loadedFrameList) {
             frames.onKeyboard(charCode, keyCode);
             frames.onCustomKeyboard(charCode, keyCode);
@@ -106,10 +144,19 @@ public class GUI extends GuiScreen {
     @Override
     public void drawScreen(int mx, int my, float partialTicks) {
         this.display.setPartialTicks(partialTicks);
+        this.display.update();
+
         this.mouse.setPos(mx, my);
+
+        Statement.matrix();
+        Statement.translate(this.display.getScaledWidth(), this.display.getScaledHeight(), 0);
+
+        Statement.scale(0.5f, 0.5f, 0.5f);
+        Statement.refresh();
 
         for (Frame frames : this.loadedFrameList) {
             frames.onRender();
+            frames.onCustomRender();
         }
     }
 }

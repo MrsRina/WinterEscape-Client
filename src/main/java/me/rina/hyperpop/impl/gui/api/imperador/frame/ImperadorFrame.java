@@ -27,6 +27,8 @@ public class ImperadorFrame extends Frame implements IGUI {
     private float minimumHeight;
 
     private final TurokRect rectResize = new TurokRect("resize:rect", 0, 0);
+    protected final TurokRect rectDrag = new TurokRect("drag:rect", 0, 0);
+
     private float offsetResize;
 
     public ImperadorFrame(GUI gui, String tag) {
@@ -41,6 +43,10 @@ public class ImperadorFrame extends Frame implements IGUI {
         this.elementList.add(element);
     }
 
+    public TurokRect getRectDrag() {
+        return rectDrag;
+    }
+
     public void unset() {
         if (this.flag.isResizing()) {
             this.flag.setResizing(false);
@@ -49,13 +55,27 @@ public class ImperadorFrame extends Frame implements IGUI {
         if (this.flag.isDragging()) {
             this.flag.setDragging(false);
         }
+
+        if (this.flag.isMouseClickedLeft()) {
+            this.flag.setMouseClickedLeft(false);
+        }
+
+        if (this.flag.isMouseClickedRight()) {
+            this.flag.setMouseClickedRight(false);
+        }
+
+        if (this.flag.isMouseClickedMiddle()) {
+            this.flag.setMouseClickedMiddle(false);
+        }
     }
 
-    public void setDrag(TurokRect rect) {
+    public void setDrag() {
         final TurokMouse mouse = this.master.getMouse();
 
-        this.setDragX(mouse.getX() - rect.getX());
-        this.setDragY(mouse.getY() - rect.getY());
+        this.setDragX(mouse.getX() - this.rect.getX());
+        this.setDragY(mouse.getY() - this.rect.getY());
+
+        this.flag.setDragging(true);
     }
 
     public void updateDrag() {
@@ -71,7 +91,7 @@ public class ImperadorFrame extends Frame implements IGUI {
         final TurokMouse mouse = this.master.getMouse();
 
         this.flag.setMouseOver(this.rect.collideWithMouse(mouse));
-        this.flag.setMouseOverDraggable(this.flag.isMouseOver() && !this.rectResize.collideWithMouse(mouse));
+        this.flag.setMouseOverDraggable(this.rectDrag.collideWithMouse(this.master.getMouse()) && !this.rectResize.collideWithMouse(mouse));
     }
 
     public void setResize() {
@@ -208,15 +228,14 @@ public class ImperadorFrame extends Frame implements IGUI {
 
     @Override
     public void onUpdate() {
-
-    }
-
-    @Override
-    public void onCustomUpdate() {
         this.rectResize.set(this.rect.getX() + this.getOffsetResize(), this.rect.getY() + this.getOffsetResize(), this.rect.getWidth() - (this.getOffsetResize() * 2), this.rect.getHeight() - (this.getOffsetResize() * 2));
 
         this.flag.setMouseOver(false);
         this.flag.setMouseOverDraggable(false);
+    }
+
+    @Override
+    public void onCustomUpdate() {
     }
 
     @Override
