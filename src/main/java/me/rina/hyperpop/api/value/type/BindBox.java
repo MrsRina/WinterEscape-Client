@@ -7,13 +7,11 @@ import me.rina.hyperpop.api.value.Value;
  * @since 07/09/2021 at 14:48
  **/
 public class BindBox extends Value {
-    public static final int BIND_BOX = 666;
-
     private boolean value;
     private int key;
 
     public BindBox(String tag, String description, boolean state) {
-        super(tag, description, BIND_BOX);
+        super(tag, description, ValueType.BIND_BOX);
 
         this.setValue(state);
         this.setKey(-1);

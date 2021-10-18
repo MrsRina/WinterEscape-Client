@@ -10,13 +10,11 @@ import java.util.List;
  * @since 06/09/2021 at 20:50
  **/
 public class Combobox extends Value {
-    public static final int COMBOBOX = 244;
-
     private String value;
     private List<String> list;
 
     public Combobox(String tag, String description, String value, String... values) {
-        super(tag, description, COMBOBOX);
+        super(tag, description, ValueType.COMBOBOX);
 
         this.list = new ArrayList<>();
 

@@ -7,15 +7,13 @@ import me.rina.hyperpop.api.value.Value;
  * @since 06/09/2021 at 20:45
  **/
 public class Slider extends Value {
-    public static final int SLIDER = 20;
-
     private Number value;
 
     private Number maximum;
     private Number minimum;
 
     public Slider(String tag, String description, Number value, Number minimum, Number maximum) {
-        super(tag, description, SLIDER);
+        super(tag, description, ValueType.SLIDER);
 
         this.setValue(value);
 

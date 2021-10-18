@@ -1,16 +1,16 @@
 package me.rina.hyperpop.api.value;
 
+import me.rina.hyperpop.api.value.type.ValueType;
+
 /**
  * @author SrRina
  * @since 06/09/2021 at 20:38
  **/
 public class ValueGeneric <T> extends Value {
-    public static final int GENERIC = 99;
-
     private T value;
 
     public ValueGeneric(String tag, String description, T generic) {
-        super(tag, description, GENERIC);
+        super(tag, description, ValueType.GENERIC);
 
         this.setValue(generic);
     }

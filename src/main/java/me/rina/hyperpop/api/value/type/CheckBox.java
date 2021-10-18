@@ -7,12 +7,10 @@ import me.rina.hyperpop.api.value.Value;
  * @since 06/09/2021 at 20:40
  **/
 public class CheckBox extends Value {
-    public static final int CHECK_BOX = 19;
-
     private boolean value;
 
     public CheckBox(String tag, String description, boolean value) {
-        super(tag, description, CHECK_BOX);
+        super(tag, description, ValueType.CHECK_BOX);
 
         this.setValue(value);
     }
