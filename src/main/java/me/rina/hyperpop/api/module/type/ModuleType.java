@@ -16,13 +16,13 @@ public class ModuleType {
         if (type == COMBAT) {
             return "Combat";
         } else if (type == RENDER) {
-            return "Combat";
+            return "Render";
         } else if (type == MISC) {
             return "Misc";
         } else if (type == MOVEMENT) {
             return "Movement";
         } else if (type == CLIENT) {
-            return "Client;";
+            return "Client";
         }
 
         return "null";
