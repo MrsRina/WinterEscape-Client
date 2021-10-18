@@ -1,7 +1,6 @@
 package me.rina.hyperpop.impl.event;
 
-import me.rina.hyperpop.api.event.Event;
-import net.minecraft.network.Packet;
+import event.bus.Event;
 
 /**
  * @author SrRina

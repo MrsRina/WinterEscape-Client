@@ -1,6 +1,6 @@
 package me.rina.hyperpop.impl.event;
 
-import me.rina.hyperpop.api.event.Event;
+import event.bus.Event;
 
 /**
  * @author SrRina
