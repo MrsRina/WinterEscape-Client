@@ -31,6 +31,8 @@ public class ForgeInteract extends Feature {
     @SubscribeEvent
     public void onClientTickEvent(TickEvent.ClientTickEvent event) {
         EventBus.post(new ClientTickEvent());
+
+        Client.INSTANCE.moduleManager.onSetting();
     }
 
     @SubscribeEvent

@@ -57,6 +57,12 @@ public class ModuleManager extends Feature {
         }
     }
 
+    public void onSetting() {
+        for (Module modules : this.getModuleList()) {
+            modules.onSetting();
+        }
+    }
+
     public void onWorldRender(float partialTicks) {
         for (Module modules : this.getModuleList()) {
             if (modules.isEnabled()) {

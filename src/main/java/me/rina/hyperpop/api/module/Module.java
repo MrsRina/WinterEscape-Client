@@ -117,6 +117,8 @@ public class Module extends Feature {
         return mc.player == null || mc.world == null;
     }
 
+    public void onSetting() {}
+
     public void onEnable() {}
     public void onDisable() {}
 
