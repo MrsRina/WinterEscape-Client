@@ -26,6 +26,27 @@ public class ModuleManager extends Feature {
     public void preInitAll() {
         this.add(new ModuleKillAura());
         this.add(new ModuleUserInterface());
+
+        // Dev thing.
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
+        this.add(new ModuleKillAura());
     }
 
     public void onKeyboard(int key) {

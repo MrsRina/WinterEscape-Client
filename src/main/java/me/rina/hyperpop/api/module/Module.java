@@ -37,6 +37,10 @@ public class Module extends Feature {
         this.register.remove(value.getTag());
     }
 
+    public HashMap<String, Value> getRegister() {
+        return register;
+    }
+
     public Value getValue(String tag) {
         return this.register.get(tag);
     }
@@ -59,6 +63,16 @@ public class Module extends Feature {
 
     public boolean isEnabled() {
         return keyBind.getValue();
+    }
+
+    public void reloadListener() {
+        this.keyBind.setValue(!this.isEnabled());
+
+        if (this.isEnabled()) {
+            this.setListener();
+        } else {
+            this.unsetListener();
+        }
     }
 
     public void reload(boolean state) {

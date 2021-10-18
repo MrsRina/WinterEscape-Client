@@ -94,4 +94,6 @@ public class Frame implements IGUI {
     public void onCustomRender() {
 
     }
+
+    public void clear() {}
 }

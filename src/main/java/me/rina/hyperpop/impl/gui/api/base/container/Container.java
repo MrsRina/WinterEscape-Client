@@ -94,4 +94,6 @@ public class Container implements IGUI {
     public void onCustomRender() {
 
     }
+
+    public void clear() {}
 }

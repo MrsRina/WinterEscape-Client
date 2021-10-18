@@ -9,6 +9,11 @@ import me.rina.hyperpop.api.feature.Feature;
 public class Value extends Feature {
     private int type;
 
+    /*
+     * For set the visibility of setting (value).
+     */
+    private boolean isShow;
+
     public Value(String tag, String description, int type) {
         super(tag, description);
 
@@ -21,5 +26,13 @@ public class Value extends Feature {
 
     public int getType() {
         return type;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
+    public boolean isShow() {
+        return isShow;
     }
 }

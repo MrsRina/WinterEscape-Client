@@ -6,12 +6,15 @@ import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
+import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.module.widget.ModuleWidget;
 import me.rina.turok.render.font.management.TurokFontManager;
+import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
+import org.lwjgl.input.Mouse;
 
 /**
  * @author SrRina
@@ -21,7 +24,12 @@ public class ModuleFrame extends ImperadorFrame {
     private final int moduleType;
 
     private int titleHeight;
-    private int distance = 1;
+
+    protected float sizeamount;
+    protected float scrollamount;
+
+    protected boolean hasWheel;
+    protected final TurokRect scrollRect = new TurokRect("rekt", 0, 0);
 
     public ModuleFrame(GUI gui, int moduleType) {
         super(gui, ModuleType.toString(moduleType));
@@ -48,6 +56,32 @@ public class ModuleFrame extends ImperadorFrame {
         }
     }
 
+    public void updateScroll() {
+        if (this.rect.getHeight() != GUI.HEIGHT_LIMIT) {
+            return;
+        }
+
+        float theDiff = this.rect.getHeight() - this.sizeamount;
+
+        if (this.master.getMouse().hasWheel()) {
+            this.scrollamount -= this.master.getMouse().getScroll();
+        }
+
+        int i = -((this.hasWheel ? Mouse.getDWheel() : 0) / 10);
+
+        if (this.scrollRect.collideWithMouse(this.master.getMouse())) {
+            this.hasWheel = Mouse.hasWheel();
+        } else {
+            this.hasWheel = false;
+        }
+
+        if (this.hasWheel) {
+            this.scrollamount -= i;
+        }
+
+        this.scrollamount = TurokMath.clamp(this.scrollamount, theDiff, 0);
+    }
+
     public int getModuleType() {
         return moduleType;
     }
@@ -60,19 +94,18 @@ public class ModuleFrame extends ImperadorFrame {
         return titleHeight;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
     @Override
     public void onMouseReleased(int button) {
         this.unset();
 
         super.onMouseReleased(button);
+    }
+
+    @Override
+    public void onCustomMouseReleased(int button) {
+        this.master.matrixMoveFocusedFrameToLast();
+
+        super.onCustomMouseReleased(button);
     }
 
     @Override
@@ -86,29 +119,53 @@ public class ModuleFrame extends ImperadorFrame {
     }
 
     @Override
+    public void onCustomMouseClicked(int button) {
+        this.master.matrixMoveFocusedFrameToLast();
+
+        super.onCustomMouseClicked(button);
+    }
+
+    @Override
+    public void clear() {
+        this.flag.setMouseOver(false);
+        this.flag.setMouseOverDraggable(false);
+        this.flag.setMouseOverResizable(false);
+    }
+
+    @Override
     public void onUpdate() {
-        int size = this.getTitleHeight() + this.getDistance();
+        int size = this.getTitleHeight() + this.master.getDistance();
 
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), size);
+        this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
         for (IGUI elements : this.getElementList()) {
+            if (elements instanceof Widget) {
+                ((Widget) elements).clear();
+            }
+
+            int diff = 1;
+
+            elements.getRect().setX(this.rect.getX() + diff);
+            elements.getRect().setY(this.rect.getY() + size + this.scrollamount);
+
+            size += elements.getRect().getHeight() + this.master.getDistance();
+
+            if (elements instanceof ModuleWidget && elements.getFlag().isEnabled()) {
+                size += ((ModuleWidget) elements).getWidgetListHeight();
+            }
+
             elements.onUpdate();
-
-            elements.getRect().setX(this.rect.getX());
-            elements.getRect().setY(this.rect.getY() + size);
-
-            size += elements.getRect().getHeight() + this.getDistance();
         }
 
-        this.rect.setHeight(size);
+        this.sizeamount = size;
+        this.rect.setHeight(size >= GUI.HEIGHT_LIMIT ? GUI.HEIGHT_LIMIT : size);
     }
 
     @Override
     public void onCustomUpdate() {
-        this.updateDrag();
-        this.updateResize();
-
         this.updateMouseOver();
+        this.updateResize();
 
         for (IGUI elements : this.getElementList()) {
             elements.onCustomUpdate();
@@ -117,6 +174,10 @@ public class ModuleFrame extends ImperadorFrame {
 
     @Override
     public void onRender() {
+        // We need an smooth scroll and drag, basically;
+        this.updateDrag();
+        this.updateScroll();
+
         // Background.
         Processor.prepare(Theme.INSTANCE.background);
         Processor.solid(this.rect);

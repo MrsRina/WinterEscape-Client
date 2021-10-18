@@ -16,6 +16,7 @@ import me.rina.turok.util.TurokDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,10 +37,23 @@ public class GUI extends GuiScreen {
     private final TurokDisplay display;
 
     private boolean isUpdate;
+    private int distance;
+
+    public static int HEIGHT_LIMIT = 500;
 
     public GUI() {
         this.mouse = new TurokMouse();
         this.display = new TurokDisplay(Minecraft.getMinecraft());
+
+        this.setDistance(1);
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public TurokMouse getMouse() {
@@ -62,6 +76,15 @@ public class GUI extends GuiScreen {
         this.isUpdate = false;
     }
 
+    public void matrixMoveFocusedFrameToLast() {
+        if (this.focusedFrame == null) {
+            return;
+        }
+
+        this.loadedFrameList.remove(this.focusedFrame);
+        this.loadedFrameList.add(this.focusedFrame);
+    }
+
     public void init() {
         int offsetSpace = 10;
 
@@ -81,12 +104,16 @@ public class GUI extends GuiScreen {
 
     @EventListener
     public void onUpdateEvent(ClientTickEvent event) {
+        this.focusedFrame = null;
+
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
 
-            if (frames.getFlag().isFocusing()) {
+            if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))){
                 this.focusedFrame = frames;
             }
+
+            frames.clear();
         }
 
         if (this.focusedFrame != null) {
@@ -121,7 +148,10 @@ public class GUI extends GuiScreen {
 
         for (Frame frames : this.loadedFrameList) {
             frames.onKeyboard(charCode, keyCode);
-            frames.onCustomKeyboard(charCode, keyCode);
+        }
+
+        if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomKeyboard(charCode, keyCode);
         }
     }
 
@@ -129,7 +159,10 @@ public class GUI extends GuiScreen {
     public void mouseReleased(int mx, int my, int button) {
         for (Frame frames : this.loadedFrameList) {
             frames.onMouseReleased(button);
-            frames.onCustomMouseReleased(button);
+        }
+
+        if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomMouseReleased(button);
         }
     }
 
@@ -137,7 +170,10 @@ public class GUI extends GuiScreen {
     public void mouseClicked(int mx, int my, int button) {
         for (Frame frames : this.loadedFrameList) {
             frames.onMouseClicked(button);
-            frames.onCustomMouseClicked(button);
+        }
+
+        if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomMouseClicked(button);
         }
     }
 
@@ -154,9 +190,14 @@ public class GUI extends GuiScreen {
         Statement.scale(0.5f, 0.5f, 0.5f);
         Statement.refresh();
 
+        Statement.set(GL11.GL_TEXTURE_2D);
+
         for (Frame frames : this.loadedFrameList) {
             frames.onRender();
-            frames.onCustomRender();
+        }
+
+        if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomRender();
         }
     }
 }

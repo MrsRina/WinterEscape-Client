@@ -37,6 +37,7 @@ public class Processor {
     }
 
     public static void solid(float x, float y, float w, float h) {
+        Statement.unset(GL11.GL_TEXTURE_2D);
         Statement.prepare(GL11.GL_QUADS);
 
         Statement.vertex2d(x, y);
@@ -46,6 +47,8 @@ public class Processor {
         Statement.vertex2d(x + w, y);
 
         Statement.draw();
+
+        Statement.set(GL11.GL_TEXTURE_2D);
         Statement.refresh();
     }
 
@@ -54,6 +57,8 @@ public class Processor {
     }
 
     public static void outline(float x, float y, float w, float h) {
+        Statement.unset(GL11.GL_TEXTURE_2D);
+
         Statement.set(GL11.GL_LINE_SMOOTH);
         Statement.prepare(GL11.GL_LINE);
 
@@ -70,11 +75,14 @@ public class Processor {
         Statement.vertex2d(x, y);
 
         Statement.draw();
+
+        Statement.set(GL11.GL_TEXTURE_2D);
         Statement.refresh();
     }
 
     public static void string(TurokFont font, String string, float x, float y, boolean shadow) {
         GlStateManager.enableAlpha();
+        Statement.set(GL11.GL_TEXTURE_2D);
 
         if (shadow) {
             if (font.isRenderingCustomFont()) {
@@ -90,6 +98,7 @@ public class Processor {
             }
         }
 
+        GlStateManager.disableAlpha();
         Statement.refresh();
     }
     /* End of post fx render functions. */

@@ -30,12 +30,12 @@ public class Flag {
 
     public Flag() {}
 
-    public boolean isFocusing() {
+    public boolean isFocusing(boolean forced) {
         if (this.isLocked()) {
             return false;
         }
 
-        return this.isMouseOver();
+        return this.isMouseOver() || forced;
     }
 
     public void setMouseOver(boolean mouseOver) {

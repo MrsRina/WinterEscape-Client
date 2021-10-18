@@ -94,4 +94,6 @@ public class Widget implements IGUI {
     public void onCustomRender() {
 
     }
+
+    public void clear() {}
 }
