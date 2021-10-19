@@ -844,7 +844,8 @@ public class ImperadorEntryBox extends Widget {
                 r = false;
             }
 
-            TurokFontManager.render(this.getFont(), c, this.rect.getX() + this.offsetX + k, this.rect.getY() + this.offsetY, this.getIsShadow(), color);
+            Processor.prepare(color);
+            Processor.string(this.getFont(), c, this.rect.getX() + this.offsetX + k, this.rect.getY() + this.offsetY, this.getIsShadow());
 
             if (r && i == this.getIndexA() && this.isFocused()) {
                 this.split(k);

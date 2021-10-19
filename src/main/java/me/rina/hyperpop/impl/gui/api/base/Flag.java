@@ -31,7 +31,7 @@ public class Flag {
     public Flag() {}
 
     public boolean isFocusing(boolean forced) {
-        if (this.isLocked()) {
+        if (this.isLocked() || !this.isEnabled()) {
             return false;
         }
 

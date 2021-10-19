@@ -8,6 +8,7 @@ import me.rina.hyperpop.api.value.Value;
  **/
 public class Entry extends Value {
     private String value;
+    private String set;
 
     public Entry(String tag, String description, String text) {
         super(tag, description, ValueType.ENTRY);
@@ -15,8 +16,21 @@ public class Entry extends Value {
         this.setValue(text);
     }
 
+    public void motherfuck(String set) {
+        this.value = value;
+    }
+
+    public String lastSet() {
+        return set;
+    }
+
+    public void unset() {
+        this.set = null;
+    }
+
     public void setValue(String value) {
         this.value = value;
+        this.set = value;
     }
 
     public String getValue() {

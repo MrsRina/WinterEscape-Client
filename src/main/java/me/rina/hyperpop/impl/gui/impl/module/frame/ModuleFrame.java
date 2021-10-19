@@ -82,6 +82,10 @@ public class ModuleFrame extends ImperadorFrame {
         this.scrollamount = TurokMath.clamp(this.scrollamount, theDiff, 0);
     }
 
+    public TurokRect getProtectedScrollRect() {
+        return scrollRect;
+    }
+
     public int getModuleType() {
         return moduleType;
     }
@@ -138,6 +142,8 @@ public class ModuleFrame extends ImperadorFrame {
 
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), size);
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
+
+        this.flag.setEnabled(GUI.HUD_EDITOR ? this.moduleType == ModuleType.HUD : this.moduleType != ModuleType.HUD);
 
         for (IGUI elements : this.getElementList()) {
             if (elements instanceof Widget) {

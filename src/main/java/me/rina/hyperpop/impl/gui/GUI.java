@@ -40,6 +40,7 @@ public class GUI extends GuiScreen {
     private int distance;
 
     public static int HEIGHT_LIMIT = 500;
+    public static boolean HUD_EDITOR = false;
 
     public GUI() {
         this.mouse = new TurokMouse();
@@ -124,6 +125,10 @@ public class GUI extends GuiScreen {
     @Override
     public void initGui() {
         for (Frame frames : this.loadedFrameList) {
+            if (!frames.getFlag().isEnabled()) {
+                continue;
+            }
+
             frames.onOpen();
         }
     }
@@ -131,6 +136,10 @@ public class GUI extends GuiScreen {
     @Override
     public void onGuiClosed() {
         for (Frame frames : this.loadedFrameList) {
+            if (!frames.getFlag().isEnabled()) {
+                continue;
+            }
+
             frames.onClose();
         }
     }
@@ -147,6 +156,10 @@ public class GUI extends GuiScreen {
         }
 
         for (Frame frames : this.loadedFrameList) {
+            if (!frames.getFlag().isEnabled()) {
+                continue;
+            }
+
             frames.onKeyboard(charCode, keyCode);
         }
 
@@ -158,6 +171,10 @@ public class GUI extends GuiScreen {
     @Override
     public void mouseReleased(int mx, int my, int button) {
         for (Frame frames : this.loadedFrameList) {
+            if (!frames.getFlag().isEnabled()) {
+                continue;
+            }
+
             frames.onMouseReleased(button);
         }
 
@@ -193,11 +210,20 @@ public class GUI extends GuiScreen {
         Statement.set(GL11.GL_TEXTURE_2D);
 
         for (Frame frames : this.loadedFrameList) {
+            if (!frames.getFlag().isEnabled()) {
+                continue;
+            }
+
             frames.onRender();
         }
 
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomRender();
+        }
+
+        // Post hud editor render.
+        if (HUD_EDITOR) {
+
         }
     }
 }

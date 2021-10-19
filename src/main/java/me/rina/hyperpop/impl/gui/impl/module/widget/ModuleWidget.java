@@ -3,6 +3,7 @@ package me.rina.hyperpop.impl.gui.impl.module.widget;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.CheckBox;
+import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
@@ -51,6 +52,10 @@ public class ModuleWidget extends Widget {
 
             if (value instanceof CheckBox) {
                 CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) value);
+
+                this.loadedWidgetList.add(widget);
+            } else if (value instanceof Entry) {
+                EntryWidget widget = new EntryWidget(this.master, this, (Entry) value);
 
                 this.loadedWidgetList.add(widget);
             }

@@ -10,7 +10,8 @@ public class ModuleType {
     public static final int MISC = 2;
     public static final int MOVEMENT = 3;
     public static final int CLIENT = 4;
-    public static final int SIZE = 5;
+    public static final int HUD = 5;
+    public static final int SIZE = 6;
 
     public static String toString(int type) {
         if (type == COMBAT) {
@@ -23,6 +24,8 @@ public class ModuleType {
             return "Movement";
         } else if (type == CLIENT) {
             return "Client";
+        } else if (type == HUD) {
+            return "HUD";
         }
 
         return "null";
