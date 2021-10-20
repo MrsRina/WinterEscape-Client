@@ -29,12 +29,14 @@ public class Module extends Feature {
         this.registry(this.toggleMessage = new Combobox("ToggleMessage", "Message when toggled the module.", "Silent", "Silent", "Static", "Disabled"));
     }
 
-    public void registry(Value value) {
-        this.register.put(value.getTag(), value);
+    public Value registry(Value value) {
+        register.put(value.getTag(), value);
+
+        return value;
     }
 
     public void remove(Value value) {
-        this.register.remove(value.getTag());
+        register.remove(value.getTag());
     }
 
     public HashMap<String, Value> getRegister() {

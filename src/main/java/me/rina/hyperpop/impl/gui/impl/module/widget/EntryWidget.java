@@ -5,6 +5,7 @@ import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.imperador.widget.ImperadorEntryBox;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
@@ -98,7 +99,7 @@ public class EntryWidget extends Widget {
             this.flag.setMouseClickedMiddle(false);
         }
 
-        this.imperadorEntryBox.onMouseReleased();
+        this.imperadorEntryBox.onMouseReleased(button);
     }
 
     @Override
@@ -138,14 +139,14 @@ public class EntryWidget extends Widget {
         	this.master.setUpdate();
         	this.setFocusedByCPU(true);
 
-        	this.imperadorEntryBox.string = {0, 0, 0, 255};
+        	this.imperadorEntryBox.string = new int[] {0, 0, 0, 255};
         } else {
         	if (this.isFocusedByCPU()) {
         		this.master.unsetUpdate();
-        		this.isFocusedByCPU(false);
+        		this.setFocusedByCPU(false);
         	}
 
-        	this.imperadorEntryBox.string = {255, 255, 255, 255};
+        	this.imperadorEntryBox.string = new int[] {255, 255, 255, 255};
         }
 
         if (this.value.lastSet() != null) {
@@ -162,7 +163,7 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onCustomUpdate() {
-    	final boolean mouseIsOver = this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getFlag().getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse());
+    	final boolean mouseIsOver = this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse());
 
         this.flag.setMouseOver(mouseIsOver);
     	this.imperadorEntryBox.setMouseOver(mouseIsOver);

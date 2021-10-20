@@ -2,9 +2,11 @@ package me.rina.hyperpop.impl.module.management;
 
 import me.rina.hyperpop.api.feature.Feature;
 import me.rina.hyperpop.api.module.Module;
+import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.hyperpop.impl.module.impl.combat.ModuleKillAura;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +82,21 @@ public class ModuleManager extends Feature {
     }
 
     public void add(Module module) {
-        this.moduleList.add(module);
+        try {
+            for (Field fields : module.getClass().getDeclaredFields()) {
+                if (Value.class.isAssignableFrom(fields.getType())) {
+                    if (!fields.isAccessible()) {
+                        fields.setAccessible(true);
+                    }
+
+                    module.registry((Value) fields.get(module));
+                }
+            }
+
+            this.moduleList.add(module);
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
     }
 
     public void remove(Module module) {
@@ -108,5 +124,11 @@ public class ModuleManager extends Feature {
 
     public List<Module> getModuleList() {
         return moduleList;
+    }
+
+    public void loadModuleList() {
+        for (Module modules : this.moduleList) {
+
+        }
     }
 }

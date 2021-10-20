@@ -204,6 +204,11 @@ public class ModuleWidget extends Widget {
         // The tag.
         Processor.prepare(Theme.INSTANCE.string);
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
+
+        // Render.
+        for (Widget widgets : this.loadedWidgetList) {
+            widgets.onRender();
+        }
     }
 
     @Override

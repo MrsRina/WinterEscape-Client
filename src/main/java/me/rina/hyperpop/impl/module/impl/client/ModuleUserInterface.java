@@ -13,7 +13,7 @@ import me.rina.hyperpop.impl.gui.GUI;
  * @since 08/09/2021 at 14:59
  **/
 public class ModuleUserInterface extends Module {
-    public static CheckBox valueExample = registry(new CheckBox("Button", "A button.", false));
+    public static CheckBox valueExample = new CheckBox("Button", "A button.", false);
 
     public ModuleUserInterface() {
         super("UserInterface", "User interface for client.", ModuleType.CLIENT);
@@ -21,7 +21,7 @@ public class ModuleUserInterface extends Module {
 
     @Override
     public void onSetting() {
-        valueExample.setShow(mc.player.onGround);
+        valueExample.setShow(true);
     }
 
     @EventListener

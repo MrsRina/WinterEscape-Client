@@ -1,5 +1,6 @@
 package me.rina.hyperpop;
 
+import me.rina.hyperpop.api.preset.management.PresetManager;
 import me.rina.hyperpop.api.social.management.SocialManager;
 import me.rina.hyperpop.impl.command.management.CommandManager;
 import me.rina.hyperpop.impl.forge.ForgeInteract;
@@ -31,6 +32,8 @@ public class Client {
     public SocialManager socialManager;
     public ForgeInteract forgeInteract;
 
+    public PresetManager presetManager;
+
     public GUI userInterfaceGUI;
     public Theme guiTheme;
 
@@ -49,6 +52,7 @@ public class Client {
         this.commandManager = new CommandManager();
         this.socialManager = new SocialManager();
         this.forgeInteract = new ForgeInteract();
+        this.presetManager = new PresetManager();
         this.userInterfaceGUI = new GUI();
         this.guiTheme = new Theme();
     }
@@ -61,6 +65,8 @@ public class Client {
     public void initClient() {
         this.moduleManager.preInitAll();
         this.commandManager.preInitAll();
+
+        this.presetManager.preInitAll();
 
         final GUI userInterface = (GUI) this.userInterfaceGUI;
         userInterface.init();
@@ -89,4 +95,7 @@ public class Client {
 
         mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new TextComponentString(prefix + message), 69);
     }
+
+    public static void save() {}
+    public static void load() {}
 }

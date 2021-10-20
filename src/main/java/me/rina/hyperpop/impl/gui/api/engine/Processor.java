@@ -19,6 +19,7 @@ import java.awt.*;
  **/
 public class Processor {
     public static Minecraft theMinecraft = Minecraft.getMinecraft();
+    public static final int TEXTURE_COLOR = new Color(255, 255, 255, 255).getRGB();
 
     /* Start of post fx render. */
     public static void prepare(Color color) {
@@ -86,15 +87,15 @@ public class Processor {
 
         if (shadow) {
             if (font.isRenderingCustomFont()) {
-                font.drawStringWithShadow(string, x, y, Color.WHITE.getRGB());
+                font.drawStringWithShadow(string, x, y, TEXTURE_COLOR);
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, Color.WHITE.getRGB());
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, TEXTURE_COLOR);
             }
         } else {
             if (font.isRenderingCustomFont()) {
                 font.drawString(string, x, y, Color.WHITE.getRGB());
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, Color.WHITE.getRGB());
+                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, TEXTURE_COLOR);
             }
         }
 

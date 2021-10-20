@@ -22,12 +22,12 @@ public class Theme {
     }
 
     public Color getBackground(int alpha) {
-        return new Color(this.background.getRed(), this.background.getGreen(), this.background.getBlue(), alpha);
+        return new Color(this.background.getRed(), this.background.getGreen(), this.background.getBlue(), clamp(alpha));
     }
 
     public void setBackground(int red, int green, int blue, int alpha) {
         if (this.background.getRed() != red || this.background.getGreen() != green || this.background.getBlue() != blue || this.background.getAlpha() != alpha) {
-            this.background = new Color(red, green, blue, alpha);
+            this.background = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 
@@ -37,42 +37,46 @@ public class Theme {
 
     public void setSelected(int red, int green, int blue, int alpha) {
         if (this.selected.getRed() != red || this.selected.getGreen() != green || this.selected.getBlue() != blue || this.selected.getAlpha() != alpha) {
-            this.selected = new Color(red, green, blue, alpha);
+            this.selected = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 
     public Color getHighlight(int alpha) {
-        return new Color(this.highlight.getRed(), this.highlight.getGreen(), this.highlight.getBlue(), alpha);
+        return new Color(this.highlight.getRed(), this.highlight.getGreen(), this.highlight.getBlue(), clamp(alpha));
     }
 
     public void setHighlight(int red, int green, int blue, int alpha) {
         if (this.highlight.getRed() != red || this.highlight.getGreen() != green || this.highlight.getBlue() != blue || this.highlight.getAlpha() != alpha) {
-            this.highlight = new Color(red, green, blue, alpha);
+            this.highlight = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 
     public Color getPressed(int alpha) {
-        return new Color(this.pressed.getRed(), this.pressed.getGreen(), this.pressed.getBlue(), alpha);
+        return new Color(this.pressed.getRed(), this.pressed.getGreen(), this.pressed.getBlue(), clamp(alpha));
     }
 
     public void setPressed(int red, int green, int blue, int alpha) {
         if (this.pressed.getRed() != red || this.pressed.getGreen() != green || this.pressed.getBlue() != blue || this.pressed.getAlpha() != alpha) {
-            this.pressed = new Color(red, green, blue, alpha);
+            this.pressed = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 
     public Color getString(int alpha) {
-        return new Color(this.string.getRed(), this.string.getGreen(), this.string.getBlue(), alpha);
+        return new Color(this.string.getRed(), this.string.getGreen(), this.string.getBlue(), clamp(alpha));
     }
 
     public void setString(int red, int green, int blue, int alpha) {
         if (this.string.getRed() != red || this.string.getGreen() != green || this.string.getBlue() != blue || this.string.getAlpha() != alpha) {
-            this.string = new Color(red, green, blue, alpha);
+            this.string = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 
     public boolean shadow$True$False(Color background) {
         return background.getAlpha() <= 100;
+    }
+
+    public int clamp(int v) {
+        return v >= 255 ? 255 : Math.max(v, 0);
     }
 
     public void updateAllColor() {
