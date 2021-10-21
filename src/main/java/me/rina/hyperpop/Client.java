@@ -37,6 +37,8 @@ public class Client {
     public GUI userInterfaceGUI;
     public Theme guiTheme;
 
+    public static TurokFont OVERLAY_FONT = new TurokFont(new Font("Arial", 0, 16), true, true);
+
     @Mod.Instance
     public static Client INSTANCE;
 
