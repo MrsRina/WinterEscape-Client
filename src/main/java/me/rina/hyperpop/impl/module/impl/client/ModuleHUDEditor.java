@@ -3,6 +3,7 @@ package me.rina.hyperpop.impl.module.impl.client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.impl.gui.GUI;
 
 import java.awt.Color;
 
@@ -26,6 +27,8 @@ public class ModuleHUDEditor extends Module {
 		if (COLOR_HUD.getRed() != settingRed.getValue().intValue() || COLOR_HUD.getGreen() != settingGreen.getValue().intValue() || COLOR_HUD.getBlue() != settingBlue.getValue().intValue()) {
 			COLOR_HUD = new Color(this.clamp(settingRed.getValue().intValue()), this.clamp(settingGreen.getValue().intValue()), this.clamp(settingBlue.getValue().intValue()), 255);
 		}
+
+		GUI.HUD_EDITOR = this.isEnabled();
 	}
 
 	public int clamp(int v) {

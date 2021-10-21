@@ -1,8 +1,19 @@
 package me.rina.hyperpop.api.module.overlay;
 
+import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.api.value.type.CheckBox;
+import me.rina.hyperpop.api.value.type.Combobox;
+import me.rina.hyperpop.api.value.type.Entry;
+import me.rina.hyperpop.api.value.type.Slider;
+import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
+import me.rina.turok.render.font.management.TurokFontManager;
+import me.rina.turok.util.TurokDisplay;
+import me.rina.turok.util.TurokRect;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 /**
  * @author Rina
@@ -19,6 +30,11 @@ public class OverlayElement extends Module {
 	protected CheckBox shadowFont;
 	protected Combobox color;
 
+	protected Slider positionX;
+	protected Slider positionY;
+
+	protected Entry lastDock;
+
 	public OverlayElement(String tag, String description, boolean useString) {
 		super(tag + "OverlayComponent", description, ModuleType.HUD);
 		
@@ -30,6 +46,14 @@ public class OverlayElement extends Module {
 			this.registry(this.shadowFont = new CheckBox("ShadowFont", "Set shadow effect for render font.", true));
 			this.registry(this.color = new Combobox("Color", "Set the color for render.", "HUD", "RGB", "HUE", "HUD"));
 		}
+
+		this.registry(this.positionX = new Slider("RectPositionX", "The position x.", 5, -12000, 12000));
+		this.registry(this.positionY = new Slider("RectPositionY", "The position y.", 5, -12000, 12000));
+		this.registry(this.lastDock = new Entry("RectLastDock", "The last dock.", this.dock.name()));
+
+		this.positionX.setShow(false);
+		this.positionY.setShow(false);
+		this.lastDock.setShow(false);
 	}
 
 	public String getName() {
@@ -38,6 +62,19 @@ public class OverlayElement extends Module {
 
 	public boolean useString() {
 		return useString;
+	}
+
+	public void resetPosition$Dock() {
+		this.rect.setX(this.positionX.getValue().intValue());
+		this.rect.setY(this.positionY.getValue().intValue());
+
+		for (Enum values : TurokRect.Dock.values()) {
+			if (values.name().equalsIgnoreCase(this.lastDock.getValue())) {
+				this.dock = (TurokRect.Dock) values;
+
+				break;
+			}
+		}
 	}
 
 	public void string(String string, int alignedX, int alignedY) {
@@ -50,23 +87,50 @@ public class OverlayElement extends Module {
 		this.string(string, alignedX, alignedY, color);
 	}
 
-	public void string(String string, int alignedX, int algnedY, Color color) {
+	public void string(String string, int x, int y, Color color) {
 		if (!this.useString) {
 			return;
 		}
 
+		int alignedX = this.getAlignedPositionX(x, this.getStringWidth(string));
+
 		if (this.customFont.getValue()) {
+            TurokFontManager.render(Client.OVERLAY_FONT, string, this.rect.x + alignedX, this.rect.y + y, this.shadowFont.getValue(), color);
 		} else {
 			if (this.shadowFont.getValue()) {
-
+			    mc.fontRenderer.drawStringWithShadow(string, this.rect.x + alignedX, this.rect.y + y, color.getRGB());
 			} else {
-
+			    mc.fontRenderer.drawString(string, (int) this.rect.x + alignedX, (int) this.rect.y + y, color.getRGB());
 			}
 		}
 	}
 
+	public int getStringWidth(String string) {
+	    if (!this.useString) {
+	        return 0;
+        }
+
+	    if (this.customFont.getValue()) {
+	        return TurokFontManager.getStringWidth(Client.OVERLAY_FONT, string);
+        }
+
+	    return mc.fontRenderer.getStringWidth(string);
+    }
+
+	public int getStringHeight(String string) {
+	    if (!this.useString) {
+	        return 0;
+        }
+
+	    if (this.customFont.getValue()) {
+	        return TurokFontManager.getStringHeight(Client.OVERLAY_FONT, string);
+        }
+
+	    return mc.fontRenderer.FONT_HEIGHT;
+    }
+
 	public void fill(Color color) {
-		this.fill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlha());
+		this.fill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 
 	public void fill(int red, int green, int blue, int alpha) {
@@ -74,7 +138,7 @@ public class OverlayElement extends Module {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFun(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
 	}
@@ -108,11 +172,11 @@ public class OverlayElement extends Module {
 		int w = display.getScaledWidth() - offset;
 		int h = display.getScaledHeight() - offset;
 
-		int lastX = this.rect.x;
-		int lastY = this.rect.y;
+		int lastX = (int) this.rect.x;
+		int lastY = (int) this.rect.y;
 
-		int memoryW = this.rect.w;
-		int memoryH = this.rect.h;
+		int memoryW = (int) this.rect.width;
+		int memoryH = (int) this.rect.height;
 
 		if (lastX <= x) {
 			lastX = x;
@@ -141,7 +205,7 @@ public class OverlayElement extends Module {
 	public int getAlignedPositionX(int unalignedX, int sizeW) {
 		int alignedX = unalignedX;
 
-		return this.dock == TurokRect.Dock.RIGHT_TOP || this.dock == TurokRect.Dock.RIGHT_DOWN ? this.rect.w - sizeW - unalignedX : alignedX;
+		return this.dock == TurokRect.Dock.TOP_RIGHT || this.dock == TurokRect.Dock.BOTTOM_RIGHT ? (int) (this.rect.width - sizeW - unalignedX) : alignedX;
 	}
 	/* End of utilities functions of overlay element. */
 }
