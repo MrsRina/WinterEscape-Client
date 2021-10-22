@@ -33,6 +33,13 @@ public class Processor {
         Statement.color(red, green, blue, alpha);
     }
 
+    public static void prepareString(Color color) {
+        Statement.matrix();
+
+        Statement.blend();
+        Statement.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
     public static void solid(TurokRect rect) {
         solid(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
@@ -93,13 +100,12 @@ public class Processor {
             }
         } else {
             if (font.isRenderingCustomFont()) {
-                font.drawString(string, x, y, Color.WHITE.getRGB());
+                font.drawString(string, x, y, TEXTURE_COLOR);
             } else {
                 Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, TEXTURE_COLOR);
             }
         }
 
-        GlStateManager.disableAlpha();
         Statement.refresh();
     }
     /* End of post fx render functions. */

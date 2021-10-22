@@ -32,7 +32,7 @@ public class Theme {
     }
 
     public Color getSelected(int alpha) {
-        return new Color(this.selected.getRed(), this.selected.getGreen(), this.selected.getBlue(), alpha);
+        return new Color(this.selected.getRed(), this.selected.getGreen(), this.selected.getBlue(), clamp(alpha));
     }
 
     public void setSelected(int red, int green, int blue, int alpha) {

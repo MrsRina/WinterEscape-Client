@@ -208,6 +208,7 @@ public class GUI extends GuiScreen {
         Statement.refresh();
 
         Statement.set(GL11.GL_TEXTURE_2D);
+        Statement.set(GL11.GL_BLEND);
 
         for (Frame frames : this.loadedFrameList) {
             if (!frames.getFlag().isEnabled()) {
@@ -225,5 +226,8 @@ public class GUI extends GuiScreen {
         if (HUD_EDITOR) {
 
         }
+
+        Statement.set(GL11.GL_TEXTURE_2D);
+        Statement.set(GL11.GL_BLEND);
     }
 }

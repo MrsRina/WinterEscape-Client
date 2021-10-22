@@ -109,12 +109,18 @@ public class ModuleWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedLeft()) {
-            this.module.reloadListener();
+            if (this.flag.isMouseOver()) {
+                this.module.reloadListener();
+            }
+
             this.flag.setMouseClickedLeft(false);
         }
 
         if (this.flag.isMouseClickedRight()) {
-            this.flag.setEnabled(!this.flag.isEnabled());
+            if (this.flag.isMouseOver()) {
+                this.flag.setEnabled(!this.flag.isEnabled());
+            }
+
             this.flag.setMouseClickedRight(false);
         }
 
@@ -130,9 +136,9 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
+        if (this.flag.isMouseOver() && (button == 0 || button == 1)) {
             this.flag.setMouseClickedLeft(button == 0);
-            this.flag.setMouseClickedRight(button == 2);
+            this.flag.setMouseClickedRight(button == 1);
         }
     }
 
@@ -202,7 +208,7 @@ public class ModuleWidget extends Widget {
         Processor.solid(this.rect);
 
         // The tag.
-        Processor.prepare(Theme.INSTANCE.string);
+        Processor.prepareString(Theme.INSTANCE.string);
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
 
         // Render.
