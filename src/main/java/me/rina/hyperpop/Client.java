@@ -9,6 +9,7 @@ import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.module.management.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventBus;
+import me.rina.turok.render.font.TurokFont;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
+import java.awt.*;
 
 /**
  * @author SrRina
@@ -98,10 +101,15 @@ public class Client {
         mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new TextComponentString(prefix + message), 69);
     }
 
-    public static void save() {}
-    public static void load() {}
-
     public static Color getCycleColor() {
         return INSTANCE.forgeInteract.getCycleColorRGB();
+    }
+
+    public static void save() {
+        ModuleManager.INSTANCE.saveModuleList();
+    }
+
+    public static void load() {
+        ModuleManager.INSTANCE.loadModuleList();
     }
 }

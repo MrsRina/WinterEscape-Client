@@ -87,6 +87,14 @@ public class Module extends Feature {
         }
     }
 
+    public void refresh() {
+        if (keyBind.getValue()) {
+            this.setListener();
+        } else {
+            this.unsetListener();
+        }
+    }
+
     public void setListener() {
         this.keyBind.setValue(true);
 
