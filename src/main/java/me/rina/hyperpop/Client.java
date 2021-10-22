@@ -100,4 +100,8 @@ public class Client {
 
     public static void save() {}
     public static void load() {}
+
+    public static Color getCycleColor() {
+        return INSTANCE.forgeInteract.getCycleColorRGB();
+    }
 }

@@ -14,18 +14,32 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.Color;
+
 /**
  * @author SrRina
  * @since 07/09/2021 at 12:21
  **/
 public class ForgeInteract extends Feature {
+    private Color cycleColorRGB = Color.WHITE;
+
     public ForgeInteract() {
         super("Interact", "Interact with all events in client.");
+    }
+
+    public Color getCycleColorRGB() {
+        return cycleColorRGB;
+    }
+
+    public void setCycleColorRGB(int hex) {
+        this.cycleColorRGB = new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF, 255);
     }
 
     @SubscribeEvent
     public void onWorldRenderEvent(RenderWorldLastEvent event) {
         Client.INSTANCE.moduleManager.onWorldRender(event.getPartialTicks());
+
+        this.setCycleColorRGB(Color.HSBtoRGB((System.currentTimeMillis() % (360 * 32)) / (360f * 32f), 1, 1));
     }
 
     @SubscribeEvent
@@ -37,6 +51,20 @@ public class ForgeInteract extends Feature {
 
     @SubscribeEvent
     public void onOverlayRenderEvent(RenderGameOverlayEvent event) {
+        if (mc.player == null) {
+            return;
+        }
+
+        RenderGameOverlayEvent.ElementType target = RenderGameOverlayEvent.ElementType.ALL;
+
+        if (!mc.player.isCreative() && mc.player.getRidingEntity() instanceof AbstractHorse) {
+            target = RenderGameOverlayEvent.ElementType.HEALTHMOUNT;
+        }
+
+        if (event.getType() != target) {
+            return;
+        }
+
         Client.INSTANCE.moduleManager.onOverlayRender(event.getPartialTicks());
     }
 
