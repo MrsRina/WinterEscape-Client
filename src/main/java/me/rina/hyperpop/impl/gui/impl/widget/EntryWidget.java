@@ -1,13 +1,11 @@
-package me.rina.hyperpop.impl.gui.impl.module.widget;
+package me.rina.hyperpop.impl.gui.impl.widget;
 
-import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.imperador.widget.ImperadorEntryBox;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
-import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
 
 /**

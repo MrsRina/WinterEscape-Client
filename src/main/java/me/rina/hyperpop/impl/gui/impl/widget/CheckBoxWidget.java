@@ -1,81 +1,43 @@
-package me.rina.hyperpop.impl.gui.impl.module.widget;
+package me.rina.hyperpop.impl.gui.impl.widget;
 
-import me.rina.hyperpop.api.module.Module;
-import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.CheckBox;
-import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
-import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author SrRina
- * @since 17/10/2021 at 12:52
+ * @since 18/10/2021 at 19:08
  **/
-public class ModuleWidget extends Widget {
-    private final ModuleFrame mother;
-    private final Module module;
+public class CheckBoxWidget extends Widget {
+    private final ModuleWidget mother;
+    private final CheckBox value;
 
     protected int interpolatedSelectedAlpha;
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
-    private final List<Widget> loadedWidgetList = new ArrayList<>();
-    private int widgetListHeight;
+    public CheckBoxWidget(GUI gui, ModuleWidget mother, CheckBox value) {
+        super(gui, value.getTag());
 
-    public ModuleWidget(GUI gui, ModuleFrame mother, Module module) {
-        super(gui, module.getTag());
-
-        this.module = module;
+        this.value = value;
         this.mother = mother;
 
-        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.module.getTag()));
+        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.value.getTag()));
     }
 
     public void init() {
-        this.clearList$Reload();
+
     }
 
-    public void clearList$Reload() {
-        this.loadedWidgetList.clear();
-
-        for (Map.Entry<String, Value> entry : this.module.getRegister().entrySet()) {
-            Value value = entry.getValue();
-
-            if (value instanceof CheckBox) {
-                CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) value);
-
-                this.loadedWidgetList.add(widget);
-            } else if (value instanceof Entry) {
-                EntryWidget widget = new EntryWidget(this.master, this, (Entry) value);
-
-                this.loadedWidgetList.add(widget);
-            }
-        }
-    }
-
-    public ModuleFrame getMother() {
+    public ModuleWidget getMother() {
         return mother;
     }
 
-    public Module getModule() {
-        return module;
-    }
-
-    public void setWidgetListHeight(int widgetListHeight) {
-        this.widgetListHeight = widgetListHeight;
-    }
-
-    public int getWidgetListHeight() {
-        return widgetListHeight;
+    public CheckBox getValue() {
+        return value;
     }
 
     @Override
@@ -85,7 +47,7 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onClose() {
-
+        this.clear();
     }
 
     @Override
@@ -100,6 +62,8 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onMouseReleased(int button) {
+        boolean release = false;
+
         if (this.flag.isResizing()) {
             this.flag.setResizing(false);
         }
@@ -109,23 +73,23 @@ public class ModuleWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedLeft()) {
-            if (this.flag.isMouseOver()) {
-                this.module.reloadListener();
-            }
+            release = this.flag.isMouseOver();
 
             this.flag.setMouseClickedLeft(false);
         }
 
         if (this.flag.isMouseClickedRight()) {
-            if (this.flag.isMouseOver()) {
-                this.flag.setEnabled(!this.flag.isEnabled());
-            }
+            release = this.flag.isMouseOver();
 
             this.flag.setMouseClickedRight(false);
         }
 
         if (this.flag.isMouseClickedMiddle()) {
             this.flag.setMouseClickedMiddle(false);
+        }
+
+        if (release) {
+            this.value.setValue(!this.value.getValue());
         }
     }
 
@@ -136,9 +100,9 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 1)) {
+        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
             this.flag.setMouseClickedLeft(button == 0);
-            this.flag.setMouseClickedRight(button == 1);
+            this.flag.setMouseClickedRight(button == 2);
         }
     }
 
@@ -159,38 +123,18 @@ public class ModuleWidget extends Widget {
         int diff = 1;
 
         this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
-
-        int size = 1;
-
-        for (Widget widgets : this.loadedWidgetList) {
-            if (!this.flag.isEnabled()) {
-                continue;
-            }
-
-            if (!widgets.getFlag().isEnabled()) {
-                continue;
-            }
-
-            widgets.getRect().setX(this.rect.getX());
-            widgets.getRect().setY(this.rect.getY() + size);
-
-            size += widgets.getRect().getHeight() + this.master.getDistance();
-
-            widgets.onUpdate();
-        }
-
-        this.widgetListHeight = size;
+        this.flag.setEnabled(this.value.isShow());
     }
 
     @Override
     public void onCustomUpdate() {
-        this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()));
+        this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
     }
 
     @Override
     public void onRender() {
         // Selected draw.
-        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.module.isEnabled() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
+        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
         Processor.solid(this.rect);
@@ -210,11 +154,6 @@ public class ModuleWidget extends Widget {
         // The tag.
         Processor.prepareString(Theme.INSTANCE.string);
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
-
-        // Render.
-        for (Widget widgets : this.loadedWidgetList) {
-            widgets.onRender();
-        }
     }
 
     @Override

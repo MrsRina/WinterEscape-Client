@@ -52,9 +52,9 @@ public class ModuleUserInterface extends Module {
     @Override
     public void onDisable() {
         if (GUI.HUD_EDITOR) {
-            Client.INSTANCE.userInterfaceGUI.onGuiClosed();
-
             GUI.HUD_EDITOR = false;
         }
+
+        Client.INSTANCE.userInterfaceGUI.onGuiClosed();
     }
 }

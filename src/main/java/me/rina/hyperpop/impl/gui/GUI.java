@@ -1,20 +1,16 @@
 package me.rina.hyperpop.impl.gui;
 
 import event.bus.EventListener;
-import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
-import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
-import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
+import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
-import me.rina.hyperpop.impl.module.management.ModuleManager;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
-import me.rina.turok.render.opengl.TurokGL;
 import me.rina.turok.util.TurokDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -50,8 +46,6 @@ public class GUI extends GuiScreen {
     public GUI() {
         this.mouse = new TurokMouse();
         this.display = new TurokDisplay(Minecraft.getMinecraft());
-
-        FONT_NORMAL.setRenderingCustomFont(false);
 
         this.setDistance(1);
     }

@@ -176,8 +176,8 @@ public class PresetManager extends Feature {
 
     public static void task(int task) {
         if (task == TASK_SAVE) {
-            INSTANCE.setSave(null);
             INSTANCE.reload();
+            INSTANCE.setSave(null);
         } else if (task == TASK_LOAD) {
             INSTANCE.reload();
             INSTANCE.setLoad();

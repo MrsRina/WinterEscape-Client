@@ -1,16 +1,15 @@
-package me.rina.hyperpop.impl.gui.impl.module.frame;
+package me.rina.hyperpop.impl.gui.impl.frame;
 
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.module.type.ModuleType;
-import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
-import me.rina.hyperpop.impl.gui.impl.module.widget.ModuleWidget;
+import me.rina.hyperpop.impl.gui.impl.widget.ModuleWidget;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
