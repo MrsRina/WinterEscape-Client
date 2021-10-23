@@ -19,7 +19,7 @@ import java.awt.*;
  **/
 public class Processor {
     public static Minecraft theMinecraft = Minecraft.getMinecraft();
-    public static final int TEXTURE_COLOR = new Color(255, 255, 255, 255).getRGB();
+    public static final int TEXTURE_COLOR = new Color(255, 255, 255).getRGB();
 
     /* Start of post fx render. */
     public static void prepare(Color color) {
@@ -89,8 +89,8 @@ public class Processor {
     }
 
     public static void string(TurokFont font, String string, float x, float y, boolean shadow) {
-        GlStateManager.enableAlpha();
         Statement.set(GL11.GL_TEXTURE_2D);
+        Statement.unset(GL11.GL_BLEND);
 
         if (shadow) {
             if (font.isRenderingCustomFont()) {
