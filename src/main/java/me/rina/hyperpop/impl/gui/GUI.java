@@ -9,9 +9,12 @@ import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.impl.module.frame.ModuleFrame;
+import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
+import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.hyperpop.impl.module.management.ModuleManager;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
+import me.rina.turok.render.opengl.TurokGL;
 import me.rina.turok.util.TurokDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -30,6 +33,8 @@ public class GUI extends GuiScreen {
     public static TurokFont FONT_BIG_NORMAL = new TurokFont(new Font("Verdana", 0, 18), true, true);
     public static TurokFont FONT_NORMAL = new TurokFont(new Font("Verdana", 0, 16), true, true);
 
+    public static Color SHADOW_COLOR = new Color(0, 0, 0, 50);
+
     private final List<Frame> loadedFrameList = new ArrayList<>();
     private Frame focusedFrame;
 
@@ -45,6 +50,8 @@ public class GUI extends GuiScreen {
     public GUI() {
         this.mouse = new TurokMouse();
         this.display = new TurokDisplay(Minecraft.getMinecraft());
+
+        FONT_NORMAL.setRenderingCustomFont(false);
 
         this.setDistance(1);
     }
@@ -110,7 +117,7 @@ public class GUI extends GuiScreen {
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
 
-            if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))){
+            if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
                 this.focusedFrame = frames;
             }
 
@@ -135,6 +142,8 @@ public class GUI extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
+        this.unsetUpdate();
+
         for (Frame frames : this.loadedFrameList) {
             if (!frames.getFlag().isEnabled()) {
                 continue;
@@ -142,15 +151,18 @@ public class GUI extends GuiScreen {
 
             frames.onClose();
         }
+
+        ModuleUserInterface.INSTANCE.unsetListener();
+        ModuleHUDEditor.INSTANCE.unsetListener();
+
+        mc.currentScreen = null;
+        mc.setIngameFocus();
     }
 
     @Override
     public void keyTyped(char charCode, int keyCode) {
         if (!this.isUpdate() && keyCode == Keyboard.KEY_ESCAPE) {
-            ModuleManager.get("UserInterface").unsetListener();
-
-            mc.currentScreen = null;
-            mc.setIngameFocus();
+            this.onGuiClosed();
 
             return;
         }
@@ -201,6 +213,8 @@ public class GUI extends GuiScreen {
 
         this.mouse.setPos(mx, my);
 
+        this.drawDefaultBackground();
+
         Statement.matrix();
         Statement.translate(this.display.getScaledWidth(), this.display.getScaledHeight(), 0);
 
@@ -208,11 +222,16 @@ public class GUI extends GuiScreen {
         Statement.refresh();
 
         Statement.set(GL11.GL_TEXTURE_2D);
-        Statement.set(GL11.GL_BLEND);
 
         for (Frame frames : this.loadedFrameList) {
             if (!frames.getFlag().isEnabled()) {
                 continue;
+            }
+
+            // Shadow.
+            if (this.focusedFrame == frames) {
+                Processor.prepare(GUI.SHADOW_COLOR);
+                Processor.outline(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
             }
 
             frames.onRender();
@@ -228,6 +247,6 @@ public class GUI extends GuiScreen {
         }
 
         Statement.set(GL11.GL_TEXTURE_2D);
-        Statement.set(GL11.GL_BLEND);
+        Statement.unset(GL11.GL_BLEND);
     }
 }

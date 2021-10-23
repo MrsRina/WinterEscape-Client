@@ -1,8 +1,11 @@
 package me.rina.hyperpop.impl.module.impl.client;
 
+import event.bus.EventListener;
+import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.impl.gui.GUI;
 
 import java.awt.Color;
@@ -12,6 +15,8 @@ import java.awt.Color;
  * 21/10/2021 at 00:38am
  **/
 public class ModuleHUDEditor extends Module {
+	public static ModuleHUDEditor INSTANCE;
+
 	public static Slider settingRed = new Slider("Red", "Red color value of all HUD color mode.", 255, 0, 255);
 	public static Slider settingGreen = new Slider("Green", "Green value of all HUD color mode.", 255, 0, 255);
 	public static Slider settingBlue = new Slider("Blue", "Blue value of all HUD color mode.", 0, 0, 255);
@@ -20,6 +25,8 @@ public class ModuleHUDEditor extends Module {
 
 	public ModuleHUDEditor() {
 		super("OverlayEditor", "HUD editor.", ModuleType.CLIENT);
+
+		INSTANCE = this;
 	}
 
 	@Override
@@ -29,6 +36,26 @@ public class ModuleHUDEditor extends Module {
 		}
 
 		GUI.HUD_EDITOR = this.isEnabled();
+	}
+
+	@EventListener
+	public void onClientTickEvent(ClientTickEvent event) {
+		if (mc.world == null) {
+			return;
+		}
+
+		if (mc.currentScreen != Client.INSTANCE.userInterfaceGUI) {
+			mc.displayGuiScreen(Client.INSTANCE.userInterfaceGUI);
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		Client.INSTANCE.userInterfaceGUI.onGuiClosed();
+	}
+
+	@Override
+	public void onEnable() {
 	}
 
 	public int clamp(int v) {

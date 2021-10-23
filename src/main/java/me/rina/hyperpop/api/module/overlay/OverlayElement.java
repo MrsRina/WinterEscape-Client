@@ -1,5 +1,7 @@
 package me.rina.hyperpop.api.module.overlay;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import me.rina.turok.util.TurokMath;
 import net.minecraft.entity.passive.AbstractHorse;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
@@ -12,6 +14,7 @@ import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokDisplay;
 import me.rina.turok.util.TurokRect;
+import org.apache.commons.lang3.CharUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -90,7 +93,7 @@ public class OverlayElement extends Module {
 		this.string(string, x, alignedY, color);
 	}
 
-	public void string(String string, int x, int algnedY, Color color) {
+	public void string(String string, int x, int alignedY, Color color) {
 		if (!this.useString) {
 			return;
 		}
@@ -101,7 +104,7 @@ public class OverlayElement extends Module {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFun(GL11.GL_SC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (color == null) {
 			this.drawCustomHUE(string, this.rect.x + alignedX, this.rect.y + alignedY);
@@ -125,12 +128,12 @@ public class OverlayElement extends Module {
 		GL11.glPopMatrix();
 	}
 
-	public void drawCustomHUE(String string, int alignedX, int alignedY) {
+	public void drawCustomHUE(String string, float alignedX, float alignedY) {
 		int cycleColor = Color.HSBtoRGB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1);
 
 		Color currentColor = new Color(((cycleColor >> 16) & 0xFF), ((cycleColor >> 8) & 0xFF), ((cycleColor) & 0xFF));
 
-		float hueIncrement = 1.0f / factor;
+		float hueIncrement = 1.0f / 2f;
 		float currentHue = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[0];
 		float saturation = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[1];
 		float brightness = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[2];
@@ -167,6 +170,7 @@ public class OverlayElement extends Module {
 				colorCache = ChatFormatting.getByChar(CharUtils.toChar(nextFormatting.replaceAll("\u00a7", "")));
 
 				continue;
+			}
 
 			if (this.customFont.getValue()) {
 				if (this.shadowFont.getValue()) {

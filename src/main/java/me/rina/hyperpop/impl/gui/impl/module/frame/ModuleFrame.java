@@ -46,7 +46,7 @@ public class ModuleFrame extends ImperadorFrame {
     public void init() {
         for (Module modules : Client.INSTANCE.moduleManager.getModuleList()) {
             if (modules.getType() != this.moduleType) {
-                return;
+                continue;
             }
 
             ModuleWidget widget = new ModuleWidget(this.master, this, modules);
@@ -143,7 +143,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), size);
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
-        this.flag.setEnabled(GUI.HUD_EDITOR ? this.moduleType == ModuleType.HUD : this.moduleType != ModuleType.HUD);
+        this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
         for (IGUI elements : this.getElementList()) {
             if (elements instanceof Widget) {
@@ -165,7 +165,7 @@ public class ModuleFrame extends ImperadorFrame {
         }
 
         this.sizeamount = size;
-        this.rect.setHeight(size >= GUI.HEIGHT_LIMIT ? GUI.HEIGHT_LIMIT : size);
+        this.rect.setHeight(Math.min(size, GUI.HEIGHT_LIMIT));
     }
 
     @Override

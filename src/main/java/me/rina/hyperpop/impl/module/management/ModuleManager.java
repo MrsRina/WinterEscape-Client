@@ -7,6 +7,7 @@ import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.preset.management.PresetManager;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.*;
+import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.hyperpop.impl.module.impl.combat.ModuleKillAura;
 import org.lwjgl.input.Keyboard;
@@ -58,6 +59,7 @@ public class ModuleManager extends Feature {
         this.add(new ModuleKillAura());
         this.add(new ModuleKillAura());
         this.add(new ModuleKillAura());
+        this.add(new ModuleHUDEditor());
     }
 
     public void onKeyboard(int key) {

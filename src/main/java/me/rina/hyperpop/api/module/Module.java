@@ -96,6 +96,10 @@ public class Module extends Feature {
     }
 
     public void setListener() {
+        if (this.keyBind.getValue()) {
+            return;
+        }
+
         this.keyBind.setValue(true);
 
         this.onEnable();
@@ -110,6 +114,10 @@ public class Module extends Feature {
     }
 
     public void unsetListener() {
+        if (!this.keyBind.getValue()) {
+            return;
+        }
+
         this.keyBind.setValue(false);
 
         this.onDisable();

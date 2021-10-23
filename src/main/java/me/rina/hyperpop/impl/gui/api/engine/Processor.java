@@ -35,8 +35,8 @@ public class Processor {
 
     public static void prepareString(Color color) {
         Statement.matrix();
-
         Statement.blend();
+
         Statement.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 

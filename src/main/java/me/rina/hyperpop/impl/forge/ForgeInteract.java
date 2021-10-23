@@ -6,6 +6,7 @@ import me.rina.hyperpop.api.command.Command;
 import me.rina.hyperpop.api.feature.Feature;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
