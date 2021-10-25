@@ -11,6 +11,7 @@ import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
+import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -216,6 +217,8 @@ public class GUI extends GuiScreen {
         Statement.refresh();
 
         Statement.set(GL11.GL_TEXTURE_2D);
+
+        TurokFontManager.render(GUI.FONT_NORMAL, "nigger", 10, 10, true, new Color(255, 255, 255, 255));
 
         for (Frame frames : this.loadedFrameList) {
             if (!frames.getFlag().isEnabled()) {

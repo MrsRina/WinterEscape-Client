@@ -15,6 +15,8 @@ import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
 import org.lwjgl.input.Mouse;
 
+import java.awt.*;
+
 /**
  * @author SrRina
  * @since 10/09/2021 at 15:45
@@ -154,10 +156,10 @@ public class ModuleFrame extends ImperadorFrame {
             elements.getRect().setX(this.rect.getX() + diff);
             elements.getRect().setY(this.rect.getY() + size + this.scrollamount);
 
-            size += elements.getRect().getHeight() + this.master.getDistance();
-
             if (elements instanceof ModuleWidget && elements.getFlag().isEnabled()) {
-                size += ((ModuleWidget) elements).getWidgetListHeight();
+                size += elements.getRect().getHeight() + ((ModuleWidget) elements).getWidgetListHeight();
+            } else {
+                size += elements.getRect().getHeight() + this.master.getDistance();
             }
 
             elements.onUpdate();
