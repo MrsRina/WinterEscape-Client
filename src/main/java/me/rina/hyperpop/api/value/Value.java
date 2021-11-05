@@ -12,7 +12,7 @@ public class Value extends Feature {
     /*
      * For set the visibility of setting (value).
      */
-    private boolean isShow;
+    private boolean isShow = true;
 
     public Value(String tag, String description, int type) {
         super(tag, description);

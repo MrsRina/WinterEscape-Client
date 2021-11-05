@@ -90,6 +90,7 @@ public class CheckBoxWidget extends Widget {
 
         if (release) {
             this.value.setValue(!this.value.getValue());
+            this.getMother().getMother().reloadPositionConfiguration();
         }
     }
 
@@ -120,9 +121,14 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onUpdate() {
-        int diff = 1;
+        this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
+        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
+        int diff = 0;
+
+        this.setOffsetX(diff);
+        this.rect.setWidth(this.getMother().getRect().getWidth());
+
         this.flag.setEnabled(this.value.isShow());
     }
 
@@ -152,8 +158,7 @@ public class CheckBoxWidget extends Widget {
         Processor.solid(this.rect);
 
         // The tag.
-        Processor.prepareString(Theme.INSTANCE.string);
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 
     @Override

@@ -4,12 +4,14 @@ import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.CheckBox;
 import me.rina.hyperpop.api.value.type.Entry;
+import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
+import me.rina.hyperpop.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +59,30 @@ public class ModuleWidget extends Widget {
                 EntryWidget widget = new EntryWidget(this.master, this, (Entry) value);
 
                 this.loadedWidgetList.add(widget);
+            } else if (value instanceof Slider) {
+                SliderWidget widget = new SliderWidget(this.master, this, (Slider) value);
+
+                this.loadedWidgetList.add(widget);
             }
         }
+
+        this.reloadPositionConfiguration();
+    }
+
+    public void reloadPositionConfiguration() {
+        int size = (int) this.rect.getHeight() + this.master.getDistance();
+        int j = 0;
+
+        for (Widget widgets : this.loadedWidgetList) {
+            if (widgets.getFlag().isEnabled()) {
+                widgets.setOffsetY((float) size);
+
+                size += (int) widgets.getRect().getHeight() + this.master.getDistance();
+                j++;
+            }
+        }
+
+        this.setWidgetListHeight((int) size);
     }
 
     public ModuleFrame getMother() {
@@ -79,22 +103,50 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onOpen() {
+        for (Widget widgets : this.loadedWidgetList) {
+            widgets.clear();
 
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
+            widgets.onClose();
+        }
     }
 
     @Override
     public void onClose() {
+        for (Widget widgets : this.loadedWidgetList) {
+            widgets.clear();
 
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
+            widgets.onClose();
+        }
     }
 
     @Override
     public void onKeyboard(char charCode, int keyCode) {
+        for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
 
+            widgets.onKeyboard(charCode, keyCode);
+        }
     }
 
     @Override
     public void onCustomKeyboard(char charCode, int keyCode) {
+        for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
 
+            widgets.onCustomKeyboard(charCode, keyCode);
+        }
     }
 
     @Override
@@ -118,6 +170,8 @@ public class ModuleWidget extends Widget {
         if (this.flag.isMouseClickedRight()) {
             if (this.flag.isMouseOver()) {
                 this.flag.setEnabled(!this.flag.isEnabled());
+
+                this.getMother().reloadPositionConfiguration();
             }
 
             this.flag.setMouseClickedRight(false);
@@ -125,6 +179,14 @@ public class ModuleWidget extends Widget {
 
         if (this.flag.isMouseClickedMiddle()) {
             this.flag.setMouseClickedMiddle(false);
+        }
+
+        for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
+            widgets.onMouseReleased(button);
         }
     }
 
@@ -139,6 +201,14 @@ public class ModuleWidget extends Widget {
             this.flag.setMouseClickedLeft(button == 0);
             this.flag.setMouseClickedRight(button == 1);
         }
+
+        for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
+            widgets.onMouseClicked(button);
+        }
     }
 
     @Override
@@ -151,39 +221,38 @@ public class ModuleWidget extends Widget {
         this.flag.setMouseOver(false);
         this.flag.setResizable(false);
         this.flag.setDraggable(false);
+
+        for (Widget widgets : this.loadedWidgetList) {
+            widgets.clear();
+        }
     }
 
     @Override
     public void onUpdate() {
+        this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
+        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
+
         int diff = 1;
 
+        this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
 
-        int size = 1;
-
         for (Widget widgets : this.loadedWidgetList) {
-            if (!this.flag.isEnabled()) {
-                continue;
-            }
-
-            if (!widgets.getFlag().isEnabled()) {
-                continue;
-            }
-
-            widgets.getRect().setX(this.rect.getX());
-            widgets.getRect().setY(this.rect.getY() + size);
-
-            size += widgets.getRect().getHeight() + this.master.getDistance();
-
             widgets.onUpdate();
         }
-
-        this.widgetListHeight = size;
     }
 
     @Override
     public void onCustomUpdate() {
         this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()));
+
+        for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
+            widgets.onCustomUpdate();
+        }
     }
 
     @Override
@@ -207,11 +276,14 @@ public class ModuleWidget extends Widget {
         Processor.solid(this.rect);
 
         // The tag.
-        Processor.prepareString(Theme.INSTANCE.string);
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
 
         // Render.
         for (Widget widgets : this.loadedWidgetList) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+                continue;
+            }
+
             widgets.onRender();
         }
     }

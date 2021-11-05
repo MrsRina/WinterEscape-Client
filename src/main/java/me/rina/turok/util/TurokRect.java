@@ -40,7 +40,7 @@ public class TurokRect {
 		this.width  = width;
 		this.height = height;
 
-		this.tag = "";
+		this.tag = tag;
 	}
 
 	public TurokRect(float x, float y) {

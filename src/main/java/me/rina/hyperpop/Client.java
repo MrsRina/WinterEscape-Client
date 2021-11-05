@@ -106,6 +106,7 @@ public class Client {
     }
 
     public static void save() {
+        ModuleManager.INSTANCE.onShutdown();
         ModuleManager.INSTANCE.saveModuleList();
     }
 

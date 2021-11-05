@@ -85,10 +85,16 @@ public class ModuleManager extends Feature {
     }
 
     public void onOverlayRender(float partialTicks) {
-        for (Module modules: this.getModuleList()) {
+        for (Module modules : this.getModuleList()) {
             if (modules.isEnabled()) {
                 modules.onOverlayRender(partialTicks);
             }
+        }
+    }
+
+    public void onShutdown() {
+        for (Module modules : this.getModuleList()) {
+            modules.onShutdown();
         }
     }
 
@@ -100,7 +106,9 @@ public class ModuleManager extends Feature {
                         fields.setAccessible(true);
                     }
 
-                    module.registry((Value) fields.get(module));
+                    final Value valueDeclared = (Value) fields.get(module);
+
+                    module.registry(valueDeclared);
                 }
             }
 

@@ -55,6 +55,29 @@ public class ModuleFrame extends ImperadorFrame {
 
             this.add(widget);
         }
+
+        this.reloadPositionConfiguration();
+    }
+
+    public void reloadPositionConfiguration() {
+        int size = this.getTitleHeight() + this.master.getDistance();
+
+        for (IGUI elements : this.getElementList()) {
+            if (elements instanceof ModuleWidget) {
+                ModuleWidget widget = (ModuleWidget) elements;
+
+                widget.setOffsetY(size);
+                widget.reloadPositionConfiguration();
+
+                if (widget.getFlag().isEnabled()) {
+                    size += widget.getWidgetListHeight();
+                } else {
+                    size += widget.getRect().getHeight() + this.master.getDistance();
+                }
+            }
+        }
+
+        this.rect.setHeight(Processor.clamp(size, 0, GUI.HEIGHT_LIMIT));
     }
 
     public void updateScroll() {
@@ -80,7 +103,7 @@ public class ModuleFrame extends ImperadorFrame {
             this.scrollamount -= i;
         }
 
-        this.scrollamount = TurokMath.clamp(this.scrollamount, theDiff, 0);
+        this.scrollamount = Processor.clamp(this.scrollamount, theDiff, 0);
     }
 
     public TurokRect getProtectedScrollRect() {
@@ -135,38 +158,26 @@ public class ModuleFrame extends ImperadorFrame {
         this.flag.setMouseOver(false);
         this.flag.setMouseOverDraggable(false);
         this.flag.setMouseOverResizable(false);
+
+        for (IGUI elements : this.getElementList()) {
+            if (elements instanceof ModuleWidget) {
+                ModuleWidget widget = (ModuleWidget) elements;
+                
+                widget.clear();
+            }
+        }
     }
 
     @Override
     public void onUpdate() {
-        int size = this.getTitleHeight() + this.master.getDistance();
-
-        this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), size);
+        this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
         for (IGUI elements : this.getElementList()) {
-            if (elements instanceof Widget) {
-                ((Widget) elements).clear();
-            }
-
-            int diff = 1;
-
-            elements.getRect().setX(this.rect.getX() + diff);
-            elements.getRect().setY(this.rect.getY() + size + this.scrollamount);
-
-            if (elements instanceof ModuleWidget && elements.getFlag().isEnabled()) {
-                size += elements.getRect().getHeight() + ((ModuleWidget) elements).getWidgetListHeight();
-            } else {
-                size += elements.getRect().getHeight() + this.master.getDistance();
-            }
-
             elements.onUpdate();
         }
-
-        this.sizeamount = size;
-        this.rect.setHeight(Math.min(size, GUI.HEIGHT_LIMIT));
     }
 
     @Override
@@ -190,8 +201,7 @@ public class ModuleFrame extends ImperadorFrame {
         Processor.solid(this.rect);
 
         // Title.
-        Processor.prepare(Theme.INSTANCE.string);
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.shadow$True$False(Theme.INSTANCE.background));
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
 
         for (IGUI elements : this.getElementList()) {
             elements.onRender();

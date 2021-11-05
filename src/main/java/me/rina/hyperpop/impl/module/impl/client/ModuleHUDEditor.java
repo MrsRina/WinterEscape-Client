@@ -38,6 +38,11 @@ public class ModuleHUDEditor extends Module {
 		GUI.HUD_EDITOR = this.isEnabled();
 	}
 
+	@Override
+    public void onShutdown() {
+        this.unsetListener();
+    }
+
 	@EventListener
 	public void onClientTickEvent(ClientTickEvent event) {
 		if (mc.world == null) {

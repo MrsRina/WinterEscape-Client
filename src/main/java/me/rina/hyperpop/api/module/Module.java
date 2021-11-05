@@ -101,7 +101,6 @@ public class Module extends Feature {
         }
 
         this.keyBind.setValue(true);
-
         this.onEnable();
 
         if (this.toggleMessage.is("Silent")) {
@@ -119,7 +118,6 @@ public class Module extends Feature {
         }
 
         this.keyBind.setValue(false);
-
         this.onDisable();
 
         if (this.toggleMessage.is("Silent")) {
@@ -135,16 +133,27 @@ public class Module extends Feature {
         return mc.player == null || mc.world == null;
     }
 
-    public void onSetting() {}
+    public void onSetting() {
+        
+    }
 
-    public void onEnable() {}
-    public void onDisable() {}
+    public void onEnable() {
+
+    }
+
+    public void onDisable() {
+
+    }
 
     public void onOverlayRender(float partialTicks) {
 
     }
 
     public void onWorldRender(float partialTicks) {
+
+    }
+
+    public void onShutdown() {
 
     }
 }

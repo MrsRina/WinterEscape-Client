@@ -15,7 +15,6 @@ import scala.xml.parsing.FactoryAdapter;
  **/
 public class ModuleUserInterface extends Module {
     public static ModuleUserInterface INSTANCE;
-
     public static CheckBox valueExample = new CheckBox("Button", "A button.", false);
 
     public ModuleUserInterface() {
@@ -27,6 +26,11 @@ public class ModuleUserInterface extends Module {
     @Override
     public void onSetting() {
         valueExample.setShow(true);
+    }
+
+    @Override
+    public void onShutdown() {
+        this.unsetListener();
     }
 
     @EventListener
@@ -55,6 +59,8 @@ public class ModuleUserInterface extends Module {
             GUI.HUD_EDITOR = false;
         }
 
-        Client.INSTANCE.userInterfaceGUI.onGuiClosed();
+        if (mc.currentScreen == Client.INSTANCE.userInterfaceGUI && mc.world != null) {
+            Client.INSTANCE.userInterfaceGUI.onGuiClosed();
+        }
     }
 }

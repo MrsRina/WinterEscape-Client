@@ -1,6 +1,7 @@
 package me.rina.hyperpop.impl.gui.api.engine;
 
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
+import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.render.opengl.TurokGL;
@@ -19,7 +20,7 @@ import java.awt.*;
  **/
 public class Processor {
     public static Minecraft theMinecraft = Minecraft.getMinecraft();
-    public static final int TEXTURE_COLOR = new Color(255, 255, 255).getRGB();
+    public static int TEXTURE_COLOR = new Color(255, 255, 255).getRGB();
 
     /* Start of post fx render. */
     public static void prepare(Color color) {
@@ -31,13 +32,6 @@ public class Processor {
         Statement.blend();
 
         Statement.color(red, green, blue, alpha);
-    }
-
-    public static void prepareString(Color color) {
-        Statement.matrix();
-        Statement.blend();
-
-        Statement.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     public static void solid(TurokRect rect) {
@@ -88,25 +82,31 @@ public class Processor {
         Statement.refresh();
     }
 
-    public static void string(TurokFont font, String string, float x, float y, boolean shadow) {
+    public static void string(TurokFont font, String string, float x, float y, Color background) {
+        boolean shadow = Theme.INSTANCE.shadow$True$False(background);
+
         Statement.set(GL11.GL_TEXTURE_2D);
-        Statement.unset(GL11.GL_BLEND);
+        Statement.blend();
+
+        GlStateManager.enableAlpha();
+
+        Statement.color(Theme.INSTANCE.string);
 
         if (shadow) {
             if (font.isRenderingCustomFont()) {
-                font.drawStringWithShadow(string, x, y, TEXTURE_COLOR);
+                font.drawStringWithShadow(string, x, y, Theme.INSTANCE.string.getRGB());
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, TEXTURE_COLOR);
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, Theme.INSTANCE.string.getRGB());
             }
         } else {
             if (font.isRenderingCustomFont()) {
-                font.drawString(string, x, y, TEXTURE_COLOR);
+                font.drawString(string, x, y, Theme.INSTANCE.string.getRGB());
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, TEXTURE_COLOR);
+                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, Theme.INSTANCE.string.getRGB());
             }
         }
 
-        Statement.refresh();
+        Statement.unset(GL11.GL_TEXTURE_2D);
     }
     /* End of post fx render functions. */
 
@@ -135,4 +135,30 @@ public class Processor {
         return (int) (a + (b - a) * t);
     }
     /* End of interpolation functions. */
+
+    /* Start of math functions. */
+    public static double clamp(double value, double minimum, double maximum) {
+        return value <= minimum ? minimum : (value >= maximum ? maximum : value);
+    }
+
+    public static float clamp(float value, float minimum, float maximum) {
+        return value <= minimum ? minimum : (value >= maximum ? maximum : value);
+    }
+
+    public static int clamp(int value, int minimum, int maximum) {
+        return value <= minimum ? minimum : (value >= maximum ? maximum : value);
+    }
+
+    public static long clamp(long value, long minimum, long maximum) {
+        return value <= minimum ? minimum : (value >= maximum ? maximum : value);
+    }
+
+    public static int trunc(double value) {
+        return (int) value;
+    }
+
+    public static int trunc(float value) {
+        return (int) value;
+    }
+    /* End of math functions. */
 }

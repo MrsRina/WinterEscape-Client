@@ -14,10 +14,48 @@ public class Container implements IGUI {
     protected final Flag flag;
     protected final GUI master;
 
+    protected float offsetX;
+    protected float offsetY;
+
+    protected float offsetW;
+    protected float offsetH;
+
     public Container(GUI gui, String tag) {
         this.rect = new TurokRect(tag, 0, 0, 0, 0);
         this.flag = new Flag();
         this.master = gui;
+    }
+
+    public void setOffsetX(float x) {
+        this.offsetX = x;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetY(float y) {
+        this.offsetY = y;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetW(float w) {
+        this.offsetW = w;
+    }
+
+    public float getOffsetW() {
+        return offsetW;
+    }
+
+    public void setOffsetH(float h) {
+        this.offsetH = h;
+    }
+
+    public float getOffsetH() {
+        return offsetH;
     }
 
     @Override

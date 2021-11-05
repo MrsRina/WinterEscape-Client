@@ -1,28 +1,26 @@
 package me.rina.hyperpop.impl.gui.impl.widget;
 
-import me.rina.hyperpop.api.value.type.Entry;
+import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
-import me.rina.hyperpop.impl.gui.api.imperador.widget.ImperadorEntryBox;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.management.TurokFontManager;
+import me.rina.turok.util.TurokMath;
 
 /**
  * @author SrRina
- * @since 19/10/2021 at 10:18am
+ * @since 04/11/2021 at 23:24
  **/
-public class EntryWidget extends Widget {
+public class SliderWidget extends Widget {
     private final ModuleWidget mother;
-    private final Entry value;
+    private final Slider value;
 
+    protected int interpolatedWidth;
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
-    private ImperadorEntryBox imperadorEntryBox;
-    private boolean isFocusedByCPU;
-
-    public EntryWidget(GUI gui, ModuleWidget mother, Entry value) {
+    public SliderWidget(GUI gui, ModuleWidget mother, Slider value) {
         super(gui, value.getTag());
 
         this.value = value;
@@ -39,20 +37,8 @@ public class EntryWidget extends Widget {
         return mother;
     }
 
-    public Entry getValue() {
+    public Slider getValue() {
         return value;
-    }
-
-    public ImperadorEntryBox getImperadorEntryBox() {
-    	return imperadorEntryBox;
-    }
-
-    public void setFocusedByCPU(boolean state) {
-    	this.isFocusedByCPU = state;
-    }
-
-    public boolean isFocusedByCPU() {
-    	return isFocusedByCPU;
     }
 
     @Override
@@ -62,7 +48,7 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onClose() {
-    	this.clear();
+        this.clear();
     }
 
     @Override
@@ -72,11 +58,13 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onCustomKeyboard(char charCode, int keyCode) {
-    	this.imperadorEntryBox.onKeyboard(charCode, keyCode);
+
     }
 
     @Override
     public void onMouseReleased(int button) {
+        boolean release = false;
+
         if (this.flag.isResizing()) {
             this.flag.setResizing(false);
         }
@@ -86,18 +74,20 @@ public class EntryWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedLeft()) {
+            release = this.flag.isMouseOver();
+
             this.flag.setMouseClickedLeft(false);
         }
 
         if (this.flag.isMouseClickedRight()) {
+            release = this.flag.isMouseOver();
+
             this.flag.setMouseClickedRight(false);
         }
 
         if (this.flag.isMouseClickedMiddle()) {
             this.flag.setMouseClickedMiddle(false);
         }
-
-        this.imperadorEntryBox.onMouseReleased(button);
     }
 
     @Override
@@ -107,11 +97,9 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 2 || button == 3)) {
-        	this.imperadorEntryBox.onMouseClicked(button);
-        	this.imperadorEntryBox.doSetIndexAB(this.master.getMouse());
-
+        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
             this.flag.setMouseClickedLeft(button == 0);
+            this.flag.setMouseClickedRight(button == 2);
         }
     }
 
@@ -125,8 +113,6 @@ public class EntryWidget extends Widget {
         this.flag.setMouseOver(false);
         this.flag.setResizable(false);
         this.flag.setDraggable(false);
-
-        this.imperadorEntryBox.setMouseOver(false);
     }
 
     @Override
@@ -137,61 +123,65 @@ public class EntryWidget extends Widget {
         int diff = 0;
 
         this.setOffsetX(diff);
-        this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
-
-        if (this.imperadorEntryBox.isFocused()) {
-        	this.master.setUpdate();
-        	this.setFocusedByCPU(true);
-
-        	this.imperadorEntryBox.string = new int[] {0, 0, 0, 255};
-        } else {
-        	if (this.isFocusedByCPU()) {
-        		this.master.unsetUpdate();
-        		this.setFocusedByCPU(false);
-        	}
-
-        	this.imperadorEntryBox.string = new int[] {255, 255, 255, 255};
-        }
-
-        if (this.value.lastSet() != null) {
-        	this.imperadorEntryBox.setText(this.value.lastSet());
-        	this.value.unset();
-        } else {
-        	this.value.motherfuck(this.imperadorEntryBox.getText());
-        }
-
         this.rect.setWidth(this.getMother().getRect().getWidth());
-        this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.rect.getHeight());
+
         this.flag.setEnabled(this.value.isShow());
     }
 
     @Override
     public void onCustomUpdate() {
-    	final boolean mouseIsOver = this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse());
-
-        this.flag.setMouseOver(mouseIsOver);
-    	this.imperadorEntryBox.setMouseOver(mouseIsOver);
+        this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
     }
 
     @Override
     public void onRender() {
-    	// Smooth ticks.
-    	this.imperadorEntryBox.doMouseScroll(this.master.getMouse());
+    	// Selected draw.
+    	float current = this.value.getValue().floatValue();
+
+    	float minimum = this.value.getMinimum().floatValue();
+    	float maximum = this.value.getMaximum().floatValue();
+
+    	float mouse = Math.min(this.rect.getWidth(), Math.max(0, this.master.getMouse().getX() - this.rect.x));
+
+        if (this.flag.isMouseClickedLeft()) {
+        	if (mouse == 0) {
+        		this.value.setValue(this.value.getMinimum());
+        	} else {
+          		if (this.value.getValue() instanceof Integer) {
+                    int roundedValue = (int) TurokMath.round(((mouse / this.rect.getWidth()) * (maximum - minimum) + minimum));
+
+                    this.value.setValue(roundedValue);
+                } else if (this.value.getValue() instanceof Double) {
+                    double roundedValue = TurokMath.round(((mouse / this.rect.getWidth()) * (maximum - minimum) + minimum));
+
+                    this.value.setValue(roundedValue);
+                } else if (this.value.getValue() instanceof Float) {
+                    float roundedValue = (float) TurokMath.round(((mouse / this.rect.getWidth()) * (maximum - minimum) + minimum));
+
+                    this.value.setValue(roundedValue);
+                }
+        	}
+        }
+
+    	this.interpolatedWidth = (int) Processor.interpolation(this.interpolatedWidth, (this.rect.getWidth()) * (current - minimum) / (maximum - minimum), this.master.getDisplay());
+
+        Processor.prepare(Theme.INSTANCE.selected);
+        Processor.solid(this.rect.x, this.rect.y, this.interpolatedWidth, this.rect.height);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y, this.interpolatedWidth, this.rect.height);
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y, this.interpolatedWidth, this.rect.height);
 
-        // Entry box post render.
-        this.imperadorEntryBox.onRender();
+        // The tag.
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + ": " + this.value.getValue().toString(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 
     @Override

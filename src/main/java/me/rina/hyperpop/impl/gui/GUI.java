@@ -44,6 +44,14 @@ public class GUI extends GuiScreen {
     public static int HEIGHT_LIMIT = 500;
     public static boolean HUD_EDITOR = false;
 
+    public static boolean BACKGROUND_MINECRAFT = true;
+    public static boolean CUSTOM_BACKGROUND = false;
+
+    public static boolean DRAW_WATERMARK = true;
+
+    public static double VERSION = 0.6;
+    public static String GUI_WATERMARK = "User Interface " + VERSION + " alpha.";
+
     public GUI() {
         this.mouse = new TurokMouse();
         this.display = new TurokDisplay(Minecraft.getMinecraft());
@@ -105,25 +113,6 @@ public class GUI extends GuiScreen {
         }
     }
 
-    @EventListener
-    public void onUpdateEvent(ClientTickEvent event) {
-        this.focusedFrame = null;
-
-        for (Frame frames : this.loadedFrameList) {
-            frames.onUpdate();
-
-            if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
-                this.focusedFrame = frames;
-            }
-
-            frames.clear();
-        }
-
-        if (this.focusedFrame != null) {
-            this.focusedFrame.onCustomUpdate();
-        }
-    }
-
     @Override
     public void initGui() {
         for (Frame frames : this.loadedFrameList) {
@@ -149,15 +138,12 @@ public class GUI extends GuiScreen {
 
         ModuleUserInterface.INSTANCE.unsetListener();
         ModuleHUDEditor.INSTANCE.unsetListener();
-
-        mc.currentScreen = null;
-        mc.setIngameFocus();
     }
 
     @Override
     public void keyTyped(char charCode, int keyCode) {
         if (!this.isUpdate() && keyCode == Keyboard.KEY_ESCAPE) {
-            this.onGuiClosed();
+            mc.displayGuiScreen(null);
 
             return;
         }
@@ -208,7 +194,9 @@ public class GUI extends GuiScreen {
 
         this.mouse.setPos(mx, my);
 
-        this.drawDefaultBackground();
+        if (!HUD_EDITOR && BACKGROUND_MINECRAFT) {
+            this.drawDefaultBackground();
+        }
 
         Statement.matrix();
         Statement.translate(this.display.getScaledWidth(), this.display.getScaledHeight(), 0);
@@ -218,23 +206,33 @@ public class GUI extends GuiScreen {
 
         Statement.set(GL11.GL_TEXTURE_2D);
 
-        TurokFontManager.render(GUI.FONT_NORMAL, "nigger", 10, 10, true, new Color(255, 255, 255, 255));
-
         for (Frame frames : this.loadedFrameList) {
-            if (!frames.getFlag().isEnabled()) {
-                continue;
+            frames.onUpdate();
+            
+            if (frames.getFlag().isEnabled()) {
+                // Shadow.
+                if (this.focusedFrame == frames) {
+                    Processor.prepare(GUI.SHADOW_COLOR);
+                    Processor.outline(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
+                }
+
+                frames.onRender();
+
+                if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
+                    this.focusedFrame = frames;
+                }
             }
 
-            // Shadow.
-            if (this.focusedFrame == frames) {
-                Processor.prepare(GUI.SHADOW_COLOR);
-                Processor.outline(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
-            }
+            frames.clear();
+        }
 
-            frames.onRender();
+
+        if (DRAW_WATERMARK) {
+            TurokFontManager.render(GUI.FONT_NORMAL, GUI_WATERMARK, 1, this.display.getScaledHeight() - 1 - TurokFontManager.getStringHeight(GUI.FONT_NORMAL, GUI_WATERMARK), true, new Color(255, 255, 255, 255));
         }
 
         if (this.focusedFrame != null) {
+            this.focusedFrame.onCustomUpdate();
             this.focusedFrame.onCustomRender();
         }
 
