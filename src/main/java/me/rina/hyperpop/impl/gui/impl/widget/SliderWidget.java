@@ -163,6 +163,11 @@ public class SliderWidget extends Widget {
         	}
         }
 
+        // Focused background.
+        Processor.prepare(Theme.INSTANCE.focused);
+        Processor.solid(this.rect);
+
+        // Width;
     	this.interpolatedWidth = (int) Processor.interpolation(this.interpolatedWidth, (this.rect.getWidth()) * (current - minimum) / (maximum - minimum), this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.selected);

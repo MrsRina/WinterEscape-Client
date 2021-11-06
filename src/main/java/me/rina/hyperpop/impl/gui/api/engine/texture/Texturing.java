@@ -3,17 +3,22 @@ package me.rina.hyperpop.impl.gui.api.engine.texture;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author SrRina
  * @since 21/10/2021 at 18:25
  **/
 public class Texturing {
-    public static void load(String path) {
+    public static final List<Texture> TEXTURE_LIST = new ArrayList<>();
 
-    }
+    public static Texture load(String path) {
+        Texture texture;
 
-    public static void buffer(ResourceLocation location) {
+        TEXTURE_LIST.add(texture = new Texture(path, 0, 0));
 
+        return texture;
     }
 
     public static void frame(int x, int y, int w, int h, int ow, int oh, boolean repeat) {
@@ -34,5 +39,9 @@ public class Texturing {
         GL11.glTexCoord2f(0, k); GL11.glVertex2f(x, y + h);
 
         GL11.glEnd();
+    }
+
+    public static void render(Texture texture) {
+
     }
 }

@@ -83,7 +83,7 @@ public class Processor {
     }
 
     public static void string(TurokFont font, String string, float x, float y, Color background) {
-        boolean shadow = Theme.INSTANCE.shadow$True$False(background);
+        boolean shadow = true; // Theme.INSTANCE.shadow$True$False(background);
 
         Statement.set(GL11.GL_TEXTURE_2D);
         Statement.blend();

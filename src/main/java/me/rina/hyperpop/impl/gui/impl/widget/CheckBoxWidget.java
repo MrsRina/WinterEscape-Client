@@ -139,6 +139,10 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Focused background.
+        // Processor.prepare(Theme.INSTANCE.focused);
+        // Processor.solid(this.rect);
+
         // Selected draw.
         this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
 

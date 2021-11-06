@@ -144,6 +144,7 @@ public class EntryWidget extends Widget {
         	this.setFocusedByCPU(true);
 
         	this.imperadorEntryBox.string = new int[] {0, 0, 0, 255};
+            this.imperadorEntryBox.background = new int[] {0, 0, 0, 0};
         } else {
         	if (this.isFocusedByCPU()) {
         		this.master.unsetUpdate();
@@ -151,6 +152,7 @@ public class EntryWidget extends Widget {
         	}
 
         	this.imperadorEntryBox.string = new int[] {255, 255, 255, 255};
+            this.imperadorEntryBox.background = new int[] {Theme.INSTANCE.focused.getRed(), Theme.INSTANCE.focused.getGreen(), Theme.INSTANCE.focused.getBlue(), Theme.INSTANCE.focused.getAlpha()};
         }
 
         if (this.value.lastSet() != null) {

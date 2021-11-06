@@ -10,6 +10,8 @@ public class Theme {
     public static Theme INSTANCE;
 
     public Color background = new Color(45, 45, 45, 255);
+    public Color focused = new Color(20, 20, 20, 255);
+
     public Color selected = new Color(255, 255, 0, 255);
 
     public Color highlight = new Color(255, 255, 255, 50);
