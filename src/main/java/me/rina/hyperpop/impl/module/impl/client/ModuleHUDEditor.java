@@ -4,6 +4,7 @@ import event.bus.EventListener;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.type.Slider;
+import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.impl.gui.GUI;
@@ -21,6 +22,7 @@ public class ModuleHUDEditor extends Module {
 	public static Slider settingGreen = new Slider("Green", "Green value of all HUD color mode.", 255, 0, 255);
 	public static Slider settingBlue = new Slider("Blue", "Blue value of all HUD color mode.", 0, 0, 255);
 
+	public static Entry settingEntry = new Entry("Hello", "Entry box.", "Holy Client");
 	public static Color COLOR_HUD = new Color(255, 255, 255, 255); 
 
 	public ModuleHUDEditor() {

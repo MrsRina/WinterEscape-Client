@@ -153,6 +153,10 @@ public class Processor {
         return value <= minimum ? minimum : (value >= maximum ? maximum : value);
     }
 
+    public static int clamp(int alphaColor) {
+        return alphaColor <= 0 ? 0 : (alphaColor >= 255 ? 255 : alphaColor);
+    }
+
     public static int trunc(double value) {
         return (int) value;
     }

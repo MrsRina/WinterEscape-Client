@@ -8,6 +8,9 @@ import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
@@ -29,8 +32,16 @@ public class ModuleWidget extends Widget {
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
+    protected float rotationValue;
+    protected float interpolatedRotationValue;
+
+    protected boolean boolOptionValue;
+    protected boolean boolOptionValueSecond;
+
     private final List<Widget> loadedWidgetList = new ArrayList<>();
     private int widgetListHeight;
+
+    private Texture textureArrow = Texturing.load("/assets/ui/arrow.png");
 
     public ModuleWidget(GUI gui, ModuleFrame mother, Module module) {
         super(gui, module.getTag());
@@ -42,6 +53,7 @@ public class ModuleWidget extends Widget {
     }
 
     public void init() {
+        this.textureArrow.load();
         this.clearList$Reload();
     }
 
@@ -54,13 +66,19 @@ public class ModuleWidget extends Widget {
             if (value instanceof CheckBox) {
                 CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) value);
 
+                widget.init();
+
                 this.loadedWidgetList.add(widget);
             } else if (value instanceof Entry) {
                 EntryWidget widget = new EntryWidget(this.master, this, (Entry) value);
 
+                widget.init();
+
                 this.loadedWidgetList.add(widget);
             } else if (value instanceof Slider) {
                 SliderWidget widget = new SliderWidget(this.master, this, (Slider) value);
+
+                widget.init();
 
                 this.loadedWidgetList.add(widget);
             }
@@ -171,6 +189,7 @@ public class ModuleWidget extends Widget {
             if (this.flag.isMouseOver()) {
                 this.flag.setEnabled(!this.flag.isEnabled());
 
+                this.rotationValue = this.flag.isEnabled() ? 90 : 34;
                 this.getMother().reloadPositionConfiguration();
             }
 
@@ -232,6 +251,14 @@ public class ModuleWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
+        int offspace = 2;
+
+        this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - offspace);
+        this.textureArrow.setY(this.rect.getY() + this.rect.getHeight() - this.textureArrow.getHeight() - offspace);
+
+        this.textureArrow.setWidth(this.rect.getWidth() / 6);
+        this.textureArrow.setHeight(this.rect.getHeight() / 2);
+
         int diff = 1;
 
         this.setOffsetX(diff);
@@ -262,6 +289,22 @@ public class ModuleWidget extends Widget {
 
         Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
         Processor.solid(this.rect);
+
+        // Texture arrow.
+        if (this.boolOptionValue) {
+            this.interpolatedRotationValue = Processor.interpolation(this.interpolatedRotationValue, this.rotationValue, this.master.getDisplay());
+        }
+
+        if (this.interpolatedRotationValue >= 360) {
+            this.interpolatedRotationValue = 0;
+
+            this.boolOptionValue = false;
+        }
+
+        Statement.matrix();
+        Statement.rotate(this.interpolatedRotationValue, 0f, 0f, -1f);
+        Texturing.renderPrimitive(this.textureArrow);
+        Statement.refresh();
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());

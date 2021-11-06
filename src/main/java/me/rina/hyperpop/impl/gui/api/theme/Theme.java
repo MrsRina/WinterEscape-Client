@@ -13,10 +13,9 @@ public class Theme {
     public Color focused = new Color(20, 20, 20, 255);
 
     public Color selected = new Color(255, 255, 0, 255);
-
     public Color highlight = new Color(255, 255, 255, 50);
+ 
     public Color pressed = new Color(255, 255, 0, 50);
-
     public Color string = new Color(255, 255, 255, 255);
 
     public Theme() {
@@ -30,6 +29,16 @@ public class Theme {
     public void setBackground(int red, int green, int blue, int alpha) {
         if (this.background.getRed() != red || this.background.getGreen() != green || this.background.getBlue() != blue || this.background.getAlpha() != alpha) {
             this.background = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
+        }
+    }
+
+    public Color getFocused(int alpha) {
+        return new Color(this.focused.getRed(), this.focused.getGreen(), this.focused.getBlue(), clamp(alpha));
+    }
+
+    public void setFocused(int red, int green, int blue, int alpha) {
+        if (this.focused.getRed() != red || this.focused.getGreen() != green || this.focused.getBlue() != blue || this.focused.getAlpha() != alpha) {
+            this.focused = new Color(clamp(red), clamp(green), clamp(blue), clamp(alpha));
         }
     }
 

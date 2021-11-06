@@ -7,6 +7,8 @@ import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.widget.ModuleWidget;
@@ -32,6 +34,8 @@ public class ModuleFrame extends ImperadorFrame {
     protected boolean hasWheel;
     protected final TurokRect scrollRect = new TurokRect("rekt", 0, 0);
 
+    private Texture textureGeneric;
+
     public ModuleFrame(GUI gui, int moduleType) {
         super(gui, ModuleType.toString(moduleType));
 
@@ -42,9 +46,12 @@ public class ModuleFrame extends ImperadorFrame {
         this.titleHeight = 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag());
 
         this.rect.setWidth(100);
+        this.textureGeneric = Texturing.load("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png");
     }
 
     public void init() {
+        this.textureGeneric.load();
+
         for (Module modules : Client.INSTANCE.moduleManager.getModuleList()) {
             if (modules.getType() != this.moduleType) {
                 continue;
@@ -173,6 +180,14 @@ public class ModuleFrame extends ImperadorFrame {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
+        int offspace = 2;
+
+        this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - offspace);
+        this.textureGeneric.setY(this.rect.getY() + this.rect.getHeight() - this.textureGeneric.getHeight() - offspace);
+
+        this.textureGeneric.setWidth(this.rect.getWidth() / 6);
+        this.textureGeneric.setHeight(this.rect.getHeight() / 2);
+
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
         for (IGUI elements : this.getElementList()) {
@@ -199,6 +214,9 @@ public class ModuleFrame extends ImperadorFrame {
         // Background.
         Processor.prepare(Theme.INSTANCE.background);
         Processor.solid(this.rect);
+
+        // Render the icon.
+        Texturing.render(this.textureGeneric);
 
         // Title.
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);

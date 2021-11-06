@@ -4,6 +4,8 @@ import me.rina.hyperpop.api.value.type.CheckBox;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
+import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.management.TurokFontManager;
 
@@ -19,6 +21,8 @@ public class CheckBoxWidget extends Widget {
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
+    private final Texture textureCheckBox = Texturing.load("/assets/ui/checkboxtrue.png");
+
     public CheckBoxWidget(GUI gui, ModuleWidget mother, CheckBox value) {
         super(gui, value.getTag());
 
@@ -29,7 +33,7 @@ public class CheckBoxWidget extends Widget {
     }
 
     public void init() {
-
+        this.textureCheckBox.load();
     }
 
     public ModuleWidget getMother() {
@@ -121,6 +125,14 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onUpdate() {
+        int offspace = 2;
+
+        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - offspace);
+        this.textureCheckBox.setY(this.rect.getY() + this.rect.getHeight() - this.textureCheckBox.getHeight() - offspace);
+
+        this.textureCheckBox.setWidth(this.rect.getWidth() / 6);
+        this.textureCheckBox.setHeight(this.rect.getHeight() / 2);
+
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
@@ -140,14 +152,14 @@ public class CheckBoxWidget extends Widget {
     @Override
     public void onRender() {
         // Focused background.
-        // Processor.prepare(Theme.INSTANCE.focused);
-        // Processor.solid(this.rect);
+        Processor.prepare(Theme.INSTANCE.focused);
+        Processor.solid(this.textureCheckBox);
 
         // Selected draw.
         this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
+        this.textureCheckBox.setColor(255, 255, 255, this.interpolatedSelectedAlpha);
 
-        Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
-        Processor.solid(this.rect);
+        Texturing.render(this.textureCheckBox);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());

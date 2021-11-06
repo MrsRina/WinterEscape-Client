@@ -17,7 +17,7 @@ public class ModuleType {
         if (type == COMBAT) {
             return "Combat";
         } else if (type == RENDER) {
-            return "Render";
+            return "Visuals";
         } else if (type == MISC) {
             return "Misc";
         } else if (type == MOVEMENT) {
