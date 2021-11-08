@@ -41,6 +41,8 @@ public class GUI extends GuiScreen {
     private boolean isUpdate;
     private int distance;
 
+    public static int SCALE_FACTOR = 2;
+
     public static int HEIGHT_LIMIT = 500;
     public static boolean HUD_EDITOR = false;
 

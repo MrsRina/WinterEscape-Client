@@ -13,7 +13,7 @@ import java.awt.Color;
 
 /**
  * @author Rina
- * 21/10/2021 at 00:38am
+ * @since 21/10/2021 at 00:38am
  **/
 public class ModuleHUDEditor extends Module {
 	public static ModuleHUDEditor INSTANCE;

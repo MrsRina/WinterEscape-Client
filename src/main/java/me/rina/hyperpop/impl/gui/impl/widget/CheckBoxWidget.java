@@ -125,13 +125,13 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onUpdate() {
-        int offspace = 2;
+        int offspace = GUI.SCALE_FACTOR;
 
         this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - offspace);
         this.textureCheckBox.setY(this.rect.getY() + this.rect.getHeight() - this.textureCheckBox.getHeight() - offspace);
 
-        this.textureCheckBox.setWidth(this.rect.getWidth() / 6);
-        this.textureCheckBox.setHeight(this.rect.getHeight() / 2);
+        this.textureCheckBox.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
+        this.textureCheckBox.setHeight(this.rect.getHeight() / GUI.SCALE_FACTOR);
 
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());

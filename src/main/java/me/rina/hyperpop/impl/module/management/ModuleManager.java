@@ -183,8 +183,8 @@ public class ModuleManager extends Feature {
 
         JsonObject data = new JsonObject();
 
-        for (Map.Entry<String, Value> entry : module.getRegister().entrySet()) {
-            Value value = entry.getValue();
+        for (Value values : module.getValueList()) {
+            Value value = values;
 
             if (value instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) value;
@@ -228,9 +228,9 @@ public class ModuleManager extends Feature {
 
         JsonObject object = parser.parse(new InputStreamReader(input)).getAsJsonObject();
 
-        for (Map.Entry<String, Value> entry : module.getRegister().entrySet()) {
-            Value value = entry.getValue();
-            JsonElement valueObject = object.get(entry.getKey());
+        for (Value values : module.getValueList()) {
+            Value value = values;
+            JsonElement valueObject = object.get(value.getTag());
 
             if (valueObject == null) {
                 continue;

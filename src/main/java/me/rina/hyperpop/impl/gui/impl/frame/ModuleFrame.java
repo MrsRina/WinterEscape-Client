@@ -180,13 +180,13 @@ public class ModuleFrame extends ImperadorFrame {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
-        int offspace = 2;
+        int offspace = GUI.SCALE_FACTOR;
 
         this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - offspace);
-        this.textureGeneric.setY(this.rect.getY() + this.rect.getHeight() - this.textureGeneric.getHeight() - offspace);
+        this.textureGeneric.setY(this.rect.getY() + this.rectDrag.getHeight() - this.textureGeneric.getHeight() - offspace);
 
-        this.textureGeneric.setWidth(this.rect.getWidth() / 6);
-        this.textureGeneric.setHeight(this.rect.getHeight() / 2);
+        this.textureGeneric.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
+        this.textureGeneric.setHeight(this.rectDrag.getHeight() / GUI.SCALE_FACTOR);
 
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 

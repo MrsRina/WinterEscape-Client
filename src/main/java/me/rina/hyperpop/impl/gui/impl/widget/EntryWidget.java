@@ -32,7 +32,7 @@ public class EntryWidget extends Widget {
     }
 
     public void init() {
-
+        this.imperadorEntryBox = new ImperadorEntryBox(this.master, GUI.FONT_NORMAL, this.value.getValue());
     }
 
     public ModuleWidget getMother() {
@@ -165,6 +165,7 @@ public class EntryWidget extends Widget {
         this.rect.setWidth(this.getMother().getRect().getWidth());
         this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.rect.getHeight());
         this.flag.setEnabled(this.value.isShow());
+        this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
     }
 
     @Override

@@ -60,8 +60,8 @@ public class ModuleWidget extends Widget {
     public void clearList$Reload() {
         this.loadedWidgetList.clear();
 
-        for (Map.Entry<String, Value> entry : this.module.getRegister().entrySet()) {
-            Value value = entry.getValue();
+        for (Value values : module.getValueList()) {
+            Value value = values;
 
             if (value instanceof CheckBox) {
                 CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) value);
@@ -251,13 +251,13 @@ public class ModuleWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        int offspace = 2;
+        int offspace = GUI.SCALE_FACTOR;
 
         this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - offspace);
         this.textureArrow.setY(this.rect.getY() + this.rect.getHeight() - this.textureArrow.getHeight() - offspace);
 
-        this.textureArrow.setWidth(this.rect.getWidth() / 6);
-        this.textureArrow.setHeight(this.rect.getHeight() / 2);
+        this.textureArrow.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
+        this.textureArrow.setHeight(this.rect.getHeight() / GUI.SCALE_FACTOR);
 
         int diff = 1;
 

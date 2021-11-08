@@ -7,14 +7,14 @@ import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.BindBox;
 import me.rina.hyperpop.api.value.type.Combobox;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author SrRina
  * @since 06/09/2021 at 18:43
  **/
 public class Module extends Feature {
-    private final HashMap<String, Value> register = new HashMap<String, Value>();
+    private final List<Value> valueList = new ArrayList<>();
     private int type;
 
     private Combobox toggleMessage;
@@ -30,21 +30,31 @@ public class Module extends Feature {
     }
 
     public Value registry(Value value) {
-        register.put(value.getTag(), value);
+        this.valueList.add(value);
 
         return value;
     }
 
     public void remove(Value value) {
-        register.remove(value.getTag());
+        this.valueList.remove(value);
     }
 
-    public HashMap<String, Value> getRegister() {
-        return register;
+    public List<Value> getValueList() {
+        return valueList;
     }
 
     public Value getValue(String tag) {
-        return this.register.get(tag);
+        Value value = null;
+
+        for (Value values : this.getValueList()) {
+            if (values.getTag().equalsIgnoreCase(tag)) {
+                value = values;
+
+                break;
+            }
+        }
+
+        return value;
     }
 
     public void setType(int type) {

@@ -1,6 +1,7 @@
 package me.rina.hyperpop.impl.gui.api.engine.texture;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +23,11 @@ public class Texturing {
         return texture;
     }
 
+    /**
+     * The reason for I do not use this method is because ALL
+     * gl context, different from 'GuiScreen.drawModalRectWit
+     * hCustomSizedTexture()' using tessellator (VBO).
+     **/
     public static void frame(float x, float y, float w, float h, int ow, int oh, boolean repeat) {
         float i = 1;
         float k = 1;
@@ -63,7 +69,7 @@ public class Texturing {
         GL11.glColor4f(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getResourceLocation());
-        frame(texture.x, texture.y, texture.width, texture.height, texture.getTextureWidth(), texture.getTextureHeight(), repeat);
+        GuiScreen.drawModalRectWithCustomSizedTexture((int) texture.x, (int) texture.y, 0, 0, (int) texture.width, (int) texture.height, (int) texture.getTextureWidth(), (int) texture.getTextureHeight());
     }
 
     public static void renderPrimitive(Texture texture) {
