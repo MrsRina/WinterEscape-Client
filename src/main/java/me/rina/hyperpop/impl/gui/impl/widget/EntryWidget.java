@@ -144,7 +144,7 @@ public class EntryWidget extends Widget {
         	this.setFocusedByCPU(true);
 
         	this.imperadorEntryBox.string = new int[] {0, 0, 0, 255};
-            this.imperadorEntryBox.background = new int[] {0, 0, 0, 0};
+            this.imperadorEntryBox.background = new int[] {255, 255, 255, 255};
         } else {
         	if (this.isFocusedByCPU()) {
         		this.master.unsetUpdate();

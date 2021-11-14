@@ -30,6 +30,17 @@ public class GUI extends GuiScreen {
     public static TurokFont FONT_BIG_NORMAL = new TurokFont(new Font("Verdana", 0, 18), true, true);
     public static TurokFont FONT_NORMAL = new TurokFont(new Font("Verdana", 0, 16), true, true);
 
+    public static boolean BACKGROUND_MINECRAFT = true;
+    public static boolean CUSTOM_BACKGROUND = false;
+    public static boolean DRAW_WATERMARK = true;
+    public static boolean HUD_EDITOR = false;
+
+    public static double VERSION = 0.6;
+    public static String GUI_WATERMARK = "User Interface " + VERSION + " alpha.";
+
+    public static int SCALE_FACTOR = 2;
+    public static int HEIGHT_LIMIT = 500;
+
     public static Color SHADOW_COLOR = new Color(0, 0, 0, 50);
 
     private final List<Frame> loadedFrameList = new ArrayList<>();
@@ -40,19 +51,6 @@ public class GUI extends GuiScreen {
 
     private boolean isUpdate;
     private int distance;
-
-    public static int SCALE_FACTOR = 2;
-
-    public static int HEIGHT_LIMIT = 500;
-    public static boolean HUD_EDITOR = false;
-
-    public static boolean BACKGROUND_MINECRAFT = true;
-    public static boolean CUSTOM_BACKGROUND = false;
-
-    public static boolean DRAW_WATERMARK = true;
-
-    public static double VERSION = 0.6;
-    public static String GUI_WATERMARK = "User Interface " + VERSION + " alpha.";
 
     public GUI() {
         this.mouse = new TurokMouse();
@@ -227,7 +225,6 @@ public class GUI extends GuiScreen {
 
             frames.clear();
         }
-
 
         if (DRAW_WATERMARK) {
             TurokFontManager.render(GUI.FONT_NORMAL, GUI_WATERMARK, 1, this.display.getScaledHeight() - 1 - TurokFontManager.getStringHeight(GUI.FONT_NORMAL, GUI_WATERMARK), true, new Color(255, 255, 255, 255));

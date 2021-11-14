@@ -23,6 +23,20 @@ public class Texturing {
         return texture;
     }
 
+    public static Texture get(String path) {
+        Texture texture = null;
+
+        for (Texture textures : TEXTURE_LIST) {
+            if (textures.getPath().equalsIgnoreCase(path)) {
+                texture = textures;
+
+                break;
+            }
+        }
+
+        return texture;
+    }
+
     /**
      * The reason for I do not use this method is because ALL
      * gl context, different from 'GuiScreen.drawModalRectWit

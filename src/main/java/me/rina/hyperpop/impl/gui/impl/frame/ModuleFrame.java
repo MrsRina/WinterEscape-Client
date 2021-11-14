@@ -11,6 +11,7 @@ import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
+import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.hyperpop.impl.gui.impl.widget.ModuleWidget;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokMath;
@@ -34,7 +35,7 @@ public class ModuleFrame extends ImperadorFrame {
     protected boolean hasWheel;
     protected final TurokRect scrollRect = new TurokRect("rekt", 0, 0);
 
-    private Texture textureGeneric;
+    private final Texture textureGeneric = new Texture(null, 0, 0);
 
     public ModuleFrame(GUI gui, int moduleType) {
         super(gui, ModuleType.toString(moduleType));
@@ -46,7 +47,8 @@ public class ModuleFrame extends ImperadorFrame {
         this.titleHeight = 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag());
 
         this.rect.setWidth(100);
-        this.textureGeneric = Texturing.load("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png");
+
+        Textures.set(this.textureGeneric, Texturing.get("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png"));
     }
 
     public void init() {
@@ -180,13 +182,17 @@ public class ModuleFrame extends ImperadorFrame {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
-        int offspace = GUI.SCALE_FACTOR;
+        float off_space = 2;
+        float size = (this.rect.getHeight() - (off_space * 2));
 
-        this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - offspace);
-        this.textureGeneric.setY(this.rect.getY() + this.rectDrag.getHeight() - this.textureGeneric.getHeight() - offspace);
+        this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - off_space);
+        this.textureGeneric.setY(this.rect.getY() + off_space);
 
-        this.textureGeneric.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
-        this.textureGeneric.setHeight(this.rectDrag.getHeight() / GUI.SCALE_FACTOR);
+        this.textureGeneric.setWidth(size);
+        this.textureGeneric.setHeight(size);
+
+        this.textureGeneric.setTextureWidth((int) this.textureGeneric.getWidth());
+        this.textureGeneric.setTextureHeight((int) this.textureGeneric.getHeight());
 
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 

@@ -7,6 +7,7 @@ import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
+import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.turok.render.font.management.TurokFontManager;
 
 /**
@@ -21,7 +22,7 @@ public class CheckBoxWidget extends Widget {
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
-    private final Texture textureCheckBox = Texturing.load("/assets/ui/checkboxtrue.png");
+    private final Texture textureCheckBox = new Texture(null, 0, 0);
 
     public CheckBoxWidget(GUI gui, ModuleWidget mother, CheckBox value) {
         super(gui, value.getTag());
@@ -30,6 +31,8 @@ public class CheckBoxWidget extends Widget {
         this.mother = mother;
 
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.value.getTag()));
+
+        Textures.set(textureCheckBox, Texturing.get(Textures.UI_CHECKBOX));
     }
 
     public void init() {
@@ -125,13 +128,17 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onUpdate() {
-        int offspace = GUI.SCALE_FACTOR;
+        float off_space = 2;
+        float size = (this.rect.getHeight() - (off_space * 2));
 
-        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - offspace);
-        this.textureCheckBox.setY(this.rect.getY() + this.rect.getHeight() - this.textureCheckBox.getHeight() - offspace);
+        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - off_space);
+        this.textureCheckBox.setY(this.rect.getY() + off_space);
 
-        this.textureCheckBox.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
-        this.textureCheckBox.setHeight(this.rect.getHeight() / GUI.SCALE_FACTOR);
+        this.textureCheckBox.setWidth(size);
+        this.textureCheckBox.setHeight(size);
+
+        this.textureCheckBox.setTextureWidth((int) this.textureCheckBox.getWidth());
+        this.textureCheckBox.setTextureHeight((int) this.textureCheckBox.getHeight());
 
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());

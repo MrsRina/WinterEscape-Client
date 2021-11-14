@@ -115,6 +115,10 @@ public class Texture extends TurokRect {
     }
 
     public void reload() {
+        if (this.getPath() == null) {
+            return;
+        }
+
         try {
             final BufferedImage bufferedImage = ImageIO.read(Texture.class.getResourceAsStream(this.path));
 
@@ -125,6 +129,10 @@ public class Texture extends TurokRect {
     }
 
     public void load() {
+        if (this.getPath() == null || this.getBufferedImage() == null) {
+            return;
+        }
+
         this.dynamicTexture = new DynamicTexture(this.bufferedImage);
         this.resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("/hyperpop/", this.dynamicTexture);
     }

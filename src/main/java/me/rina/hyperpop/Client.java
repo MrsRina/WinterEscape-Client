@@ -6,11 +6,13 @@ import me.rina.hyperpop.impl.command.management.CommandManager;
 import me.rina.hyperpop.impl.forge.ForgeInteract;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.GUI;
+import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.hyperpop.impl.module.management.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import event.bus.EventBus;
 import me.rina.turok.render.font.TurokFont;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -68,6 +70,8 @@ public class Client {
     }
 
     public void initClient() {
+        Textures.init$load();
+
         this.moduleManager.preInitAll();
         this.commandManager.preInitAll();
 

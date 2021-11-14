@@ -8,17 +8,15 @@ import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
-import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
+import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
-import me.rina.hyperpop.Client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author SrRina
@@ -32,16 +30,10 @@ public class ModuleWidget extends Widget {
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
-    protected float rotationValue;
-    protected float interpolatedRotationValue;
-
-    protected boolean boolOptionValue;
-    protected boolean boolOptionValueSecond;
-
     private final List<Widget> loadedWidgetList = new ArrayList<>();
     private int widgetListHeight;
 
-    private Texture textureArrow = Texturing.load("/assets/ui/arrow.png");
+    private final Texture textureArrow = new Texture(null, 0, 0);
 
     public ModuleWidget(GUI gui, ModuleFrame mother, Module module) {
         super(gui, module.getTag());
@@ -50,6 +42,8 @@ public class ModuleWidget extends Widget {
         this.mother = mother;
 
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.module.getTag()));
+
+        Textures.set(this.textureArrow, Texturing.get(Textures.UI_ARROW_DOWN));
     }
 
     public void init() {
@@ -188,9 +182,10 @@ public class ModuleWidget extends Widget {
         if (this.flag.isMouseClickedRight()) {
             if (this.flag.isMouseOver()) {
                 this.flag.setEnabled(!this.flag.isEnabled());
-
-                this.rotationValue = this.flag.isEnabled() ? 90 : 34;
                 this.getMother().reloadPositionConfiguration();
+
+                Textures.set(this.textureArrow, this.flag.isEnabled() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
+                this.interpolatedSelectedAlpha = 0;
             }
 
             this.flag.setMouseClickedRight(false);
@@ -251,13 +246,17 @@ public class ModuleWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        int offspace = GUI.SCALE_FACTOR;
+        float off_space = 2;
+        float size = (this.rect.getHeight() - (off_space * 2));
 
-        this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - offspace);
-        this.textureArrow.setY(this.rect.getY() + this.rect.getHeight() - this.textureArrow.getHeight() - offspace);
+        this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - off_space);
+        this.textureArrow.setY(this.rect.getY() + off_space);
 
-        this.textureArrow.setWidth(this.rect.getWidth() / 8 + GUI.SCALE_FACTOR);
-        this.textureArrow.setHeight(this.rect.getHeight() / GUI.SCALE_FACTOR);
+        this.textureArrow.setWidth(size);
+        this.textureArrow.setHeight(size);
+
+        this.textureArrow.setTextureWidth((int) this.textureArrow.getWidth());
+        this.textureArrow.setTextureHeight((int) this.textureArrow.getHeight());
 
         int diff = 1;
 
@@ -291,20 +290,7 @@ public class ModuleWidget extends Widget {
         Processor.solid(this.rect);
 
         // Texture arrow.
-        if (this.boolOptionValue) {
-            this.interpolatedRotationValue = Processor.interpolation(this.interpolatedRotationValue, this.rotationValue, this.master.getDisplay());
-        }
-
-        if (this.interpolatedRotationValue >= 360) {
-            this.interpolatedRotationValue = 0;
-
-            this.boolOptionValue = false;
-        }
-
-        Statement.matrix();
-        Statement.rotate(this.interpolatedRotationValue, 0f, 0f, -1f);
-        Texturing.renderPrimitive(this.textureArrow);
-        Statement.refresh();
+        Texturing.render(this.textureArrow);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
