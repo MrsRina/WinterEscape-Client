@@ -90,8 +90,8 @@ public class ImperadorFrame extends Frame implements IGUI {
     public void updateMouseOver() {
         final TurokMouse mouse = this.master.getMouse();
 
-        this.flag.setMouseOver(this.rect.collideWithMouse(mouse));
-        this.flag.setMouseOverDraggable(this.rectDrag.collideWithMouse(this.master.getMouse()) && !this.rectResize.collideWithMouse(mouse));
+        this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(mouse));
+        this.flag.setMouseOverDraggable((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rectDrag.collideWithMouse(this.master.getMouse()) && !this.rectResize.collideWithMouse(mouse));
     }
 
     public void setResize() {

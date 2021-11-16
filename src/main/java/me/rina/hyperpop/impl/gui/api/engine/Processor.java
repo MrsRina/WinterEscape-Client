@@ -83,26 +83,30 @@ public class Processor {
     }
 
     public static void string(TurokFont font, String string, float x, float y, Color background) {
+        string(font, string, x, y, 255);
+    }
+
+    public static void string(TurokFont font, String string, float x, float y, int alpha) {
         boolean shadow = true; // Theme.INSTANCE.shadow$True$False(background);
+        Color color = Theme.INSTANCE.getString(alpha);
 
         Statement.set(GL11.GL_TEXTURE_2D);
         Statement.blend();
 
         GlStateManager.enableAlpha();
-
-        Statement.color(Theme.INSTANCE.string);
+        Statement.color(color);
 
         if (shadow) {
             if (font.isRenderingCustomFont()) {
-                font.drawStringWithShadow(string, x, y, Theme.INSTANCE.string.getRGB());
+                font.drawStringWithShadow(string, x, y, color.getRGB());
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, Theme.INSTANCE.string.getRGB());
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, (int) x, (int) y, color.getRGB());
             }
         } else {
             if (font.isRenderingCustomFont()) {
-                font.drawString(string, x, y, Theme.INSTANCE.string.getRGB());
+                font.drawString(string, x, y, color.getRGB());
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, Theme.INSTANCE.string.getRGB());
+                Minecraft.getMinecraft().fontRenderer.drawString(string, (int) x, (int) y, color.getRGB());
             }
         }
 

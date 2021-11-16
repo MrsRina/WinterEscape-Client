@@ -1,18 +1,19 @@
 package me.rina.hyperpop.impl.gui;
 
-import event.bus.EventListener;
 import me.rina.hyperpop.api.module.type.ModuleType;
-import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
+import me.rina.hyperpop.impl.gui.impl.frame.PopupMenuFrame;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.render.font.management.TurokFontManager;
+import me.rina.turok.render.opengl.TurokShaderGL;
 import me.rina.turok.util.TurokDisplay;
+import me.rina.turok.util.TurokTick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -52,11 +53,24 @@ public class GUI extends GuiScreen {
     private boolean isUpdate;
     private int distance;
 
+    private final TurokTick slowerCooldownUsingAnWidgetTimer = new TurokTick();
+    private final PopupMenuFrame popupMenuFrame;
+
     public GUI() {
         this.mouse = new TurokMouse();
         this.display = new TurokDisplay(Minecraft.getMinecraft());
 
         this.setDistance(1);
+
+        this.popupMenuFrame = new PopupMenuFrame(this);
+    }
+
+    public TurokTick getSlowerCooldownUsingAnWidgetTimer() {
+        return slowerCooldownUsingAnWidgetTimer;
+    }
+
+    public PopupMenuFrame getPopupMenuFrame() {
+        return popupMenuFrame;
     }
 
     public void setDistance(int distance) {
@@ -159,6 +173,8 @@ public class GUI extends GuiScreen {
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomKeyboard(charCode, keyCode);
         }
+
+        this.popupMenuFrame.onKeyboard(charCode, keyCode);
     }
 
     @Override
@@ -178,6 +194,8 @@ public class GUI extends GuiScreen {
 
     @Override
     public void mouseClicked(int mx, int my, int button) {
+        this.popupMenuFrame.onMouseClicked(button);
+
         for (Frame frames : this.loadedFrameList) {
             frames.onMouseClicked(button);
         }
@@ -189,6 +207,12 @@ public class GUI extends GuiScreen {
 
     @Override
     public void drawScreen(int mx, int my, float partialTicks) {
+        if (this.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(1000)) {
+            this.getSlowerCooldownUsingAnWidgetTimer().reset();
+        }
+
+        TurokShaderGL.init(this.display, this.mouse);
+
         this.display.setPartialTicks(partialTicks);
         this.display.update();
 
@@ -226,19 +250,26 @@ public class GUI extends GuiScreen {
             frames.clear();
         }
 
-        if (DRAW_WATERMARK) {
-            TurokFontManager.render(GUI.FONT_NORMAL, GUI_WATERMARK, 1, this.display.getScaledHeight() - 1 - TurokFontManager.getStringHeight(GUI.FONT_NORMAL, GUI_WATERMARK), true, new Color(255, 255, 255, 255));
-        }
-
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomUpdate();
             this.focusedFrame.onCustomRender();
         }
 
+        if (DRAW_WATERMARK) {
+            TurokFontManager.render(GUI.FONT_NORMAL, GUI_WATERMARK, 1, this.display.getScaledHeight() - 1 - TurokFontManager.getStringHeight(GUI.FONT_NORMAL, GUI_WATERMARK), true, new Color(255, 255, 255, 255));
+        }
+
+        // POST RENDER.
+        this.popupMenuFrame.onRender();
+        this.popupMenuFrame.onUpdate();
+        this.popupMenuFrame.onCustomUpdate();
+
         // Post hud editor render.
         if (HUD_EDITOR) {
 
         }
+
+        // POST FX.
 
         Statement.set(GL11.GL_TEXTURE_2D);
         Statement.unset(GL11.GL_BLEND);

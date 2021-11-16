@@ -1,6 +1,8 @@
 package me.rina.hyperpop.impl.gui.impl.widget;
 
+import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.value.type.CheckBox;
+import me.rina.hyperpop.api.value.type.Combobox;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
@@ -12,38 +14,33 @@ import me.rina.turok.render.font.management.TurokFontManager;
 
 /**
  * @author SrRina
- * @since 18/10/2021 at 19:08
+ * @since 16/11/2021 at 14:37
  **/
-public class CheckBoxWidget extends Widget {
+public class ComboboxWidget extends Widget {
     private final ModuleWidget mother;
-    private final CheckBox value;
+    private final Combobox value;
 
     protected int interpolatedSelectedAlpha;
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
 
-    private final Texture textureCheckBox = new Texture(null, 0, 0);
-
-    public CheckBoxWidget(GUI gui, ModuleWidget mother, CheckBox value) {
+    public ComboboxWidget(GUI gui, ModuleWidget mother, Combobox value) {
         super(gui, value.getTag());
 
         this.value = value;
         this.mother = mother;
 
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.value.getTag()));
-
-        Textures.set(textureCheckBox, Texturing.get(Textures.UI_CHECKBOX));
     }
 
     public void init() {
-        this.textureCheckBox.load();
     }
 
     public ModuleWidget getMother() {
         return mother;
     }
 
-    public CheckBox getValue() {
+    public Combobox getValue() {
         return value;
     }
 
@@ -69,8 +66,6 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onMouseReleased(int button) {
-        boolean release = false;
-
         if (this.flag.isResizing()) {
             this.flag.setResizing(false);
         }
@@ -80,24 +75,21 @@ public class CheckBoxWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedLeft()) {
-            release = this.flag.isMouseOver();
+            if (this.flag.isMouseOver()) {
+                this.value.gonext();
+                this.getMother().getMother().reloadPositionConfiguration();
+            }
 
             this.flag.setMouseClickedLeft(false);
         }
 
         if (this.flag.isMouseClickedRight()) {
-            release = this.flag.isMouseOver();
-
+            this.master.getPopupMenuFrame().callPopup(this.rect.getTag(), this.master.getMouse().getX(), this.master.getMouse().getY(), 75, this.value.getValue(), this.value.getList());
             this.flag.setMouseClickedRight(false);
         }
 
         if (this.flag.isMouseClickedMiddle()) {
             this.flag.setMouseClickedMiddle(false);
-        }
-
-        if (release) {
-            this.value.setValue(!this.value.getValue());
-            this.getMother().getMother().reloadPositionConfiguration();
         }
     }
 
@@ -131,15 +123,6 @@ public class CheckBoxWidget extends Widget {
         float off_space = 2;
         float size = (this.rect.getHeight() - (off_space * 2));
 
-        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - off_space);
-        this.textureCheckBox.setY(this.rect.getY() + off_space);
-
-        this.textureCheckBox.setWidth(size);
-        this.textureCheckBox.setHeight(size);
-
-        this.textureCheckBox.setTextureWidth((int) this.textureCheckBox.getWidth());
-        this.textureCheckBox.setTextureHeight((int) this.textureCheckBox.getHeight());
-
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
@@ -149,6 +132,13 @@ public class CheckBoxWidget extends Widget {
         this.rect.setWidth(this.getMother().getRect().getWidth());
 
         this.flag.setEnabled(this.value.isShow());
+
+        if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag())) {
+            this.value.setValue(this.master.getPopupMenuFrame().getCallback());
+            this.master.getPopupMenuFrame().onClose();
+
+            Client.log("yo released");
+        }
     }
 
     @Override
@@ -160,13 +150,7 @@ public class CheckBoxWidget extends Widget {
     public void onRender() {
         // Focused background.
         Processor.prepare(Theme.INSTANCE.focused);
-        Processor.solid(this.textureCheckBox);
-
-        // Selected draw.
-        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
-        this.textureCheckBox.setColor(255, 255, 255, this.interpolatedSelectedAlpha);
-
-        Texturing.render(this.textureCheckBox);
+        Processor.solid(this.rect);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
@@ -181,7 +165,7 @@ public class CheckBoxWidget extends Widget {
         Processor.solid(this.rect);
 
         // The tag.
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + ": " + this.value.getValue(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 
     @Override

@@ -67,4 +67,18 @@ public class Combobox extends Value {
     public void add(String elementToAdd) {
         this.getList().add(elementToAdd);
     }
+
+    public void gonext() {
+        if (this.getList().isEmpty()) {
+            return;
+        }
+
+        int lastIndex = this.getList().indexOf(this.value);
+
+        if (lastIndex + 1 >= this.getList().size()) {
+            this.setValue(this.getList().get(0));
+        } else {
+            this.setValue(this.getList().get(lastIndex + 1));
+        }
+    }
 }

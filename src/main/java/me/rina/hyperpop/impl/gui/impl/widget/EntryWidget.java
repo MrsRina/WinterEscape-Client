@@ -33,6 +33,7 @@ public class EntryWidget extends Widget {
 
     public void init() {
         this.imperadorEntryBox = new ImperadorEntryBox(this.master, GUI.FONT_NORMAL, this.value.getValue());
+        this.imperadorEntryBox.setRendering(true);
     }
 
     public ModuleWidget getMother() {
@@ -67,12 +68,11 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onKeyboard(char charCode, int keyCode) {
-
+        this.imperadorEntryBox.onKeyboard(charCode, keyCode);
     }
 
     @Override
     public void onCustomKeyboard(char charCode, int keyCode) {
-    	this.imperadorEntryBox.onKeyboard(charCode, keyCode);
     }
 
     @Override
@@ -166,11 +166,12 @@ public class EntryWidget extends Widget {
         this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.rect.getHeight());
         this.flag.setEnabled(this.value.isShow());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
+        this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
     }
 
     @Override
     public void onCustomUpdate() {
-    	final boolean mouseIsOver = this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse());
+    	final boolean mouseIsOver = (!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse());
 
         this.flag.setMouseOver(mouseIsOver);
     	this.imperadorEntryBox.setMouseOver(mouseIsOver);

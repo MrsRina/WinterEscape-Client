@@ -63,8 +63,6 @@ public class SliderWidget extends Widget {
 
     @Override
     public void onMouseReleased(int button) {
-        boolean release = false;
-
         if (this.flag.isResizing()) {
             this.flag.setResizing(false);
         }
@@ -74,14 +72,10 @@ public class SliderWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedLeft()) {
-            release = this.flag.isMouseOver();
-
             this.flag.setMouseClickedLeft(false);
         }
 
         if (this.flag.isMouseClickedRight()) {
-            release = this.flag.isMouseOver();
-
             this.flag.setMouseClickedRight(false);
         }
 
@@ -97,7 +91,7 @@ public class SliderWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
+        if (this.flag.isMouseOver()) {
             this.flag.setMouseClickedLeft(button == 0);
             this.flag.setMouseClickedRight(button == 2);
         }
@@ -130,7 +124,7 @@ public class SliderWidget extends Widget {
 
     @Override
     public void onCustomUpdate() {
-        this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
+        this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getMother().getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
     }
 
     @Override

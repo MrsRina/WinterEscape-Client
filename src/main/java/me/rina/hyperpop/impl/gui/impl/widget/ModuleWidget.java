@@ -2,9 +2,7 @@ package me.rina.hyperpop.impl.gui.impl.widget;
 
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.value.Value;
-import me.rina.hyperpop.api.value.type.CheckBox;
-import me.rina.hyperpop.api.value.type.Entry;
-import me.rina.hyperpop.api.value.type.Slider;
+import me.rina.hyperpop.api.value.type.*;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
@@ -29,6 +27,7 @@ public class ModuleWidget extends Widget {
     protected int interpolatedSelectedAlpha;
     protected int interpolatedPressedAlpha;
     protected int interpolatedHighlightAlpha;
+    protected int interpolatedArrowTick;
 
     private final List<Widget> loadedWidgetList = new ArrayList<>();
     private int widgetListHeight;
@@ -55,23 +54,28 @@ public class ModuleWidget extends Widget {
         this.loadedWidgetList.clear();
 
         for (Value values : module.getValueList()) {
-            Value value = values;
-
-            if (value instanceof CheckBox) {
-                CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) value);
-
+            if (values instanceof CheckBox) {
+                CheckBoxWidget widget = new CheckBoxWidget(this.master, this, (CheckBox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-            } else if (value instanceof Entry) {
-                EntryWidget widget = new EntryWidget(this.master, this, (Entry) value);
-
+            } else if (values instanceof Entry) {
+                EntryWidget widget = new EntryWidget(this.master, this, (Entry) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-            } else if (value instanceof Slider) {
-                SliderWidget widget = new SliderWidget(this.master, this, (Slider) value);
+            } else if (values instanceof Slider) {
+                SliderWidget widget = new SliderWidget(this.master, this, (Slider) values);
+                widget.init();
 
+                this.loadedWidgetList.add(widget);
+            } else if (values instanceof BindBox) {
+                BindBoxWidget widget = new BindBoxWidget(this.master, this, (BindBox) values);
+                widget.init();
+
+                this.loadedWidgetList.add(widget);
+            } else if (values instanceof Combobox) {
+                ComboboxWidget widget = new ComboboxWidget(this.master, this, (Combobox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
@@ -185,7 +189,7 @@ public class ModuleWidget extends Widget {
                 this.getMother().reloadPositionConfiguration();
 
                 Textures.set(this.textureArrow, this.flag.isEnabled() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
-                this.interpolatedSelectedAlpha = 0;
+
             }
 
             this.flag.setMouseClickedRight(false);
@@ -270,7 +274,7 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onCustomUpdate() {
-        this.flag.setMouseOver(this.rect.collideWithMouse(this.master.getMouse()));
+        this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()));
 
         for (Widget widgets : this.loadedWidgetList) {
             if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
@@ -290,6 +294,8 @@ public class ModuleWidget extends Widget {
         Processor.solid(this.rect);
 
         // Texture arrow.
+        this.interpolatedArrowTick = Processor.interpolation(this.interpolatedArrowTick, 255, this.master.getDisplay().getPartialTicks() * 0.1f);
+
         Texturing.render(this.textureArrow);
 
         // Pressed draw.
