@@ -62,6 +62,8 @@ public class Processor {
         Statement.unset(GL11.GL_TEXTURE_2D);
 
         Statement.set(GL11.GL_LINE_SMOOTH);
+        Statement.line(1.5f);
+
         Statement.prepare(GL11.GL_LINE);
 
         Statement.vertex2d(x, y);

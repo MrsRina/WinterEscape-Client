@@ -183,7 +183,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
         float off_space = 2;
-        float size = (this.getTitleHeight() - 2);
+        float size = (this.getTitleHeight());
 
         this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - off_space);
         this.textureGeneric.setY(this.rect.getY() + 1);
@@ -217,9 +217,17 @@ public class ModuleFrame extends ImperadorFrame {
         this.updateDrag();
         this.updateScroll();
 
+        // Focused.
+        Processor.prepare(Theme.INSTANCE.focused);
+        Processor.solid(this.rect.x, this.rect.y, this.rect.width, this.getTitleHeight() + 1f);
+
         // Background.
         Processor.prepare(Theme.INSTANCE.background);
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y + this.getTitleHeight() + 1f, this.rect.width, this.rect.height - this.getTitleHeight() - 1f);
+
+        // Outline stuff.
+        Processor.prepare(Theme.INSTANCE.focused);
+        Processor.outline(this.rect.x, this.rect.y + this.getTitleHeight() + 1f, this.rect.width, this.rect.height - this.getTitleHeight() - 1f);
 
         // Render the icon.
         Texturing.render(this.textureGeneric);

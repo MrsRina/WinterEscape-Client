@@ -108,7 +108,7 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
+        if (this.flag.isMouseOver()) {
             this.flag.setMouseClickedLeft(button == 0);
             this.flag.setMouseClickedRight(button == 2);
         }

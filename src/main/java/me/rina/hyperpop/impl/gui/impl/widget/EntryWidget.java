@@ -113,6 +113,10 @@ public class EntryWidget extends Widget {
 
             this.flag.setMouseClickedLeft(button == 0);
         }
+
+        if (!this.flag.isMouseOver()) {
+            this.imperadorEntryBox.setFocused(false);
+        }
     }
 
     @Override
@@ -167,6 +171,8 @@ public class EntryWidget extends Widget {
         this.flag.setEnabled(this.value.isShow());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
+        this.imperadorEntryBox.scissor();
+        this.imperadorEntryBox.setOffsetY(3f);
     }
 
     @Override

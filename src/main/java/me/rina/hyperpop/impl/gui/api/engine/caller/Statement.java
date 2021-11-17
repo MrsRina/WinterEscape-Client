@@ -36,6 +36,10 @@ public class Statement {
         GL11.glLineWidth(width);
     }
 
+    public static void line(float width) {
+        GL11.glLineWidth(width);
+    }
+
     public static void setShaderModel(int mode) {
         GL11.glShadeModel(mode);
     }

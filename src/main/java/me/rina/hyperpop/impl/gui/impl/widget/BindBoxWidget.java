@@ -155,7 +155,7 @@ public class BindBoxWidget extends Widget {
     public void onMouseClicked(int button) {
         if (this.flag.isMouseOver()) {
             this.flag.setMouseClickedLeft(button == 0);
-            this.flag.setMouseClickedRight(button == 2);
+            this.flag.setMouseClickedRight(button == 1);
         }
     }
 
@@ -240,7 +240,7 @@ public class BindBoxWidget extends Widget {
         // Key.
         this.interpolatedStringAlpha = Processor.interpolation(this.interpolatedStringAlpha, this.flag.isLocked() ? (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(500) ? 255 : 0) : Theme.INSTANCE.string.getAlpha(), this.master.getDisplay());
 
-        if (this.interpolatedStringAlpha >= 10) {
+        if (this.interpolatedStringAlpha >= 20) {
             Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? "<key>" : (this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase()), this.rectKey.getX() + 1f, this.rectKey.getY() + 1, this.interpolatedStringAlpha);
         }
     }

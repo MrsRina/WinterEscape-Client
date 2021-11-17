@@ -56,7 +56,6 @@ public class PopupMenuFrame extends Frame {
     }
 
     public void clearButtonList() {
-        this.setCallback(null);
         this.buttonList.clear();
     }
 

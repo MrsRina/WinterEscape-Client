@@ -100,9 +100,9 @@ public class ComboboxWidget extends Widget {
 
     @Override
     public void onMouseClicked(int button) {
-        if (this.flag.isMouseOver() && (button == 0 || button == 2)) {
+        if (this.flag.isMouseOver()) {
             this.flag.setMouseClickedLeft(button == 0);
-            this.flag.setMouseClickedRight(button == 2);
+            this.flag.setMouseClickedRight(button == 1);
         }
     }
 
@@ -136,8 +136,6 @@ public class ComboboxWidget extends Widget {
         if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag())) {
             this.value.setValue(this.master.getPopupMenuFrame().getCallback());
             this.master.getPopupMenuFrame().onClose();
-
-            Client.log("yo released");
         }
     }
 
@@ -150,7 +148,7 @@ public class ComboboxWidget extends Widget {
     public void onRender() {
         // Focused background.
         Processor.prepare(Theme.INSTANCE.focused);
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y - 1, this.rect.getWidth(), this.rect.height + 2);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());

@@ -40,7 +40,7 @@ public class GUI extends GuiScreen {
     public static String GUI_WATERMARK = "User Interface " + VERSION + " alpha.";
 
     public static int SCALE_FACTOR = 2;
-    public static int HEIGHT_LIMIT = 500;
+    public static int HEIGHT_LIMIT = 250;
 
     public static Color SHADOW_COLOR = new Color(0, 0, 0, 50);
 
