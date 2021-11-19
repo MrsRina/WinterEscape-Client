@@ -1,6 +1,9 @@
 package me.rina.hyperpop.api.module.overlay;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import me.rina.hyperpop.impl.gui.GUI;
+import me.rina.hyperpop.impl.gui.api.IGUI;
+import me.rina.hyperpop.impl.gui.api.base.Flag;
 import me.rina.turok.util.TurokMath;
 import net.minecraft.entity.passive.AbstractHorse;
 import me.rina.hyperpop.Client;
@@ -25,11 +28,11 @@ import org.lwjgl.opengl.GL11;
  * @author Rina
  * @since 21/10/2021 at 00:23am
  **/
-public class OverlayElement extends Module {
-	private final TurokRect rect = new TurokRect("overlay", 0, 0);
-	private final boolean useString;
+public class OverlayElement extends Module implements IGUI {
+	protected final TurokRect rect = new TurokRect("overlay", 0, 0);
+	protected final boolean useString;
 
-	protected TurokRect.Dock dock;
+	protected TurokRect.Dock dock = TurokRect.Dock.TOP_LEFT;
 	protected boolean postFX;
 
 	protected CheckBox customFont;
@@ -311,4 +314,79 @@ public class OverlayElement extends Module {
 		return this.dock == TurokRect.Dock.TOP_RIGHT || this.dock == TurokRect.Dock.BOTTOM_RIGHT ? (int) (this.rect.width - sizeW - unalignedX) : alignedX;
 	}
 	/* End of utilities functions of overlay element. */
+
+	@Override
+	public TurokRect getRect() {
+		return this.rect;
+	}
+
+	@Override
+	public Flag getFlag() {
+		return null;
+	}
+
+	@Override
+	public GUI getGUI() {
+		return null;
+	}
+
+	@Override
+	public void onOpen() {
+
+	}
+
+	@Override
+	public void onClose() {
+
+	}
+
+	@Override
+	public void onKeyboard(char charCode, int keyCode) {
+
+	}
+
+	@Override
+	public void onCustomKeyboard(char charCode, int keyCode) {
+
+	}
+
+	@Override
+	public void onMouseReleased(int button) {
+
+	}
+
+	@Override
+	public void onCustomMouseReleased(int button) {
+
+	}
+
+	@Override
+	public void onMouseClicked(int button) {
+
+	}
+
+	@Override
+	public void onCustomMouseClicked(int button) {
+
+	}
+
+	@Override
+	public void onUpdate() {
+
+	}
+
+	@Override
+	public void onCustomUpdate() {
+
+	}
+
+	@Override
+	public void onRender() {
+
+	}
+
+	@Override
+	public void onCustomRender() {
+
+	}
 }

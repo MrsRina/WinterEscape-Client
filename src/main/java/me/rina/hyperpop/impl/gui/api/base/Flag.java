@@ -14,6 +14,7 @@ public class Flag {
 
     private boolean isLocked;
     private boolean isEnabled;
+    private boolean isSelected;
 
     private boolean isResizable;
     private boolean isResizing;
@@ -148,5 +149,13 @@ public class Flag {
 
     public boolean isMouseClickedMiddle() {
         return isMouseClickedMiddle;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 }

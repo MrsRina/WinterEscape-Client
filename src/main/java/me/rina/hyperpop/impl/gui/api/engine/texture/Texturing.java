@@ -83,7 +83,11 @@ public class Texturing {
         GL11.glColor4f(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getResourceLocation());
-        GuiScreen.drawModalRectWithCustomSizedTexture((int) texture.x, (int) texture.y, 0, 0, (int) texture.width, (int) texture.height, (int) texture.getTextureWidth(), (int) texture.getTextureHeight());
+
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+        GuiScreen.drawModalRectWithCustomSizedTexture((int) texture.x, (int) texture.y, 0, 0, (int) texture.getWidth(), (int) texture.getHeight(), (int) texture.getTextureWidth(), (int) texture.getTextureHeight());
     }
 
     public static void renderPrimitive(Texture texture) {

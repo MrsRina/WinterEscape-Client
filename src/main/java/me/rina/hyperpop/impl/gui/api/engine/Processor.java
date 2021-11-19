@@ -5,6 +5,8 @@ import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.render.opengl.TurokGL;
+import me.rina.turok.render.opengl.TurokRenderGL;
+import me.rina.turok.render.opengl.TurokShaderGL;
 import me.rina.turok.util.TurokDisplay;
 import me.rina.turok.util.TurokRect;
 import net.minecraft.client.Minecraft;
@@ -62,9 +64,9 @@ public class Processor {
         Statement.unset(GL11.GL_TEXTURE_2D);
 
         Statement.set(GL11.GL_LINE_SMOOTH);
-        Statement.line(1.5f);
+        Statement.line(1f);
 
-        Statement.prepare(GL11.GL_LINE);
+        Statement.prepare(GL11.GL_LINES);
 
         Statement.vertex2d(x, y);
         Statement.vertex2d(x, y + h);
@@ -115,6 +117,23 @@ public class Processor {
         Statement.unset(GL11.GL_TEXTURE_2D);
     }
     /* End of post fx render functions. */
+
+    /* Start of process functions. */
+    public static void setScissor(TurokRect rect, TurokDisplay display) {
+        setScissor(rect.x, rect.y, rect.width, rect.height, display);
+    }
+
+    public static void setScissor(float x, float y, float w, float h, TurokDisplay display) {
+        int calculatedW = (int) (x + w);
+        int calculatedH = (int) (y + h);
+
+        Statement.scissor((int) (x * display.getScaleFactor()), (int) (display.getHeight() - (calculatedH * display.getScaleFactor())), (int) ((calculatedW - x) * display.getScaleFactor()), (int) ((calculatedH - y) * display.getScaleFactor()));
+    }
+
+    public static void unsetScissor() {
+        Statement.unset(GL11.GL_SCISSOR_TEST);
+    }
+    /* End of process functions. */
 
     /* Start of interpolation functions. */
     public static float interpolation(float a, float b, TurokDisplay display) {

@@ -4,10 +4,13 @@ import event.bus.EventListener;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.api.value.type.CheckBox;
 import me.rina.hyperpop.impl.gui.GUI;
 import scala.xml.parsing.FactoryAdapter;
+
+import java.awt.*;
 
 /**
  * @author SrRina
@@ -16,6 +19,9 @@ import scala.xml.parsing.FactoryAdapter;
 public class ModuleUserInterface extends Module {
     public static ModuleUserInterface INSTANCE;
     public static CheckBox valueExample = new CheckBox("Button", "A button.", false);
+
+    /* By default I want this font. */
+    public static Entry settingFont = new Entry("Font", "The font used.", "Tahoma");
 
     public ModuleUserInterface() {
         super("UserInterface", "User interface for client.", ModuleType.CLIENT);
@@ -60,7 +66,20 @@ public class ModuleUserInterface extends Module {
         }
 
         if (mc.currentScreen == Client.INSTANCE.userInterfaceGUI && mc.world != null) {
-            Client.INSTANCE.userInterfaceGUI.onGuiClosed();
+            mc.displayGuiScreen(null);
+        }
+
+        if (!settingFont.getValue().equalsIgnoreCase(GUI.FONT_NORMAL.getFontName())) {
+            Font font = new Font(settingFont.getValue(), 0, 16);
+
+            if (font.getFontName().equalsIgnoreCase("Default")) {
+                font = new Font("Tahoma", 0,16);
+
+                Client.log("Unknown font, type a real font name.");
+                settingFont.setValue("Tahoma");
+            }
+
+            GUI.FONT_NORMAL.setFont(font);
         }
     }
 }

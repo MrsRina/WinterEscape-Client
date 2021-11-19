@@ -64,6 +64,8 @@ public class EntryWidget extends Widget {
     @Override
     public void onClose() {
     	this.clear();
+        this.flag.setMouseClickedLeft(false);
+        this.flag.setMouseClickedRight(false);
     }
 
     @Override
@@ -108,8 +110,8 @@ public class EntryWidget extends Widget {
     @Override
     public void onMouseClicked(int button) {
         if (this.flag.isMouseOver() && (button == 0 || button == 2 || button == 3)) {
-        	this.imperadorEntryBox.onMouseClicked(button);
-        	this.imperadorEntryBox.doSetIndexAB(this.master.getMouse());
+            this.imperadorEntryBox.doSetIndexAB(this.master.getMouse());
+            this.imperadorEntryBox.onMouseClicked(button);
 
             this.flag.setMouseClickedLeft(button == 0);
         }
@@ -138,10 +140,10 @@ public class EntryWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        int diff = 0;
+        int diff = 1;
 
         this.setOffsetX(diff);
-        this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
+        this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
         if (this.imperadorEntryBox.isFocused()) {
         	this.master.setUpdate();
@@ -149,6 +151,7 @@ public class EntryWidget extends Widget {
 
         	this.imperadorEntryBox.string = new int[] {0, 0, 0, 255};
             this.imperadorEntryBox.background = new int[] {255, 255, 255, 255};
+            this.imperadorEntryBox.setIsShadow(false);
         } else {
         	if (this.isFocusedByCPU()) {
         		this.master.unsetUpdate();
@@ -157,6 +160,7 @@ public class EntryWidget extends Widget {
 
         	this.imperadorEntryBox.string = new int[] {255, 255, 255, 255};
             this.imperadorEntryBox.background = new int[] {Theme.INSTANCE.focused.getRed(), Theme.INSTANCE.focused.getGreen(), Theme.INSTANCE.focused.getBlue(), Theme.INSTANCE.focused.getAlpha()};
+            this.imperadorEntryBox.setIsShadow(true);
         }
 
         if (this.value.lastSet() != null) {
@@ -166,13 +170,13 @@ public class EntryWidget extends Widget {
         	this.value.motherfuck(this.imperadorEntryBox.getText());
         }
 
-        this.rect.setWidth(this.getMother().getRect().getWidth());
-        this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.rect.getHeight());
+        this.value.setFocused(this.imperadorEntryBox.isFocused());
+        this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY() + (this.master.getDistance()), this.rect.getWidth(), this.rect.getHeight() - (this.master.getDistance() * 2));
         this.flag.setEnabled(this.value.isShow());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
         this.imperadorEntryBox.scissor();
-        this.imperadorEntryBox.setOffsetY(3f);
+        this.imperadorEntryBox.setOffsetY(2f);
     }
 
     @Override
@@ -192,13 +196,13 @@ public class EntryWidget extends Widget {
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
 
         // Entry box post render.
         this.imperadorEntryBox.onRender();

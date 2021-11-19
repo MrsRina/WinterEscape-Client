@@ -10,6 +10,7 @@ import me.rina.hyperpop.api.value.type.*;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.hyperpop.impl.module.impl.combat.ModuleKillAura;
+import me.rina.hyperpop.impl.module.internal.OverlayElementWelcome;
 import org.lwjgl.input.Keyboard;
 
 import java.io.*;
@@ -36,30 +37,15 @@ public class ModuleManager extends Feature {
     }
 
     public void preInitAll() {
-        this.add(new ModuleKillAura());
+        // Client.
+        this.add(new ModuleHUDEditor());
         this.add(new ModuleUserInterface());
 
-        // Dev thing.
+        // Combat.
         this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleKillAura());
-        this.add(new ModuleHUDEditor());
+
+        // Overlay.
+        this.add(new OverlayElementWelcome());
     }
 
     public void onKeyboard(int key) {
@@ -85,8 +71,10 @@ public class ModuleManager extends Feature {
     }
 
     public void onOverlayRender(float partialTicks) {
+        final boolean editorIsEnabled = ModuleHUDEditor.INSTANCE.isEnabled();
+
         for (Module modules : this.getModuleList()) {
-            if (modules.isEnabled()) {
+            if (modules.isEnabled() && !editorIsEnabled) {
                 modules.onOverlayRender(partialTicks);
             }
         }
@@ -184,26 +172,24 @@ public class ModuleManager extends Feature {
         JsonObject data = new JsonObject();
 
         for (Value values : module.getValueList()) {
-            Value value = values;
-
-            if (value instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) value;
+            if (values instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) values;
 
                 data.add(checkBox.getTag(), new JsonPrimitive(checkBox.getValue()));
-            } else if (value instanceof Entry) {
-                Entry entryValue = (Entry) value;
+            } else if (values instanceof Entry) {
+                Entry entryValue = (Entry) values;
 
                 data.add(entryValue.getTag(), new JsonPrimitive(entryValue.getValue()));
-            } else if (value instanceof Slider) {
-                Slider slider = (Slider) value;
+            } else if (values instanceof Slider) {
+                Slider slider = (Slider) values;
 
                 data.add(slider.getTag(), new JsonPrimitive(slider.getValue()));
-            } else if (value instanceof Combobox) {
-                Combobox combobox = (Combobox) value;
+            } else if (values instanceof Combobox) {
+                Combobox combobox = (Combobox) values;
 
                 data.add(combobox.getTag(), new JsonPrimitive(combobox.getValue()));
-            } else if (value instanceof BindBox) {
-                BindBox bindBox = (BindBox) value;
+            } else if (values instanceof BindBox) {
+                BindBox bindBox = (BindBox) values;
                 JsonObject objectBindBox = new JsonObject();
 
                 objectBindBox.add("key", new JsonPrimitive(bindBox.getKey() == -1 ? "NONE" : Keyboard.getKeyName(bindBox.getKey())));
@@ -229,23 +215,22 @@ public class ModuleManager extends Feature {
         JsonObject object = parser.parse(new InputStreamReader(input)).getAsJsonObject();
 
         for (Value values : module.getValueList()) {
-            Value value = values;
-            JsonElement valueObject = object.get(value.getTag());
+            JsonElement valueObject = object.get(values.getTag());
 
             if (valueObject == null) {
                 continue;
             }
 
-            if (value instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) value;
+            if (values instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) values;
 
                 checkBox.setValue(valueObject.getAsBoolean());
-            } else if (value instanceof Entry) {
-                Entry entryValue = (Entry) value;
+            } else if (values instanceof Entry) {
+                Entry entryValue = (Entry) values;
 
                 entryValue.setValue(valueObject.getAsString());
-            } else if (value instanceof Slider) {
-                Slider slider = (Slider) value;
+            } else if (values instanceof Slider) {
+                Slider slider = (Slider) values;
 
                 if (slider.getValue() instanceof Integer) {
                     slider.setValue(valueObject.getAsInt());
@@ -254,12 +239,12 @@ public class ModuleManager extends Feature {
                 } else if (slider.getValue() instanceof Float) {
                     slider.setValue(valueObject.getAsFloat());
                 }
-            } else if (value instanceof Combobox) {
-                Combobox combobox = (Combobox) value;
+            } else if (values instanceof Combobox) {
+                Combobox combobox = (Combobox) values;
 
                 combobox.setValue(valueObject.getAsString());
-            } else if (value instanceof BindBox) {
-                BindBox bindBox = (BindBox) value;
+            } else if (values instanceof BindBox) {
+                BindBox bindBox = (BindBox) values;
 
                 if (valueObject.getAsJsonObject().get("key") != null) {
                     String keyName = valueObject.getAsJsonObject().get("key").getAsString();

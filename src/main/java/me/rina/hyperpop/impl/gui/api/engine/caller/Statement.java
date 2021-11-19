@@ -9,6 +9,10 @@ import java.awt.*;
  * @since 09/09/2021 at 19:09
  **/
 public class Statement {
+    public static void scissor(int x, int y, int w, int h) {
+        GL11.glScissor(x, y, w, h);
+    }
+
     public static void set(int state) {
         GL11.glEnable(state);
     }

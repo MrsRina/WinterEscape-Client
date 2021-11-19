@@ -1,6 +1,7 @@
 package me.rina.hyperpop.impl.gui.impl.widget;
 
 import me.rina.hyperpop.api.module.Module;
+import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.*;
 import me.rina.hyperpop.impl.gui.GUI;
@@ -36,6 +37,13 @@ public class ModuleWidget extends Widget {
 
     public ModuleWidget(GUI gui, ModuleFrame mother, Module module) {
         super(gui, module.getTag());
+
+        if (module instanceof OverlayElement) {
+            final OverlayElement overlayElement = (OverlayElement) module;
+
+            this.master.addOverlayElement(overlayElement);
+            this.rect.setTag(overlayElement.getRect().getTag());
+        }
 
         this.module = module;
         this.mother = mother;
@@ -189,7 +197,7 @@ public class ModuleWidget extends Widget {
                 this.getMother().reloadPositionConfiguration();
 
                 Textures.set(this.textureArrow, this.flag.isEnabled() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
-
+                this.interpolatedArrowTick = 0;
             }
 
             this.flag.setMouseClickedRight(false);
@@ -248,12 +256,12 @@ public class ModuleWidget extends Widget {
     @Override
     public void onUpdate() {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
-        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
+        this.rect.setY(this.getMother().getRect().getY() + this.mother.getOffsetY() + this.getOffsetY());
 
         float off_space = 2;
         float size = (this.rect.getHeight() - (off_space * 2));
 
-        this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - off_space);
+        this.textureArrow.setX(this.rect.getX() + this.rect.getWidth() - this.textureArrow.getWidth() - 1f);
         this.textureArrow.setY(this.rect.getY() + off_space);
 
         this.textureArrow.setWidth(size);
@@ -274,7 +282,7 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onCustomUpdate() {
-        this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()));
+        this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
 
         for (Widget widgets : this.loadedWidgetList) {
             if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
@@ -291,24 +299,24 @@ public class ModuleWidget extends Widget {
         this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.module.isEnabled() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
+
+        // Pressed draw.
+        this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
+
+        Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
+        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
 
         // Texture arrow.
         this.interpolatedArrowTick = Processor.interpolation(this.interpolatedArrowTick, 255, this.master.getDisplay().getPartialTicks() * 0.1f);
 
         Texturing.render(this.textureArrow);
 
-        // Pressed draw.
-        this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
-
-        Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
-
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
 
         // The tag.
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
@@ -320,6 +328,7 @@ public class ModuleWidget extends Widget {
             }
 
             widgets.onRender();
+            Processor.setScissor(this.mother.getProtectedScrollRect(), this.master.getDisplay());
         }
     }
 

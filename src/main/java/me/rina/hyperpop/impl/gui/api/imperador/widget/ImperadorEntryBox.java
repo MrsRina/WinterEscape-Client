@@ -5,9 +5,11 @@ package me.rina.hyperpop.impl.gui.api.imperador.widget;
  * @since 09/09/2021 at 19:00
  **/
 
+import me.rina.hyperpop.Client;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.imperador.ImperadorUtil;
 import me.rina.turok.hardware.mouse.TurokMouse;
 import me.rina.turok.render.font.TurokFont;
@@ -17,6 +19,8 @@ import me.rina.turok.render.opengl.TurokShaderGL;
 import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
 import me.rina.turok.util.TurokTick;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +39,8 @@ public class ImperadorEntryBox extends Widget {
 
     private int indexA;
     private int indexB;
+
+    protected int doubleClickTick;
 
     public int[] string = new int[] {255, 255, 255, 255};
     public int[] pressed = new int[] {255, 255, 255, 0};
@@ -374,8 +380,13 @@ public class ImperadorEntryBox extends Widget {
             index = this.text.length();
         }
 
-        this.setIndexA(index);
-        this.setIndexB(index);
+        if (index > this.indexA && index < this.indexB && !this.pressTick.isPassedMS(750)) {
+            this.setIndexA(0);
+            this.setIndexB(this.text.length());
+        } else {
+            this.setIndexA(index);
+            this.setIndexB(index);
+        }
     }
 
     public void doMouseScroll(TurokMouse mouse) {
@@ -749,11 +760,75 @@ public class ImperadorEntryBox extends Widget {
             this.splitTick.reset();
             this.setFocused(this.isMouseOver());
 
-            if (this.pressTick.isPassedMS(500)) {
+            if (this.pressTick.isPassedMS(750)) {
                 this.pressTick.reset();
+                this.doubleClickTick = 0;
             } else {
-                this.setIndexA(0);
-                this.setIndexB(this.text.length());
+                this.doubleClickTick++;
+            }
+
+            if (this.doubleClickTick >= 2) {
+                if (this.text.isEmpty()) {
+                    this.setIndexA(0);
+                    this.setIndexB(0);
+
+                    return;
+                }
+
+                if (this.indexA == 0 && this.indexB == this.text.length()) {
+                    Client.log("No index");
+
+                    return;
+                }
+
+                this.offsetW = TurokMath.clamp(this.master.getMouse().getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
+                this.offsetH = this.getIndexByPosition(this.offsetW);
+
+                int i = 0;
+
+                int foundSpace = 0;
+                int start = 0;
+
+                for (String c : this.text.split("")) {
+                    if (c.equals(" ")) {
+                        foundSpace++;
+                    }
+
+                    if (i == this.offsetH) {
+                        break;
+                    }
+
+                    i++;
+                }
+
+                int countSpace = 0;
+                int end = -1;
+
+                i = 0;
+
+                for (String c : this.text.split("")) {
+                    if (countSpace == foundSpace && end == -1) {
+                        start = i;
+                        end = i;
+                    }
+
+                    i++;
+
+                    if (c.equals(" ")) {
+                        countSpace++;
+
+                        if (end != -1) {
+                            break;
+                        }
+                    } else {
+                        if (end != -1) {
+                            end = i;
+                        }
+                    }
+                }
+
+                this.setIndexA(start);
+                this.setIndexB(end);
             }
 
             this.setPressed(true);
@@ -844,7 +919,30 @@ public class ImperadorEntryBox extends Widget {
                 r = false;
             }
 
-            Processor.string(this.getFont(), c, this.rect.getX() + this.offsetX + k, this.rect.getY() + this.offsetY, color);
+            Statement.set(GL11.GL_TEXTURE_2D);
+            Statement.blend();
+
+            GlStateManager.enableAlpha();
+            Statement.color(color);
+
+            float x = this.rect.getX() + this.offsetX + k;
+            float y = this.rect.getY() + this.offsetY;
+
+            if (this.getIsShadow()) {
+                if (this.getFont().isRenderingCustomFont()) {
+                    this.getFont().drawStringWithShadow(c, x, y, color.getRGB());
+                } else {
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(c, (int) x, (int) y, color.getRGB());
+                }
+            } else {
+                if (this.getFont().isRenderingCustomFont()) {
+                    this.getFont().drawString(c, x, y, color.getRGB());
+                } else {
+                    Minecraft.getMinecraft().fontRenderer.drawString(c, (int) x, (int) y, color.getRGB());
+                }
+            }
+
+            Statement.unset(GL11.GL_TEXTURE_2D);
 
             if (r && i == this.getIndexA() && this.isFocused()) {
                 this.split(k);

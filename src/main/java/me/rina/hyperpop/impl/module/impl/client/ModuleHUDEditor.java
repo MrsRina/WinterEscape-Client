@@ -9,7 +9,7 @@ import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.impl.gui.GUI;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * @author Rina
@@ -22,7 +22,7 @@ public class ModuleHUDEditor extends Module {
 	public static Slider settingGreen = new Slider("Green", "Green value of all HUD color mode.", 255, 0, 255);
 	public static Slider settingBlue = new Slider("Blue", "Blue value of all HUD color mode.", 0, 0, 255);
 
-	public static Entry settingEntry = new Entry("Hello", "Entry box.", "Holy Client");
+	public static Entry settingFont = new Entry("Font", "The font for overlay.", "Arial");
 	public static Color COLOR_HUD = new Color(255, 255, 255, 255); 
 
 	public ModuleHUDEditor() {
@@ -59,6 +59,16 @@ public class ModuleHUDEditor extends Module {
 	@Override
 	public void onDisable() {
 		Client.INSTANCE.userInterfaceGUI.onGuiClosed();
+
+		if (!settingFont.getValue().equalsIgnoreCase(Client.OVERLAY_FONT.getFontName())) {
+			Font font = new Font(settingFont.getValue(), 0, 16);
+
+			if (font.getFontName().equalsIgnoreCase("Default")) {
+				font = new Font("Tahoma", 0,16);
+			}
+
+			Client.OVERLAY_FONT.setFont(font);
+		}
 	}
 
 	@Override

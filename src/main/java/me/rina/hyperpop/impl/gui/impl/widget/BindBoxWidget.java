@@ -67,6 +67,8 @@ public class BindBoxWidget extends Widget {
     @Override
     public void onClose() {
         this.clear();
+        this.flag.setMouseClickedLeft(false);
+        this.flag.setMouseClickedRight(false);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class BindBoxWidget extends Widget {
                 case Keyboard.KEY_ESCAPE: {
                     this.flag.setLocked(false);
 
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
+                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "[NONE]" : "[" + Keyboard.getKeyName(this.value.getKey()).toUpperCase() + "]");
 
                     break;
                 }
@@ -90,7 +92,7 @@ public class BindBoxWidget extends Widget {
                     this.value.setKey(-1);
                     this.flag.setLocked(false);
 
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "NONE");
+                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "[NONE]");
 
                     break;
                 }
@@ -99,7 +101,7 @@ public class BindBoxWidget extends Widget {
                     this.value.setKey(keyCode);
                     this.flag.setLocked(false);
 
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, Keyboard.getKeyName(keyCode).toUpperCase());
+                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "[" + Keyboard.getKeyName(this.value.getKey()).toUpperCase() + "]");
 
                     break;
                 }
@@ -110,7 +112,7 @@ public class BindBoxWidget extends Widget {
     @Override
     public void onMouseReleased(int button) {
         if (this.flag.isLocked()) {
-            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
+            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "[NONE]" : "[" + Keyboard.getKeyName(this.value.getKey()).toUpperCase() + "]");
             this.flag.setLocked(false);
         }
 
@@ -126,7 +128,7 @@ public class BindBoxWidget extends Widget {
             this.flag.setLocked(this.flag.isMouseOver());
 
             if (this.flag.isLocked()) {
-                this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "<key>");
+                this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "[KEY]");
             }
 
             this.flag.setMouseClickedLeft(false);
@@ -173,24 +175,24 @@ public class BindBoxWidget extends Widget {
     @Override
     public void onUpdate() {
         if (this.keySizeWidth == -1) {
-            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
+            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, this.value.getKey() == -1 ? "[NONE]" : "[" + Keyboard.getKeyName(this.value.getKey()).toUpperCase() + "]");
         }
 
         float off_space = 2;
 
-        this.rectKey.setX(this.rect.getX() + this.rect.getWidth() - this.rectKey.getWidth() - off_space);
-        this.rectKey.setY(this.rect.getY() + off_space);
+        this.rectKey.setX(this.rect.getX());
+        this.rectKey.setY(this.rect.getY() + 1);
 
-        this.rectKey.setWidth(this.keySizeWidth + 2f);
-        this.rectKey.setHeight(this.rect.getHeight() - 3);
+        this.rectKey.setWidth(this.rect.getWidth());
+        this.rectKey.setHeight(this.rect.getHeight() - (2));
 
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        int diff = 0;
+        int diff = 1;
 
         this.setOffsetX(diff);
-        this.rect.setWidth(this.getMother().getRect().getWidth());
+        this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
         this.flag.setEnabled(this.value.isShow());
 
@@ -212,36 +214,37 @@ public class BindBoxWidget extends Widget {
 
     @Override
     public void onRender() {
-        // Selected draw.
-        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? (Theme.INSTANCE.selected.getAlpha()) : 0, this.master.getDisplay());
-
-        Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
-        Processor.solid(this.rect);
-
         // Post focused background.
         Processor.prepare(Theme.INSTANCE.focused);
         Processor.solid(this.rectKey);
 
+        // Selected draw.
+        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? (Theme.INSTANCE.selected.getAlpha()) : 0, this.master.getDisplay());
+
+        Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
+        Processor.solid(this.rectKey);
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y - (this.master.getDistance()), this.rect.getWidth(), this.rect.height + (this.master.getDistance() * 2));
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
 
         // The tag.
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.keySizeWidth - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 2, Theme.INSTANCE.background);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
 
         // Key.
         this.interpolatedStringAlpha = Processor.interpolation(this.interpolatedStringAlpha, this.flag.isLocked() ? (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(500) ? 255 : 0) : Theme.INSTANCE.string.getAlpha(), this.master.getDisplay());
 
         if (this.interpolatedStringAlpha >= 20) {
-            Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? "<key>" : (this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase()), this.rectKey.getX() + 1f, this.rectKey.getY() + 1, this.interpolatedStringAlpha);
+            Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? "[KEY]" : (this.value.getKey() == -1 ? "[NONE]" : ("[" + Keyboard.getKeyName(this.value.getKey()).toUpperCase() + "]")), this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 1f, this.rect.getY() + 2f, this.interpolatedStringAlpha);
         }
     }
 

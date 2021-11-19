@@ -182,6 +182,13 @@ public class ImperadorFrame extends Frame implements IGUI {
         for (IGUI elements : this.getElementList()) {
             elements.onClose();
         }
+
+        this.flag.setDragging(false);
+        this.flag.setResizing(false);
+        this.flag.setDragging(false);
+        this.flag.setMouseClickedLeft(false);
+        this.flag.setMouseClickedRight(false);
+        this.flag.setMouseClickedMiddle(false);
     }
 
     @Override

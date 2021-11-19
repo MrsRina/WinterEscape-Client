@@ -1,9 +1,11 @@
 package me.rina.hyperpop.impl.gui;
 
+import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
+import me.rina.hyperpop.impl.gui.impl.frame.ElementFrame;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.hyperpop.impl.gui.impl.frame.PopupMenuFrame;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
@@ -28,8 +30,8 @@ import java.util.List;
  * @since 10/09/2021 at 15:30
  **/
 public class GUI extends GuiScreen {
-    public static TurokFont FONT_BIG_NORMAL = new TurokFont(new Font("Verdana", 0, 18), true, true);
-    public static TurokFont FONT_NORMAL = new TurokFont(new Font("Verdana", 0, 16), true, true);
+    public static TurokFont FONT_BIG_NORMAL = new TurokFont(new Font("Tahoma", 0, 18), true, true);
+    public static TurokFont FONT_NORMAL = new TurokFont(new Font("Tahoma", 0, 16), true, true);
 
     public static boolean BACKGROUND_MINECRAFT = true;
     public static boolean CUSTOM_BACKGROUND = false;
@@ -37,12 +39,12 @@ public class GUI extends GuiScreen {
     public static boolean HUD_EDITOR = false;
 
     public static double VERSION = 0.6;
-    public static String GUI_WATERMARK = "User Interface " + VERSION + " alpha.";
+    public static String GUI_WATERMARK = "User Interface " + VERSION + " official.";
 
     public static int SCALE_FACTOR = 2;
     public static int HEIGHT_LIMIT = 250;
 
-    public static Color SHADOW_COLOR = new Color(0, 0, 0, 50);
+    public static Color SHADOW_COLOR = new Color(0, 0, 0, 30);
 
     private final List<Frame> loadedFrameList = new ArrayList<>();
     private Frame focusedFrame;
@@ -108,6 +110,13 @@ public class GUI extends GuiScreen {
 
         this.loadedFrameList.remove(this.focusedFrame);
         this.loadedFrameList.add(this.focusedFrame);
+    }
+
+    public void addOverlayElement(OverlayElement element) {
+        ElementFrame frame = new ElementFrame(this, element);
+        frame.init();
+
+        this.loadedFrameList.add(frame);
     }
 
     public void init() {
@@ -228,8 +237,6 @@ public class GUI extends GuiScreen {
         Statement.scale(0.5f, 0.5f, 0.5f);
         Statement.refresh();
 
-        Statement.set(GL11.GL_TEXTURE_2D);
-
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
             
@@ -237,7 +244,7 @@ public class GUI extends GuiScreen {
                 // Shadow.
                 if (this.focusedFrame == frames) {
                     Processor.prepare(GUI.SHADOW_COLOR);
-                    Processor.outline(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
+                    Processor.solid(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
                 }
 
                 frames.onRender();
@@ -271,7 +278,9 @@ public class GUI extends GuiScreen {
 
         // POST FX.
 
-        Statement.set(GL11.GL_TEXTURE_2D);
+        Statement.unset(GL11.GL_TEXTURE_2D);
         Statement.unset(GL11.GL_BLEND);
+
+        Statement.set(GL11.GL_TEXTURE_2D);
     }
 }

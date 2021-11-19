@@ -2,11 +2,13 @@ package me.rina.hyperpop.impl.gui.impl.frame;
 
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
+import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.imperador.frame.ImperadorFrame;
@@ -16,7 +18,9 @@ import me.rina.hyperpop.impl.gui.impl.widget.ModuleWidget;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -69,7 +73,7 @@ public class ModuleFrame extends ImperadorFrame {
     }
 
     public void reloadPositionConfiguration() {
-        int size = this.getTitleHeight() + this.master.getDistance();
+        int size = this.getTitleHeight() + this.master.getDistance() * 2;
 
         for (IGUI elements : this.getElementList()) {
             if (elements instanceof ModuleWidget) {
@@ -87,6 +91,7 @@ public class ModuleFrame extends ImperadorFrame {
         }
 
         this.rect.setHeight(Processor.clamp(size, 0, GUI.HEIGHT_LIMIT));
+        this.sizeamount = size;
     }
 
     public void updateScroll() {
@@ -95,10 +100,6 @@ public class ModuleFrame extends ImperadorFrame {
         }
 
         float theDiff = this.rect.getHeight() - this.sizeamount;
-
-        if (this.master.getMouse().hasWheel()) {
-            this.scrollamount -= this.master.getMouse().getScroll();
-        }
 
         int i = -((this.hasWheel ? Mouse.getDWheel() : 0) / 10);
 
@@ -113,6 +114,7 @@ public class ModuleFrame extends ImperadorFrame {
         }
 
         this.scrollamount = Processor.clamp(this.scrollamount, theDiff, 0);
+        this.setOffsetY(Processor.interpolation(this.getOffsetY(), this.scrollamount, this.master.getDisplay()));
     }
 
     public TurokRect getProtectedScrollRect() {
@@ -180,7 +182,7 @@ public class ModuleFrame extends ImperadorFrame {
     @Override
     public void onUpdate() {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
-        this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight(), this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
+        this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
         float off_space = 2;
         float size = (this.getTitleHeight());
@@ -191,8 +193,8 @@ public class ModuleFrame extends ImperadorFrame {
         this.textureGeneric.setWidth(size);
         this.textureGeneric.setHeight(size);
 
-        this.textureGeneric.setTextureWidth((int) this.textureGeneric.getWidth());
-        this.textureGeneric.setTextureHeight((int) this.textureGeneric.getHeight());
+        this.textureGeneric.setTextureWidth((int) size);
+        this.textureGeneric.setTextureHeight((int) size);
 
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
@@ -223,11 +225,11 @@ public class ModuleFrame extends ImperadorFrame {
 
         // Background.
         Processor.prepare(Theme.INSTANCE.background);
-        Processor.solid(this.rect.x, this.rect.y + this.getTitleHeight() + 1f, this.rect.width, this.rect.height - this.getTitleHeight() - 1f);
+        Processor.solid(this.rect.x, this.rect.y + this.getTitleHeight() + this.master.getDistance(), this.rect.width, this.rect.height - this.getTitleHeight() - this.master.getDistance());
 
         // Outline stuff.
         Processor.prepare(Theme.INSTANCE.focused);
-        Processor.outline(this.rect.x, this.rect.y + this.getTitleHeight() + 1f, this.rect.width, this.rect.height - this.getTitleHeight() - 1f);
+        Processor.outline(this.rect.x + 0.1f, this.rect.y + this.getTitleHeight() + this.master.getDistance(), this.rect.width - 0.5f, this.rect.height - this.getTitleHeight() - this.master.getDistance() - 0.5f);
 
         // Render the icon.
         Texturing.render(this.textureGeneric);
@@ -236,7 +238,13 @@ public class ModuleFrame extends ImperadorFrame {
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
 
         for (IGUI elements : this.getElementList()) {
+            Statement.set(GL11.GL_SCISSOR_TEST);
+            Processor.setScissor(this.scrollRect, this.master.getDisplay());
+
             elements.onRender();
+
+            Processor.setScissor(this.scrollRect, this.master.getDisplay());
+            Processor.unsetScissor();
         }
     }
 }

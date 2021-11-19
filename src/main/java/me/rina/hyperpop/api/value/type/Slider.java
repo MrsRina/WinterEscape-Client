@@ -9,16 +9,16 @@ import me.rina.hyperpop.api.value.Value;
 public class Slider extends Value {
     private Number value;
 
-    private Number maximum;
     private Number minimum;
+    private Number maximum;
 
     public Slider(String tag, String description, Number value, Number minimum, Number maximum) {
         super(tag, description, ValueType.SLIDER);
 
         this.setValue(value);
 
-        this.setMinimum(value);
-        this.setMaximum(value);
+        this.setMinimum(minimum);
+        this.setMaximum(maximum);
     }
 
     public void setValue(Number value) {

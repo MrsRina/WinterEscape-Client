@@ -52,6 +52,8 @@ public class ComboboxWidget extends Widget {
     @Override
     public void onClose() {
         this.clear();
+        this.flag.setMouseClickedLeft(false);
+        this.flag.setMouseClickedRight(false);
     }
 
     @Override
@@ -126,10 +128,10 @@ public class ComboboxWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        int diff = 0;
+        int diff = 1;
 
         this.setOffsetX(diff);
-        this.rect.setWidth(this.getMother().getRect().getWidth());
+        this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
         this.flag.setEnabled(this.value.isShow());
 
@@ -148,21 +150,22 @@ public class ComboboxWidget extends Widget {
     public void onRender() {
         // Focused background.
         Processor.prepare(Theme.INSTANCE.focused);
-        Processor.solid(this.rect.x, this.rect.y - 1, this.rect.getWidth(), this.rect.height + 2);
+        Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
 
         // The tag.
+        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + ": " + this.value.getValue(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 
