@@ -237,16 +237,12 @@ public class GUI extends GuiScreen {
         Statement.scale(0.5f, 0.5f, 0.5f);
         Statement.refresh();
 
+        Statement.unset(GL11.GL_TEXTURE_2D);
+
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
             
             if (frames.getFlag().isEnabled()) {
-                // Shadow.
-                if (this.focusedFrame == frames) {
-                    Processor.prepare(GUI.SHADOW_COLOR);
-                    Processor.solid(this.focusedFrame.getRect().x + 0.4f, this.focusedFrame.getRect().y + 0.4f, this.focusedFrame.getRect().width + 1, this.focusedFrame.getRect().height + 1);
-                }
-
                 frames.onRender();
 
                 if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {

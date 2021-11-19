@@ -63,6 +63,10 @@ public class Texturing {
     }
 
     public static void render(Texture texture, boolean repeat) {
+        if (texture == null || texture.getTag() == null || texture.getBufferedImage() == null || texture.getDynamicTexture() == null || texture.getResourceLocation() == null) {
+            return;
+        }
+
         GL11.glPushMatrix();
 
         renderPrimitive(texture, repeat);
@@ -75,6 +79,10 @@ public class Texturing {
     }
 
     public static void renderPrimitive(Texture texture, boolean repeat) {
+        if (texture == null || texture.getTag() == null || texture.getBufferedImage() == null || texture.getDynamicTexture() == null || texture.getResourceLocation() == null) {
+            return;
+        }
+
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         GL11.glEnable(GL11.GL_BLEND);

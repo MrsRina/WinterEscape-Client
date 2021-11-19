@@ -11,7 +11,8 @@ public class ModuleType {
     public static final int MOVEMENT = 3;
     public static final int CLIENT = 4;
     public static final int HUD = 5;
-    public static final int SIZE = 6;
+    public static final int PLAYER = 6;
+    public static final int SIZE = 7;
 
     public static String toString(int type) {
         if (type == COMBAT) {
@@ -26,6 +27,8 @@ public class ModuleType {
             return "Client";
         } else if (type == HUD) {
             return "HUD";
+        } else if (type == PLAYER) {
+            return "Player";
         }
 
         return "null";

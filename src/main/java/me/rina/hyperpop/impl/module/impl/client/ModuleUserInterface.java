@@ -8,6 +8,7 @@ import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.event.ClientTickEvent;
 import me.rina.hyperpop.api.value.type.CheckBox;
 import me.rina.hyperpop.impl.gui.GUI;
+import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import scala.xml.parsing.FactoryAdapter;
 
 import java.awt.*;

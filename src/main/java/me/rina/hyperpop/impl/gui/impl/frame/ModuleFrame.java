@@ -52,7 +52,11 @@ public class ModuleFrame extends ImperadorFrame {
 
         this.rect.setWidth(100);
 
-        Textures.set(this.textureGeneric, Texturing.get("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png"));
+        Texture texture = Texturing.get("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png");
+
+        if (texture != null) {
+            Textures.set(this.textureGeneric, Texturing.get("/assets/generic/" + ModuleType.toString(moduleType).toLowerCase() + ".png"));
+        }
     }
 
     public void init() {
@@ -74,6 +78,8 @@ public class ModuleFrame extends ImperadorFrame {
 
     public void reloadPositionConfiguration() {
         int size = this.getTitleHeight() + this.master.getDistance() * 2;
+        int last = this.getElementList().size();
+        int i = 0;
 
         for (IGUI elements : this.getElementList()) {
             if (elements instanceof ModuleWidget) {
@@ -82,10 +88,18 @@ public class ModuleFrame extends ImperadorFrame {
                 widget.setOffsetY(size);
                 widget.reloadPositionConfiguration();
 
+                i++;
+
+                int added = 0;
+
+                if (i == last) {
+                    added = 1;
+                }
+
                 if (widget.getFlag().isEnabled()) {
-                    size += widget.getWidgetListHeight();
+                    size += widget.getWidgetListHeight() + added;
                 } else {
-                    size += widget.getRect().getHeight() + this.master.getDistance();
+                    size += widget.getRect().getHeight() + this.master.getDistance() + added;
                 }
             }
         }
