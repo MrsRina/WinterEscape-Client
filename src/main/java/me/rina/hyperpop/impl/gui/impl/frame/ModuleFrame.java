@@ -199,7 +199,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
 
         float off_space = 2;
-        float size = (this.getTitleHeight());
+        float size = (this.getTitleHeight() - 1);
 
         this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - off_space);
         this.textureGeneric.setY(this.rect.getY() + 1);

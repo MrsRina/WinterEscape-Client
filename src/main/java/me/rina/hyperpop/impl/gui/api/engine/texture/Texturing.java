@@ -1,5 +1,6 @@
 package me.rina.hyperpop.impl.gui.api.engine.texture;
 
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -71,7 +72,7 @@ public class Texturing {
 
         renderPrimitive(texture, repeat);
 
-        GL11.glPushMatrix();
+        GL11.glPopMatrix();
     }
 
     public static void render(Texture texture) {
@@ -92,10 +93,10 @@ public class Texturing {
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getResourceLocation());
 
-        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
         GuiScreen.drawModalRectWithCustomSizedTexture((int) texture.x, (int) texture.y, 0, 0, (int) texture.getWidth(), (int) texture.getHeight(), (int) texture.getTextureWidth(), (int) texture.getTextureHeight());
+
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
     }
 
     public static void renderPrimitive(Texture texture) {

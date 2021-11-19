@@ -81,8 +81,6 @@ public class Processor {
         Statement.vertex2d(x, y);
 
         Statement.draw();
-
-        Statement.set(GL11.GL_TEXTURE_2D);
         Statement.refresh();
     }
 
@@ -93,6 +91,8 @@ public class Processor {
     public static void string(TurokFont font, String string, float x, float y, int alpha) {
         boolean shadow = true; // Theme.INSTANCE.shadow$True$False(background);
         Color color = Theme.INSTANCE.getString(alpha);
+
+        Statement.matrix();
 
         Statement.set(GL11.GL_TEXTURE_2D);
         Statement.blend();
@@ -114,7 +114,7 @@ public class Processor {
             }
         }
 
-        Statement.unset(GL11.GL_TEXTURE_2D);
+        Statement.refresh();
     }
     /* End of post fx render functions. */
 

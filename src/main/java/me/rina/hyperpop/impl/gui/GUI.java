@@ -231,12 +231,6 @@ public class GUI extends GuiScreen {
             this.drawDefaultBackground();
         }
 
-        Statement.matrix();
-        Statement.translate(this.display.getScaledWidth(), this.display.getScaledHeight(), 0);
-
-        Statement.scale(0.5f, 0.5f, 0.5f);
-        Statement.refresh();
-
         Statement.unset(GL11.GL_TEXTURE_2D);
 
         for (Frame frames : this.loadedFrameList) {
@@ -278,5 +272,6 @@ public class GUI extends GuiScreen {
         Statement.unset(GL11.GL_BLEND);
 
         Statement.set(GL11.GL_TEXTURE_2D);
+        Statement.unset(GL11.GL_BLEND);
     }
 }

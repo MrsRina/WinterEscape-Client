@@ -7,11 +7,14 @@ import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.preset.management.PresetManager;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.*;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
 import me.rina.hyperpop.impl.module.impl.combat.ModuleKillAura;
 import me.rina.hyperpop.impl.module.internal.OverlayElementWelcome;
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -76,6 +79,21 @@ public class ModuleManager extends Feature {
         for (Module modules : this.getModuleList()) {
             if (modules.isEnabled() && !editorIsEnabled) {
                 modules.onOverlayRender(partialTicks);
+
+                GL11.glPushMatrix();
+
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glEnable(GL11.GL_BLEND);
+
+                GlStateManager.enableBlend();
+
+                GL11.glPopMatrix();
+
+                GlStateManager.enableCull();
+                GlStateManager.depthMask(true);
+                GlStateManager.enableTexture2D();
+                GlStateManager.enableBlend();
+                GlStateManager.enableDepth();
             }
         }
     }

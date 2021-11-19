@@ -159,7 +159,7 @@ public class ComboboxWidget extends Widget {
         Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
         // Highlight draw.
-        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay().getPartialTicks() * 0.1f);
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
         Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));

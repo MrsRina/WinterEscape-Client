@@ -5,6 +5,8 @@ import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
+import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -141,6 +143,22 @@ public class ElementFrame extends Frame {
 
         // Draw element.
         this.element.onRender(this.master.getDisplay().getPartialTicks());
+
+        // g.
+        GL11.glPushMatrix();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+
+        GlStateManager.enableBlend();
+
+        GL11.glPopMatrix();
+
+        GlStateManager.enableCull();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.enableDepth();
     }
 
     @Override

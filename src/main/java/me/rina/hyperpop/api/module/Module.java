@@ -25,7 +25,7 @@ public class Module extends Feature {
 
         this.setType(type);
 
-        this.registry(this.keyBind = new BindBox("KeyBind", "Set module key bind.", false));
+        this.registry(this.keyBind = new BindBox("BIND", "Set module key bind.", false));
         this.registry(this.toggleMessage = new Combobox("ToggleMessage", "Message when toggled the module.", "Silent", "Silent", "Static", "Disabled"));
     }
 

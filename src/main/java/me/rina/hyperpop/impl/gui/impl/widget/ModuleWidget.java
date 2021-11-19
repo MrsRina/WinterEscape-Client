@@ -313,7 +313,7 @@ public class ModuleWidget extends Widget {
         Texturing.render(this.textureArrow);
 
         // Highlight draw.
-        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay().getPartialTicks());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
         Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));

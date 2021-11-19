@@ -185,7 +185,7 @@ public class SliderWidget extends Widget {
 
         // The tag.
         Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + " " + this.value.getValue().toString(), this.rect.getX() + 2, this.rect.getY() + 2, Theme.INSTANCE.background);
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + " " + this.value.getValue().toString(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 
     @Override
