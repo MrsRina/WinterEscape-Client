@@ -83,8 +83,6 @@ public class BindBoxWidget extends Widget {
                 case Keyboard.KEY_ESCAPE: {
                     this.flag.setLocked(false);
 
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
-
                     break;
                 }
 
@@ -92,16 +90,12 @@ public class BindBoxWidget extends Widget {
                     this.value.setKey(-1);
                     this.flag.setLocked(false);
 
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "NONE");
-
                     break;
                 }
 
                 default: {
                     this.value.setKey(keyCode);
                     this.flag.setLocked(false);
-
-                    this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, Keyboard.getKeyName(this.value.getKey()).toUpperCase());
 
                     break;
                 }
@@ -112,7 +106,6 @@ public class BindBoxWidget extends Widget {
     @Override
     public void onMouseReleased(int button) {
         if (this.flag.isLocked()) {
-            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL,  this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
             this.flag.setLocked(false);
         }
 
@@ -126,10 +119,6 @@ public class BindBoxWidget extends Widget {
 
         if (this.flag.isMouseClickedLeft()) {
             this.flag.setLocked(this.flag.isMouseOver());
-
-            if (this.flag.isLocked()) {
-                this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "...");
-            }
 
             this.flag.setMouseClickedLeft(false);
         }
@@ -174,9 +163,7 @@ public class BindBoxWidget extends Widget {
 
     @Override
     public void onUpdate() {
-        if (this.keySizeWidth == -1) {
-            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, this.value.getKey() == -1 ? "NONE" : Keyboard.getKeyName(this.value.getKey()).toUpperCase());
-        }
+        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
 
         float off_space = 2;
 
@@ -262,7 +249,11 @@ public class BindBoxWidget extends Widget {
             this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, animation);
         }
 
-        Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? animation : (this.value.getKey() == -1 ? "NONE" : (Keyboard.getKeyName(this.value.getKey()).toUpperCase())), this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 3f, this.rect.getY() + 3f, this.interpolatedStringAlpha);
+        final String tag = this.flag.isLocked() ? animation : (this.value.getKey() == -1 ? "NONE" : (Keyboard.getKeyName(this.value.getKey()).toUpperCase()));
+
+        this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, tag);
+
+        Processor.string(GUI.FONT_NORMAL, tag, this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 3f, this.rect.getY() + 3f, this.interpolatedStringAlpha);
     }
 
     @Override

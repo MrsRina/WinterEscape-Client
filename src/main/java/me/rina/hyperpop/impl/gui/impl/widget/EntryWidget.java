@@ -175,7 +175,7 @@ public class EntryWidget extends Widget {
         this.flag.setEnabled(this.value.isShow());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
-        this.imperadorEntryBox.scissor();
+        this.imperadorEntryBox.getScissor().set(this.rect.getX(), this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth(), this.mother.getMother().getProtectedScrollRect().getHeight());
         this.imperadorEntryBox.setOffsetY(2f);
     }
 

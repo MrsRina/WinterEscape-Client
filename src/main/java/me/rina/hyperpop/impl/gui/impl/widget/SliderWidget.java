@@ -113,6 +113,8 @@ public class SliderWidget extends Widget {
 
     @Override
     public void onUpdate() {
+        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
+
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 

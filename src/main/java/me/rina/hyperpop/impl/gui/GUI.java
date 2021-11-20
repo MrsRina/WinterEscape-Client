@@ -112,6 +112,16 @@ public class GUI extends GuiScreen {
         this.loadedFrameList.add(this.focusedFrame);
     }
 
+    public void refreshConfiguration() {
+        for (Frame frames : this.loadedFrameList) {
+            if (frames instanceof ModuleFrame) {
+                ModuleFrame frame = (ModuleFrame) frames;
+
+                frame.reloadPositionConfiguration();
+            }
+        }
+    }
+
     public void addOverlayElement(OverlayElement element) {
         ElementFrame frame = new ElementFrame(this, element);
         frame.init();

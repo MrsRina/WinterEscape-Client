@@ -19,10 +19,11 @@ import java.awt.*;
  **/
 public class ModuleUserInterface extends Module {
     public static ModuleUserInterface INSTANCE;
-    public static CheckBox valueExample = new CheckBox("Button", "A button.", false);
 
     /* By default I want this font. */
     public static Entry settingFont = new Entry("Font", "The font used.", "Tahoma");
+
+    protected boolean lastFontOk;
 
     public ModuleUserInterface() {
         super("GUI", "User interface for client.", ModuleType.CLIENT);
@@ -32,7 +33,21 @@ public class ModuleUserInterface extends Module {
 
     @Override
     public void onSetting() {
-        valueExample.setShow(true);
+        if (!settingFont.isFocused()) {
+            if (!this.lastFontOk) {
+                if (!settingFont.getValue().equals(GUI.FONT_NORMAL.getFontName())) {
+                    Font font = new Font(settingFont.getValue(), 0, 16);
+                    settingFont.setValue(font.getFontName());
+
+                    Client.INSTANCE.userInterfaceGUI.refreshConfiguration();
+                    GUI.FONT_NORMAL.setFont(font);
+                }
+
+                this.lastFontOk = true;
+            }
+        } else {
+            this.lastFontOk = false;
+        }
     }
 
     @Override
@@ -68,19 +83,6 @@ public class ModuleUserInterface extends Module {
 
         if (mc.currentScreen == Client.INSTANCE.userInterfaceGUI && mc.world != null) {
             mc.displayGuiScreen(null);
-        }
-
-        if (!settingFont.getValue().equalsIgnoreCase(GUI.FONT_NORMAL.getFontName())) {
-            Font font = new Font(settingFont.getValue(), 0, 16);
-
-            if (font.getFontName().equalsIgnoreCase("Default")) {
-                font = new Font("Tahoma", 0,16);
-
-                Client.log("Unknown font, type a real font name.");
-                settingFont.setValue("Tahoma");
-            }
-
-            GUI.FONT_NORMAL.setFont(font);
         }
     }
 }

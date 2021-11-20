@@ -134,6 +134,8 @@ public class CheckBoxWidget extends Widget {
         float off_space = 2;
         float size = (this.rect.getHeight() - (off_space * 2));
 
+        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
+
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 

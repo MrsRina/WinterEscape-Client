@@ -27,7 +27,7 @@ public class Entry extends Value {
     }
 
     public void motherfuck(String set) {
-        this.value = value;
+        this.value = set;
     }
 
     public String lastSet() {

@@ -86,7 +86,7 @@ public class ComboboxWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedRight()) {
-            this.master.getPopupMenuFrame().callPopup(this.rect.getTag() + this.mother.getMother().getRect().getTag(), this.master.getMouse().getX(), this.master.getMouse().getY(), 75, this.value.getValue(), this.value.getList());
+            this.master.getPopupMenuFrame().callPopup(this.rect.getTag() + this.getMother().getRect().getTag(), this.master.getMouse().getX(), this.master.getMouse().getY(), 75, this.value.getValue(), this.value.getList());
             this.flag.setMouseClickedRight(false);
         }
 
@@ -125,6 +125,8 @@ public class ComboboxWidget extends Widget {
         float off_space = 2;
         float size = (this.rect.getHeight() - (off_space * 2));
 
+        this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
+
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
@@ -135,7 +137,7 @@ public class ComboboxWidget extends Widget {
 
         this.flag.setEnabled(this.value.isShow());
 
-        if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag() + this.mother.getMother().getRect().getTag())) {
+        if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag() + this.getMother().getRect().getTag())) {
             this.value.setValue(this.master.getPopupMenuFrame().getCallback());
             this.master.getPopupMenuFrame().onClose();
         }
