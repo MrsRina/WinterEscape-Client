@@ -26,7 +26,7 @@ public class ModuleHUDEditor extends Module {
 	public static Color COLOR_HUD = new Color(255, 255, 255, 255); 
 
 	public ModuleHUDEditor() {
-		super("OverlayEditor", "HUD editor.", ModuleType.CLIENT);
+		super("Overlay", "HUD editor.", ModuleType.CLIENT);
 
 		INSTANCE = this;
 	}

@@ -198,14 +198,17 @@ public class EntryWidget extends Widget {
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
         Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
-        // Highlight draw.
-        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
-
-        Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
-
         // Entry box post render.
         this.imperadorEntryBox.onRender();
+
+        // Fix scissor after.
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
+        // Highlight draw.
+        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() && !this.imperadorEntryBox.isFocused() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+        Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
+        Processor.solid(this.imperadorEntryBox.getRect());
     }
 
     @Override

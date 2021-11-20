@@ -127,7 +127,6 @@ public class OverlayElement extends Module implements IGUI {
 			}
 		}
 
-
 		GL11.glPopMatrix();
 	}
 

@@ -10,6 +10,7 @@ import me.rina.hyperpop.api.value.type.*;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.hyperpop.impl.module.impl.client.ModuleUserInterface;
+import me.rina.hyperpop.impl.module.impl.combat.ModuleFastBow;
 import me.rina.hyperpop.impl.module.impl.combat.ModuleKillAura;
 import me.rina.hyperpop.impl.module.internal.OverlayElementWelcome;
 import net.minecraft.client.renderer.GlStateManager;
@@ -46,6 +47,7 @@ public class ModuleManager extends Feature {
 
         // Combat.
         this.add(new ModuleKillAura());
+        this.add(new ModuleFastBow());
 
         // Overlay.
         this.add(new OverlayElementWelcome());

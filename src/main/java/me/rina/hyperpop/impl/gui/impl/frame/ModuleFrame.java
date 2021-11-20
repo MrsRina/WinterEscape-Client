@@ -99,12 +99,11 @@ public class ModuleFrame extends ImperadorFrame {
                 if (widget.getFlag().isEnabled()) {
                     size += widget.getWidgetListHeight() + added;
                 } else {
-                    size += widget.getRect().getHeight() + this.master.getDistance() + added;
+                    size += widget.getRect().getHeight() + added;
                 }
             }
         }
 
-        this.rect.setHeight(Processor.clamp(size, 0, GUI.HEIGHT_LIMIT));
         this.sizeamount = size;
     }
 
@@ -210,6 +209,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.textureGeneric.setTextureWidth((int) size);
         this.textureGeneric.setTextureHeight((int) size);
 
+        this.rect.setHeight(Processor.interpolation(this.rect.getHeight(), Processor.clamp(this.sizeamount, 0, GUI.HEIGHT_LIMIT), this.master.getDisplay()));
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
         for (IGUI elements : this.getElementList()) {
@@ -243,7 +243,7 @@ public class ModuleFrame extends ImperadorFrame {
 
         // Outline stuff.
         Processor.prepare(Theme.INSTANCE.focused);
-        Processor.outline(this.rect.x + 0.1f, this.rect.y + this.getTitleHeight() + this.master.getDistance(), this.rect.width - 0.5f, this.rect.height - this.getTitleHeight() - this.master.getDistance() - 0.5f);
+        Processor.outline(this.rect.x + 0.1f, this.rect.y + this.getTitleHeight() + this.master.getDistance(), this.rect.width - 0.5f, this.rect.height - this.getTitleHeight() - this.master.getDistance() - 0.2f);
 
         // Render the icon.
         Texturing.render(this.textureGeneric);

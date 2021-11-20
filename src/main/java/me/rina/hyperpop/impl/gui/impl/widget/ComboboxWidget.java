@@ -86,7 +86,7 @@ public class ComboboxWidget extends Widget {
         }
 
         if (this.flag.isMouseClickedRight()) {
-            this.master.getPopupMenuFrame().callPopup(this.rect.getTag(), this.master.getMouse().getX(), this.master.getMouse().getY(), 75, this.value.getValue(), this.value.getList());
+            this.master.getPopupMenuFrame().callPopup(this.rect.getTag() + this.mother.getMother().getRect().getTag(), this.master.getMouse().getX(), this.master.getMouse().getY(), 75, this.value.getValue(), this.value.getList());
             this.flag.setMouseClickedRight(false);
         }
 
@@ -135,7 +135,7 @@ public class ComboboxWidget extends Widget {
 
         this.flag.setEnabled(this.value.isShow());
 
-        if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag())) {
+        if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag() + this.mother.getMother().getRect().getTag())) {
             this.value.setValue(this.master.getPopupMenuFrame().getCallback());
             this.master.getPopupMenuFrame().onClose();
         }
@@ -148,25 +148,29 @@ public class ComboboxWidget extends Widget {
 
     @Override
     public void onRender() {
-        // Focused background.
-        Processor.prepare(Theme.INSTANCE.focused);
-        Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
-
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect.x, this.rect.y + (this.master.getDistance()), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // Highlight draw.
-        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay().getPartialTicks() * 0.1f);
+        this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay().getPartialTicks());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
+
+        // Value for down stuff.
+        float sizeValueWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, this.value.getValue());
 
         // The tag.
-        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
-        Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + ": " + this.value.getValue(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth() - sizeValueWidth - 3f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
+        Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
+        // The value.
+        Processor.setScissor((int) this.rect.getX() + this.rect.getWidth() - sizeValueWidth - 3f, (int) this.mother.getMother().getProtectedScrollRect().getY(), sizeValueWidth + 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
+        Processor.string(GUI.FONT_NORMAL, this.value.getValue(), this.rect.getX() + this.rect.getWidth() - sizeValueWidth - 3f, this.rect.getY() + 3, Theme.INSTANCE.string.getAlpha());
     }
 
     @Override

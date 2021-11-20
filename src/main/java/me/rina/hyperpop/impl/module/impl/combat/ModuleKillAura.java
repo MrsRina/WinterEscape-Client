@@ -67,6 +67,7 @@ public class ModuleKillAura extends Module {
 
                 if (settingPacket.getValue()) {
                     mc.player.connection.sendPacket(new CPacketUseEntity(this.entityIn));
+                    mc.player.resetCooldown();
                 } else {
                     mc.playerController.attackEntity(mc.player, this.entityIn);
                 }
@@ -107,19 +108,16 @@ public class ModuleKillAura extends Module {
             }
         }
 
-        if (entity != null) {
-            this.entityIn = entity;
-        }
+        this.entityIn = entity;
     }
 
     public void verifyBestHandHoldingWeapon() {
-        boolean mainhand = mc.player.getHeldItemMainhand().getItem() instanceof ItemSword || mc.player.getHeldItemMainhand().getItem() instanceof ItemAxe;
-        boolean offhand = mc.player.getHeldItemOffhand().getItem() instanceof ItemSword || mc.player.getHeldItemOffhand().getItem() instanceof ItemAxe;
+        EnumHand hand = EnumHand.MAIN_HAND;
 
-        EnumHand hand = !mainhand && offhand ? EnumHand.OFF_HAND : null;
+        if (settingOnlySwordAxe.getValue()) {
+            boolean flag = mc.player.getHeldItemMainhand().getItem() instanceof ItemSword || mc.player.getHeldItemMainhand().getItem() instanceof ItemAxe;
 
-        if (settingOnlySwordAxe.getValue() && (mainhand || offhand)) {
-            hand = mainhand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+            hand = flag ? EnumHand.MAIN_HAND : null;
         }
 
         this.handIn = hand;

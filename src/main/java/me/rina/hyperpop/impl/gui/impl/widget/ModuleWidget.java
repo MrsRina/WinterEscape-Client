@@ -31,7 +31,7 @@ public class ModuleWidget extends Widget {
     protected int interpolatedArrowTick;
 
     private final List<Widget> loadedWidgetList = new ArrayList<>();
-    private int widgetListHeight;
+    private float widgetListHeight;
 
     private final Texture textureArrow = new Texture(null, 0, 0);
 
@@ -94,15 +94,18 @@ public class ModuleWidget extends Widget {
     }
 
     public void reloadPositionConfiguration() {
-        int size = (int) this.rect.getHeight() + this.master.getDistance();
+        float size = (int) this.rect.getHeight() + this.master.getDistance();
         int j = 0;
+        int l = this.loadedWidgetList.size();
 
         for (Widget widgets : this.loadedWidgetList) {
             if (widgets.getFlag().isEnabled()) {
                 widgets.setOffsetY((float) size);
 
-                size += (int) widgets.getRect().getHeight() + this.master.getDistance();
                 j++;
+                int added = j == l ? this.master.getDistance() : 0;
+
+                size += (int) widgets.getRect().getHeight() + added;
             }
         }
 
@@ -117,11 +120,11 @@ public class ModuleWidget extends Widget {
         return module;
     }
 
-    public void setWidgetListHeight(int widgetListHeight) {
+    public void setWidgetListHeight(float widgetListHeight) {
         this.widgetListHeight = widgetListHeight;
     }
 
-    public int getWidgetListHeight() {
+    public float getWidgetListHeight() {
         return widgetListHeight;
     }
 
@@ -197,7 +200,6 @@ public class ModuleWidget extends Widget {
                 this.getMother().reloadPositionConfiguration();
 
                 Textures.set(this.textureArrow, this.flag.isEnabled() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
-                this.interpolatedArrowTick = 0;
             }
 
             this.flag.setMouseClickedRight(false);
@@ -299,16 +301,17 @@ public class ModuleWidget extends Widget {
         this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.module.isEnabled() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
-        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // Texture arrow.
-        this.interpolatedArrowTick = Processor.interpolation(this.interpolatedArrowTick, 255, this.master.getDisplay().getPartialTicks() * 0.1f);
+        this.interpolatedArrowTick = Processor.interpolation(this.interpolatedArrowTick, this.flag.isMouseClickedRight() ? 0 : 255, this.master.getDisplay().getPartialTicks());
+        this.textureArrow.setColor(255, 255, 255, this.interpolatedArrowTick);
 
         Texturing.render(this.textureArrow);
 
@@ -316,7 +319,7 @@ public class ModuleWidget extends Widget {
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay().getPartialTicks());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect.x, this.rect.y - this.master.getDistance(), this.rect.width, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // The tag.
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);

@@ -43,7 +43,7 @@ public class CommandToggle extends Command {
             return;
         }
 
-        final Combobox combobox = (Combobox) module.getValue("ToggleMessage");
+        final Combobox combobox = (Combobox) module.getValue("Alert");
         final String save = combobox.getValue();
 
         combobox.setValue("Disabled");

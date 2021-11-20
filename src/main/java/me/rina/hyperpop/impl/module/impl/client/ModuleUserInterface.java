@@ -25,7 +25,7 @@ public class ModuleUserInterface extends Module {
     public static Entry settingFont = new Entry("Font", "The font used.", "Tahoma");
 
     public ModuleUserInterface() {
-        super("UserInterface", "User interface for client.", ModuleType.CLIENT);
+        super("GUI", "User interface for client.", ModuleType.CLIENT);
 
         INSTANCE = this;
     }

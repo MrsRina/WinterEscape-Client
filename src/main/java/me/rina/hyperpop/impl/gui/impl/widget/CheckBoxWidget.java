@@ -113,7 +113,7 @@ public class CheckBoxWidget extends Widget {
     public void onMouseClicked(int button) {
         if (this.flag.isMouseOver()) {
             this.flag.setMouseClickedLeft(button == 0);
-            this.flag.setMouseClickedRight(button == 2);
+            this.flag.setMouseClickedRight(button == 1);
         }
     }
 
@@ -137,7 +137,7 @@ public class CheckBoxWidget extends Widget {
         this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
         this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
 
-        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth());
+        this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - 1f);
         this.textureCheckBox.setY(this.rect.getY() + off_space);
 
         this.textureCheckBox.setWidth(size);
@@ -175,13 +175,13 @@ public class CheckBoxWidget extends Widget {
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // The tag.
         Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.textureCheckBox.getWidth() - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());

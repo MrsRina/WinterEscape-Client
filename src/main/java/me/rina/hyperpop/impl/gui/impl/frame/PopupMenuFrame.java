@@ -42,7 +42,7 @@ public class PopupMenuFrame extends Frame {
         float size = this.master.getDistance();
 
         for (String buttons : list) {
-            size += 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, buttons) + this.master.getDistance();
+            size += 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, buttons);
         }
 
         this.rect.setHeight(size);
@@ -196,7 +196,7 @@ public class PopupMenuFrame extends Frame {
 
         this.over = null;
 
-        float y = this.master.getDistance();
+        float y = 0;
 
         for (String buttons : this.buttonList) {
             float h = 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, buttons);
@@ -218,7 +218,7 @@ public class PopupMenuFrame extends Frame {
             // Name.
             Processor.string(GUI.FONT_NORMAL, buttons, this.rect.getX() + 1f, this.rect.getY() + y + 3, Processor.clamp(this.interpolatedAlphaTick, 0, Theme.INSTANCE.string.getAlpha()));
 
-            y += h + this.master.getDistance();
+            y += h;
         }
     }
 

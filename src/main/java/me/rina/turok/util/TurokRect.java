@@ -168,7 +168,7 @@ public class TurokRect {
 	}
 
 	public boolean collideWithMouse(TurokMouse mouse) {
-		return mouse.getX() >= this.x && mouse.getX() <= (this.x + this.width) && mouse.getY() >= this.y && mouse.getY() <= (this.y + this.height);
+		return mouse.getX() > this.x && mouse.getX() < (this.x + this.width) && mouse.getY() > this.y && mouse.getY() < (this.y + this.height);
 	}
 
 	public boolean collideWithRect(TurokRect rect) {

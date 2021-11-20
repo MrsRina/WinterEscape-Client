@@ -128,7 +128,7 @@ public class BindBoxWidget extends Widget {
             this.flag.setLocked(this.flag.isMouseOver());
 
             if (this.flag.isLocked()) {
-                this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "KEY");
+                this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, "...");
             }
 
             this.flag.setMouseClickedLeft(false);
@@ -223,17 +223,18 @@ public class BindBoxWidget extends Widget {
 
         Processor.prepare(Theme.INSTANCE.getSelected(this.interpolatedSelectedAlpha));
         Processor.solid(this.rectKey);
+
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect.x, this.rect.y - (this.master.getDistance()), this.rect.getWidth(), this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rect);
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
-        Processor.solid(this.rect.x - 1, this.rect.y - (this.master.getDistance()), this.rect.getWidth() + 2, this.rect.height + (this.master.getDistance() * 2));
+        Processor.solid(this.rectKey);
 
         // The tag.
         Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.keySizeWidth - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
@@ -241,11 +242,27 @@ public class BindBoxWidget extends Widget {
         Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
 
         // Key.
-        this.interpolatedStringAlpha = Processor.interpolation(this.interpolatedStringAlpha, this.flag.isLocked() ? (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(500) ? 255 : 0) : Theme.INSTANCE.string.getAlpha(), this.master.getDisplay());
+        this.interpolatedStringAlpha = 255;
 
-        if (this.interpolatedStringAlpha >= 20) {
-            Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? "KEY" : (this.value.getKey() == -1 ? "NONE" : (Keyboard.getKeyName(this.value.getKey()).toUpperCase())), this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 3f, this.rect.getY() + 3f, this.interpolatedStringAlpha);
+        String animation = "";
+
+        if (this.flag.isLocked()) {
+            if (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(250)) {
+                animation = ".";
+            }
+
+            if (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(500)) {
+                animation = "..";
+            }
+
+            if (this.master.getSlowerCooldownUsingAnWidgetTimer().isPassedMS(750)) {
+                animation = "...";
+            }
+
+            this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, animation);
         }
+
+        Processor.string(GUI.FONT_NORMAL, this.flag.isLocked() ? animation : (this.value.getKey() == -1 ? "NONE" : (Keyboard.getKeyName(this.value.getKey()).toUpperCase())), this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 3f, this.rect.getY() + 3f, this.interpolatedStringAlpha);
     }
 
     @Override
