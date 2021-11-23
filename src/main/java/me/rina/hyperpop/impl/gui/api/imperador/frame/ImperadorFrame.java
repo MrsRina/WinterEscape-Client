@@ -3,8 +3,10 @@ package me.rina.hyperpop.impl.gui.api.imperador.frame;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
+import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.imperador.ImperadorUtil;
 import me.rina.turok.hardware.mouse.TurokMouse;
+import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class ImperadorFrame extends Frame implements IGUI {
 
     public void add(IGUI element) {
         this.elementList.add(element);
+        this.master.addElementUI(element);
     }
 
     public TurokRect getRectDrag() {

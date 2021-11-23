@@ -3,6 +3,7 @@ package me.rina.hyperpop.impl.gui;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
@@ -50,6 +51,8 @@ public class GUI extends GuiScreen {
 
     private final List<Frame> loadedFrameList = new ArrayList<>();
     private final List<Frame> focusedFrameList = new ArrayList<>();
+
+    private final List<IGUI> elementList = new ArrayList<>();
 
     private Frame focusedFrame;
 
@@ -137,6 +140,16 @@ public class GUI extends GuiScreen {
         }
     }
 
+    public void onReloadAll() {
+        this.elementList.clear();
+
+        for (Frame frames : this.loadedFrameList) {
+            if (frames instanceof ModuleFrame && frames.getFlag().isEnabled()) {
+                ((ModuleFrame) frames).onReloadAll();
+            }
+        }
+    }
+
     public void addOverlayElement(OverlayElement element) {
         ElementFrame frame = new ElementFrame(this, element);
         frame.init();
@@ -158,7 +171,12 @@ public class GUI extends GuiScreen {
             offsetSpace += frame.getRect().getWidth() + 1;
 
             this.loadedFrameList.add(frame);
+            this.elementList.add(frame);
         }
+    }
+
+    public void addElementUI(IGUI element) {
+        this.elementList.add(element);
     }
 
     @Override
@@ -190,6 +208,14 @@ public class GUI extends GuiScreen {
 
     @Override
     public void keyTyped(char charCode, int keyCode) {
+        if (keyCode == Keyboard.KEY_F9) {
+            this.elementList.clear();
+            this.focusedFrameList.clear();
+            this.loadedFrameList.clear();
+
+            this.init();
+        }
+
         if (!this.isUpdate() && keyCode == Keyboard.KEY_ESCAPE) {
             mc.displayGuiScreen(null);
 
@@ -330,13 +356,17 @@ public class GUI extends GuiScreen {
 
         Statement.unset(GL11.GL_TEXTURE_2D);
 
+        for (IGUI element : this.elementList) {
+            element.onUpdate();
+        }
+
         this.focusedFrame = null;
 
         for (Frame frames : this.loadedFrameList) {
-            frames.onUpdate();
-            
             if (frames.getFlag().isEnabled()) {
-                frames.onRender();
+                if (!(this.focusedFrame.getFlag().isDragging())) {
+                    frames.onRender();
+                }
 
                 if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
                     this.focusedFrame = frames;
@@ -369,6 +399,12 @@ public class GUI extends GuiScreen {
         }
 
         if (this.focusedFrame != null) {
+            if (this.focusedFrame.getFlag().isDragging()) {
+                for (IGUI element : this.elementList) {
+                    element.onRender();
+                }
+            }
+
             this.focusedFrame.onCustomUpdate();
             this.focusedFrame.onCustomRender();
         }

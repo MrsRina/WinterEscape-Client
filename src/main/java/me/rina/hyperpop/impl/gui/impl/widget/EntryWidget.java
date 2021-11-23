@@ -137,8 +137,8 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onUpdate() {
-        this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
-        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
+        this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         int diff = 1;
 
@@ -175,7 +175,7 @@ public class EntryWidget extends Widget {
         this.flag.setEnabled(this.value.isShow());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
-        this.imperadorEntryBox.getScissor().set(this.rect.getX(), this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth(), this.mother.getMother().getProtectedScrollRect().getHeight());
+        this.imperadorEntryBox.getScissor().set(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth(), this.mother.getMother().getProtectedScrollRect().getHeight());
         this.imperadorEntryBox.setOffsetY(2f);
     }
 

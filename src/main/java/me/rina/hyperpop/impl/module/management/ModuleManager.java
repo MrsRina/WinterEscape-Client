@@ -48,6 +48,26 @@ public class ModuleManager extends Feature {
         // Combat.
         this.add(new ModuleKillAura());
         this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
+        this.add(new ModuleFastBow());
 
         // Overlay.
         this.add(new OverlayElementWelcome());

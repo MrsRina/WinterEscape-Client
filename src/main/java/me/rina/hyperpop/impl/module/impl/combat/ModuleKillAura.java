@@ -59,27 +59,11 @@ public class ModuleKillAura extends Module {
             return;
         }
 
-        int old = mc.player.inventory.currentItem;
-
-        if (mc.player.isHandActive()) {
-            mc.player.connection.sendPacket(new CPacketHeldItemChange(old));
-        }
-
         if (mc.player.getCooledAttackStrength(0) >= 1) {
             this.findForEntities();
             this.verifyBestHandHoldingWeapon();
 
             if (this.entityIn != null && this.handIn != null) {
-                for (int i = 0; i < 9; i++) {
-                    Item item = mc.player.inventory.getStackInSlot(i).getItem();
-
-                    if (item instanceof ItemSword) {
-                        mc.player.connection.sendPacket(new CPacketHeldItemChange(i));
-
-                        break;
-                    }
-                }
-
                 if (mc.player.getHeldItemOffhand().getItem() instanceof ItemShield && settingOffhandUse.getValue()) {
                     mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, mc.player.getHorizontalFacing()));
                 }

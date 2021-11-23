@@ -173,8 +173,8 @@ public class BindBoxWidget extends Widget {
         this.rectKey.setWidth(this.rect.getWidth());
         this.rectKey.setHeight(this.rect.getHeight() - (2));
 
-        this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
-        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
+        this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         int diff = 1;
 
@@ -224,7 +224,7 @@ public class BindBoxWidget extends Widget {
         Processor.solid(this.rectKey);
 
         // The tag.
-        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.keySizeWidth - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
+        Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.keySizeWidth - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
         Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
 

@@ -136,8 +136,8 @@ public class CheckBoxWidget extends Widget {
 
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
 
-        this.rect.setX(this.getMother().getRect().getX() + this.getOffsetX());
-        this.rect.setY(this.getMother().getRect().getY() + this.getOffsetY());
+        this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - 1f);
         this.textureCheckBox.setY(this.rect.getY() + off_space);
@@ -186,7 +186,7 @@ public class CheckBoxWidget extends Widget {
         Processor.solid(this.rect);
 
         // The tag.
-        Processor.setScissor((int) this.rect.getX(), (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.textureCheckBox.getWidth() - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
+        Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.textureCheckBox.getWidth() - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
     }
 

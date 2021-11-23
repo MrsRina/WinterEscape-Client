@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.util.List;
 
 /**
  * @author SrRina
@@ -146,6 +146,16 @@ public class ModuleFrame extends ImperadorFrame {
         return titleHeight;
     }
 
+    public void onReloadAll() {
+        for (IGUI elements : this.getElementList()) {
+            this.master.addElementUI(elements);
+
+            if (elements instanceof ModuleWidget) {
+                ((ModuleWidget) elements).onReloadAll();
+            }
+        }
+    }
+
     @Override
     public void onMouseReleased(int button) {
         this.unset();
@@ -163,6 +173,7 @@ public class ModuleFrame extends ImperadorFrame {
     @Override
     public void onMouseClicked(int button) {
         if (this.flag.isMouseOverDraggable() && button == 0) {
+            this.master.onReloadAll();
             this.setDrag();
             this.flag.setMouseClickedLeft(true);
         }
@@ -194,10 +205,13 @@ public class ModuleFrame extends ImperadorFrame {
 
     @Override
     public void onUpdate() {
+        // We need an smooth scroll and drag, basically;
+        this.updateDrag();
+
         this.titleHeight = 6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag());
 
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
-        this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight());
+        this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight() - this.master.getDistance() * 2);
 
         float off_space = 2;
         float size = (this.getTitleHeight() - 1);
@@ -214,9 +228,8 @@ public class ModuleFrame extends ImperadorFrame {
         this.rect.setHeight(Processor.interpolation(this.rect.getHeight(), Processor.clamp(this.sizeamount, 0, GUI.HEIGHT_LIMIT), this.master.getDisplay()));
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
-        for (IGUI elements : this.getElementList()) {
-            elements.onUpdate();
-        }
+        // E.
+        this.updateScroll();
     }
 
     @Override
@@ -231,10 +244,6 @@ public class ModuleFrame extends ImperadorFrame {
 
     @Override
     public void onRender() {
-        // We need an smooth scroll and drag, basically;
-        this.updateDrag();
-        this.updateScroll();
-
         // Focused.
         Processor.prepare(Theme.INSTANCE.focused);
         Processor.solid(this.rect.x, this.rect.y, this.rect.width, this.getTitleHeight() + 1f);
@@ -253,14 +262,13 @@ public class ModuleFrame extends ImperadorFrame {
         // Title.
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
 
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.scrollRect, this.master.getDisplay());
+
         for (IGUI elements : this.getElementList()) {
-            Statement.set(GL11.GL_SCISSOR_TEST);
-            Processor.setScissor(this.scrollRect, this.master.getDisplay());
-
             elements.onRender();
-
-            Processor.setScissor(this.scrollRect, this.master.getDisplay());
-            Processor.unsetScissor();
         }
+
+        Processor.unsetScissor();
     }
 }

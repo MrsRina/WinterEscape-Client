@@ -5,6 +5,7 @@ import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.value.Value;
 import me.rina.hyperpop.api.value.type.*;
 import me.rina.hyperpop.impl.gui.GUI;
+import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
@@ -67,26 +68,31 @@ public class ModuleWidget extends Widget {
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
+                this.master.addElementUI(widget);
             } else if (values instanceof Entry) {
                 EntryWidget widget = new EntryWidget(this.master, this, (Entry) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
+                this.master.addElementUI(widget);
             } else if (values instanceof Slider) {
                 SliderWidget widget = new SliderWidget(this.master, this, (Slider) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
+                this.master.addElementUI(widget);
             } else if (values instanceof BindBox) {
                 BindBoxWidget widget = new BindBoxWidget(this.master, this, (BindBox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
+                this.master.addElementUI(widget);
             } else if (values instanceof Combobox) {
                 ComboboxWidget widget = new ComboboxWidget(this.master, this, (Combobox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
+                this.master.addElementUI(widget);
             }
         }
 
@@ -126,6 +132,12 @@ public class ModuleWidget extends Widget {
 
     public float getWidgetListHeight() {
         return widgetListHeight;
+    }
+
+    public void onReloadAll() {
+        for (Widget widget : this.loadedWidgetList) {
+            this.master.addElementUI((IGUI) widget);
+        }
     }
 
     @Override
@@ -278,10 +290,6 @@ public class ModuleWidget extends Widget {
 
         this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - (diff * 2));
-
-        for (Widget widgets : this.loadedWidgetList) {
-            widgets.onUpdate();
-        }
     }
 
     @Override
@@ -332,6 +340,7 @@ public class ModuleWidget extends Widget {
                 continue;
             }
 
+            Processor.setScissor(this.mother.getProtectedScrollRect(), this.master.getDisplay());
             widgets.onRender();
             Processor.setScissor(this.mother.getProtectedScrollRect(), this.master.getDisplay());
         }
