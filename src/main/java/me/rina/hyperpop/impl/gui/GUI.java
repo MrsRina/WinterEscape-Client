@@ -1,5 +1,6 @@
 package me.rina.hyperpop.impl.gui;
 
+import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
@@ -15,6 +16,7 @@ import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.render.opengl.TurokShaderGL;
 import me.rina.turok.util.TurokDisplay;
+import me.rina.turok.util.TurokRect;
 import me.rina.turok.util.TurokTick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -47,6 +49,8 @@ public class GUI extends GuiScreen {
     public static Color SHADOW_COLOR = new Color(0, 0, 0, 30);
 
     private final List<Frame> loadedFrameList = new ArrayList<>();
+    private final List<Frame> focusedFrameList = new ArrayList<>();
+
     private Frame focusedFrame;
 
     private final TurokMouse mouse;
@@ -56,7 +60,18 @@ public class GUI extends GuiScreen {
     private int distance;
 
     private final TurokTick slowerCooldownUsingAnWidgetTimer = new TurokTick();
+    private final TurokTick theDoubleClickDelay = new TurokTick();
+
     private final PopupMenuFrame popupMenuFrame;
+
+    protected boolean isMouseClickedLeft;
+    protected boolean isMouseClickedRight;
+
+    protected boolean isSelecting;
+    protected final TurokRect selectRect = new TurokRect("select", 0, 0);
+
+    protected float startSelectX;
+    protected float startSelectY;
 
     public GUI() {
         this.mouse = new TurokMouse();
@@ -181,6 +196,18 @@ public class GUI extends GuiScreen {
             return;
         }
 
+        boolean keyFlagCtrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+
+        if (keyFlagCtrl && keyCode == Keyboard.KEY_A) {
+            this.focusedFrameList.clear();
+
+            for (Frame frames : this.loadedFrameList) {
+                if (frames.getFlag().isEnabled()) {
+                    this.focusedFrameList.add(frames);
+                }
+            }
+        }
+
         for (Frame frames : this.loadedFrameList) {
             if (!frames.getFlag().isEnabled()) {
                 continue;
@@ -209,18 +236,78 @@ public class GUI extends GuiScreen {
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomMouseReleased(button);
         }
+
+        this.isMouseClickedLeft = button == 99;
+        this.isMouseClickedRight = button == 99;
+
+        if (!this.focusedFrameList.isEmpty()) {
+            for (Frame frames : this.focusedFrameList) {
+                frames.onMouseReleased(button);
+            }
+        }
     }
 
     @Override
     public void mouseClicked(int mx, int my, int button) {
         this.popupMenuFrame.onMouseClicked(button);
 
-        for (Frame frames : this.loadedFrameList) {
-            frames.onMouseClicked(button);
-        }
+        boolean keyFlagCtrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+        boolean cancelClick = false;
 
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomMouseClicked(button);
+
+            if (!this.focusedFrameList.contains(this.focusedFrame) && keyFlagCtrl && this.focusedFrame.getFlag().isMouseOverDraggable()) {
+                this.focusedFrameList.add(this.focusedFrame);
+            } else {
+                if (keyFlagCtrl && !this.focusedFrame.getFlag().isMouseOverDraggable() && !this.focusedFrameList.isEmpty()) {
+                    this.focusedFrameList.clear();
+
+                    cancelClick = true;
+                }
+            }
+
+            if ((!this.focusedFrame.getFlag().isMouseOverDraggable() && !keyFlagCtrl) || (!keyFlagCtrl && !this.focusedFrameList.contains(this.focusedFrame))) {
+                this.focusedFrameList.clear();
+            }
+        }
+
+        if (!cancelClick) {
+            for (Frame frames : this.loadedFrameList) {
+                frames.onMouseClicked(button);
+
+                if (!keyFlagCtrl && frames.getFlag().isEnabled() && frames.getFlag().isMouseOverDraggable() && button == 0) {
+                    if (this.theDoubleClickDelay.isPassedMS(200)) {
+                        this.theDoubleClickDelay.reset();
+                    } else {
+                        if (!this.focusedFrameList.contains(frames)) {
+                            this.focusedFrameList.add(frames);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!this.focusedFrameList.isEmpty() && this.focusedFrame != null && this.focusedFrame.getFlag().isMouseOverDraggable()) {
+            for (Frame frames : this.focusedFrameList) {
+                frames.getFlag().setMouseOverDraggable(true);
+                frames.onMouseClicked(button);
+            }
+        }
+
+        if ((this.focusedFrame == null || !this.focusedFrame.getFlag().isMouseOver()) && (!this.popupMenuFrame.getFlag().isEnabled() || !this.popupMenuFrame.getFlag().isMouseOver())) {
+            this.isMouseClickedLeft = button == 0;
+            this.isMouseClickedRight = button == 1;
+
+            if (this.isMouseClickedLeft || this.isMouseClickedRight) {
+                this.focusedFrameList.clear();
+
+                this.selectRect.x = this.mouse.getX();
+                this.selectRect.y = this.mouse.getY();
+
+                this.startSelectX = this.selectRect.getX();
+                this.startSelectY = this.selectRect.getY();
+            }
         }
     }
 
@@ -243,6 +330,8 @@ public class GUI extends GuiScreen {
 
         Statement.unset(GL11.GL_TEXTURE_2D);
 
+        this.focusedFrame = null;
+
         for (Frame frames : this.loadedFrameList) {
             frames.onUpdate();
             
@@ -251,6 +340,28 @@ public class GUI extends GuiScreen {
 
                 if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
                     this.focusedFrame = frames;
+                }
+
+                if (this.isSelecting) {
+                    if (frames.getRect().collideWithRect(this.selectRect)) {
+                        if (!this.focusedFrameList.contains(frames)) {
+                            this.focusedFrameList.add(frames);
+                        }
+                    }  else {
+                        if (this.focusedFrameList.contains(frames)) {
+                            this.focusedFrameList.remove(frames);
+                        }
+                    }
+                }
+
+                if (this.focusedFrameList.contains(frames)) {
+                    // Select pre background draw.
+                    Processor.prepare(0, 178, 255, 100);
+                    Processor.solid(frames.getRect());
+
+                    // Select post background outline draw.
+                    Processor.prepare(0, 178, 255, 255);
+                    Processor.outline(frames.getRect());
                 }
             }
 
@@ -271,9 +382,41 @@ public class GUI extends GuiScreen {
         this.popupMenuFrame.onUpdate();
         this.popupMenuFrame.onCustomUpdate();
 
-        // Post hud editor render.
-        if (HUD_EDITOR) {
+        if (this.isMouseClickedLeft || this.isMouseClickedRight) {
+            this.isSelecting = true;
 
+            float x = this.getMouse().getX();
+            float y = this.getMouse().getY();
+
+            if (x > this.startSelectX) {
+                this.selectRect.setX(this.startSelectX);
+                this.selectRect.setWidth(x - this.startSelectX);
+            } else {
+                this.selectRect.setX(x);
+                this.selectRect.setWidth(this.startSelectX - x);
+            }
+
+            if (y > this.startSelectY) {
+                this.selectRect.setY(this.startSelectY);
+                this.selectRect.setHeight(y - this.startSelectY);
+            } else {
+                this.selectRect.setY(y);
+                this.selectRect.setHeight(this.startSelectY - y);
+            }
+
+            // Select pre background draw.
+            Processor.prepare(0, 178, 255, 100);
+            Processor.solid(this.selectRect);
+
+            // Select post background outline draw.
+            Processor.prepare(0, 178, 255, 255);
+            Processor.outline(this.selectRect);
+        } else {
+            this.isSelecting = false;
+        }
+
+        // POST hud editor worker & render.
+        if (HUD_EDITOR) {
         }
 
         // POST FX.

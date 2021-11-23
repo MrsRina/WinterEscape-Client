@@ -74,7 +74,7 @@ public class ElementFrame extends Frame {
             return;
         }
 
-        if (this.flag.isMouseOver()) {
+        if (this.flag.isMouseOverDraggable()) {
             if (button == 0) {
                 this.setOffsetX(this.master.getMouse().getX() - this.element.getRect().getX());
                 this.setOffsetY(this.master.getMouse().getY() - this.element.getRect().getY());
@@ -82,8 +82,6 @@ public class ElementFrame extends Frame {
 
             this.flag.setMouseClickedLeft(button == 0);
         }
-
-        this.rect.copy(element.getRect());
     }
 
     @Override
@@ -113,7 +111,10 @@ public class ElementFrame extends Frame {
             return;
         }
 
-        this.flag.setMouseOver(this.element.getRect().collideWithMouse(this.master.getMouse()));
+        boolean flag = this.element.getRect().collideWithMouse(this.master.getMouse());
+
+        this.flag.setMouseOver(flag);
+        this.flag.setMouseOverDraggable(flag);
     }
 
     @Override
@@ -169,5 +170,6 @@ public class ElementFrame extends Frame {
     @Override
     public void clear() {
         this.flag.setMouseOver(false);
+        this.flag.setMouseOverDraggable(false);
     }
 }

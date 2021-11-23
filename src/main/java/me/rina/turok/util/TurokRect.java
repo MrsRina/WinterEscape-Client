@@ -172,7 +172,7 @@ public class TurokRect {
 	}
 
 	public boolean collideWithRect(TurokRect rect) {
-		return this.x <= (rect.getX() + rect.getWidth()) && (this.x + this.width) >= rect.getX() && this.y <= (rect.getY() + rect.getHeight()) && (this.y + this.height) >= rect.getY();
+		return this.x < (rect.getX() + rect.getWidth()) && (this.x + this.width) > rect.getX() && this.y < (rect.getY() + rect.getHeight()) && (this.y + this.height) > rect.getY();
 	}
 
 	/**
