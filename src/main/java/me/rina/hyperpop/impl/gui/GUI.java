@@ -41,8 +41,8 @@ public class GUI extends GuiScreen {
     public static boolean DRAW_WATERMARK = true;
     public static boolean HUD_EDITOR = false;
 
-    public static double VERSION = 0.6;
-    public static String GUI_WATERMARK = "User Interface " + VERSION + " official.";
+    public static double VERSION = 1.6;
+    public static String GUI_WATERMARK = "UI by SrRina, version: " + VERSION + " official.";
 
     public static int SCALE_FACTOR = 2;
     public static int HEIGHT_LIMIT = 250;
@@ -144,9 +144,23 @@ public class GUI extends GuiScreen {
         this.elementList.clear();
 
         for (Frame frames : this.loadedFrameList) {
+            this.elementList.add(frames);
+
             if (frames instanceof ModuleFrame && frames.getFlag().isEnabled()) {
                 ((ModuleFrame) frames).onReloadAll();
             }
+        }
+    }
+
+    public void drawSelect(IGUI element) {
+        if (this.focusedFrameList.contains(element)) {
+            // Select pre background draw.
+            Processor.prepare(0, 178, 255, 100);
+            Processor.solid(element.getRect());
+
+            // Select post background outline draw.
+            Processor.prepare(0, 178, 255, 255);
+            Processor.outline(element.getRect());
         }
     }
 
@@ -155,6 +169,7 @@ public class GUI extends GuiScreen {
         frame.init();
 
         this.loadedFrameList.add(frame);
+        this.elementList.add((IGUI) frame);
     }
 
     public void init() {
@@ -177,6 +192,17 @@ public class GUI extends GuiScreen {
 
     public void addElementUI(IGUI element) {
         this.elementList.add(element);
+    }
+
+    /**
+     * VSYNC method, WE SAVE all data from main list & render in 1 tick only,
+     * it works pretty well, but the code is a bit ugly, I did this for first
+     * time.
+     *
+     * @return True if vsync is needed, else False.
+     */
+    public boolean wsync() {
+        return this.focusedFrame != null && this.focusedFrame.getFlag().isDragging();
     }
 
     @Override
@@ -356,20 +382,26 @@ public class GUI extends GuiScreen {
 
         Statement.unset(GL11.GL_TEXTURE_2D);
 
+        boolean flag = this.focusedFrame != null && this.focusedFrame.getFlag().isDragging();
+
         for (IGUI element : this.elementList) {
             element.onUpdate();
+
+            if (flag && element.getFlag().isEnabled()) {
+                element.onRender();
+            }
         }
 
-        this.focusedFrame = null;
+        Frame frame = null;
 
         for (Frame frames : this.loadedFrameList) {
             if (frames.getFlag().isEnabled()) {
-                if (!(this.focusedFrame.getFlag().isDragging())) {
+                if (!flag || this.focusedFrame == null) {
                     frames.onRender();
                 }
 
                 if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
-                    this.focusedFrame = frames;
+                    frame = frames;
                 }
 
                 if (this.isSelecting) {
@@ -377,34 +409,22 @@ public class GUI extends GuiScreen {
                         if (!this.focusedFrameList.contains(frames)) {
                             this.focusedFrameList.add(frames);
                         }
-                    }  else {
+                    } else {
                         if (this.focusedFrameList.contains(frames)) {
                             this.focusedFrameList.remove(frames);
                         }
                     }
                 }
 
-                if (this.focusedFrameList.contains(frames)) {
-                    // Select pre background draw.
-                    Processor.prepare(0, 178, 255, 100);
-                    Processor.solid(frames.getRect());
-
-                    // Select post background outline draw.
-                    Processor.prepare(0, 178, 255, 255);
-                    Processor.outline(frames.getRect());
-                }
+                this.drawSelect(frames);
             }
 
             frames.clear();
         }
 
-        if (this.focusedFrame != null) {
-            if (this.focusedFrame.getFlag().isDragging()) {
-                for (IGUI element : this.elementList) {
-                    element.onRender();
-                }
-            }
+        this.focusedFrame = frame;
 
+        if (this.focusedFrame != null) {
             this.focusedFrame.onCustomUpdate();
             this.focusedFrame.onCustomRender();
         }

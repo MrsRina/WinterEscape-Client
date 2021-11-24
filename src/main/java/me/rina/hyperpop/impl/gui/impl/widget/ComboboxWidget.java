@@ -6,11 +6,13 @@ import me.rina.hyperpop.api.value.type.Combobox;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.turok.render.font.management.TurokFontManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -128,14 +130,14 @@ public class ComboboxWidget extends Widget {
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
 
         this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
-        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getMother().getOffsetY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         int diff = 1;
 
         this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
-        this.flag.setEnabled(this.value.isShow());
+        this.flag.setEnabled(this.value.isShow() && this.mother.getFlag().isSelected());
 
         if (this.master.getPopupMenuFrame().getFlag().isEnabled() && this.master.getPopupMenuFrame().isReleasedCallback() && this.master.getPopupMenuFrame().getRect().getTag().equalsIgnoreCase(this.rect.getTag() + this.getMother().getRect().getTag())) {
             this.value.setValue(this.master.getPopupMenuFrame().getCallback());
@@ -150,6 +152,10 @@ public class ComboboxWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
@@ -173,6 +179,7 @@ public class ComboboxWidget extends Widget {
         // The value.
         Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2 + this.rect.getWidth() - sizeValueWidth - 3f, (int) this.mother.getMother().getProtectedScrollRect().getY(), sizeValueWidth + 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.value.getValue(), this.rect.getX() + this.rect.getWidth() - sizeValueWidth - 3f, this.rect.getY() + 3, Theme.INSTANCE.string.getAlpha());
+        Processor.unsetScissor();
     }
 
     @Override

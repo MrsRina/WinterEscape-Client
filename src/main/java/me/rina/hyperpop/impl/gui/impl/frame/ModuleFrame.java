@@ -2,11 +2,9 @@ package me.rina.hyperpop.impl.gui.impl.frame;
 
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.Module;
-import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
-import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
 import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
@@ -16,13 +14,9 @@ import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.hyperpop.impl.gui.impl.widget.ModuleWidget;
 import me.rina.turok.render.font.management.TurokFontManager;
-import me.rina.turok.util.TurokMath;
 import me.rina.turok.util.TurokRect;
-import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 /**
  * @author SrRina
@@ -82,6 +76,8 @@ public class ModuleFrame extends ImperadorFrame {
         int i = 0;
 
         for (IGUI elements : this.getElementList()) {
+            elements.onUpdate();
+
             if (elements instanceof ModuleWidget) {
                 ModuleWidget widget = (ModuleWidget) elements;
 
@@ -96,7 +92,7 @@ public class ModuleFrame extends ImperadorFrame {
                     added = 1;
                 }
 
-                if (widget.getFlag().isEnabled()) {
+                if (widget.getFlag().isSelected()) {
                     size += widget.getWidgetListHeight() + added;
                 } else {
                     size += widget.getRect().getHeight() + added;
@@ -266,6 +262,10 @@ public class ModuleFrame extends ImperadorFrame {
         Processor.setScissor(this.scrollRect, this.master.getDisplay());
 
         for (IGUI elements : this.getElementList()) {
+            if (this.master.wsync()) {
+                continue;
+            }
+
             elements.onRender();
         }
 

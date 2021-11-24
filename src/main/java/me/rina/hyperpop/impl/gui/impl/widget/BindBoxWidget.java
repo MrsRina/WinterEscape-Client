@@ -5,6 +5,7 @@ import me.rina.hyperpop.api.value.type.CheckBox;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.backend.Textures;
@@ -12,6 +13,7 @@ import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokRect;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -167,21 +169,21 @@ public class BindBoxWidget extends Widget {
 
         float off_space = 2;
 
+        this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getMother().getOffsetY() + this.getMother().getOffsetY() + this.getOffsetY());
+
         this.rectKey.setX(this.rect.getX());
         this.rectKey.setY(this.rect.getY() + 1);
 
         this.rectKey.setWidth(this.rect.getWidth());
         this.rectKey.setHeight(this.rect.getHeight() - (2));
 
-        this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
-        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
-
         int diff = 1;
 
         this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
-        this.flag.setEnabled(this.value.isShow());
+        this.flag.setEnabled(this.value.isShow() && this.mother.getFlag().isSelected());
 
         if (this.flag.isLocked()) {
             this.setFocusedByCPU(true);
@@ -201,6 +203,10 @@ public class BindBoxWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
         // Post focused background.
         Processor.prepare(Theme.INSTANCE.focused);
         Processor.solid(this.rectKey);
@@ -215,7 +221,7 @@ public class BindBoxWidget extends Widget {
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
         Processor.prepare(Theme.INSTANCE.getPressed(this.interpolatedPressedAlpha));
-        Processor.solid(this.rect);
+        Processor.solid(this.rectKey);
 
         // Highlight draw.
         this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
@@ -254,6 +260,7 @@ public class BindBoxWidget extends Widget {
         this.keySizeWidth = TurokFontManager.getStringWidth(GUI.FONT_NORMAL, tag);
 
         Processor.string(GUI.FONT_NORMAL, tag, this.rectKey.getX() + this.rectKey.getWidth() - (this.keySizeWidth) - 3f, this.rect.getY() + 3f, this.interpolatedStringAlpha);
+        Processor.unsetScissor();
     }
 
     @Override

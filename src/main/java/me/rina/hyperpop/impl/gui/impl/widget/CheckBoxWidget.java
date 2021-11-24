@@ -10,6 +10,7 @@ import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.turok.render.font.management.TurokFontManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -137,7 +138,7 @@ public class CheckBoxWidget extends Widget {
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
 
         this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
-        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getMother().getOffsetY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         this.textureCheckBox.setX(this.rect.getX() + this.rect.getWidth() - this.textureCheckBox.getWidth() - 1f);
         this.textureCheckBox.setY(this.rect.getY() + off_space);
@@ -153,7 +154,7 @@ public class CheckBoxWidget extends Widget {
         this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
-        this.flag.setEnabled(this.value.isShow());
+        this.flag.setEnabled(this.value.isShow() && this.mother.getFlag().isSelected());
     }
 
     @Override
@@ -163,6 +164,10 @@ public class CheckBoxWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
         // Focused background.
         Processor.prepare(Theme.INSTANCE.focused);
         Processor.solid(this.textureCheckBox);
@@ -188,6 +193,7 @@ public class CheckBoxWidget extends Widget {
         // The tag.
         Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.textureCheckBox.getWidth() - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.unsetScissor();
     }
 
     @Override

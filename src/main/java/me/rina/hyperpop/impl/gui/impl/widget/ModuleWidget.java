@@ -8,12 +8,14 @@ import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texture;
 import me.rina.hyperpop.impl.gui.api.engine.texture.Texturing;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.hyperpop.impl.gui.impl.backend.Textures;
 import me.rina.hyperpop.impl.gui.impl.frame.ModuleFrame;
 import me.rina.turok.render.font.management.TurokFontManager;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,8 @@ public class ModuleWidget extends Widget {
     public void init() {
         this.textureArrow.load();
         this.clearList$Reload();
+
+        this.flag.setEnabled(true);
     }
 
     public void clearList$Reload() {
@@ -68,31 +72,31 @@ public class ModuleWidget extends Widget {
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-                this.master.addElementUI(widget);
+                this.master.addElementUI((IGUI) widget);
             } else if (values instanceof Entry) {
                 EntryWidget widget = new EntryWidget(this.master, this, (Entry) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-                this.master.addElementUI(widget);
+                this.master.addElementUI((IGUI) widget);
             } else if (values instanceof Slider) {
                 SliderWidget widget = new SliderWidget(this.master, this, (Slider) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-                this.master.addElementUI(widget);
+                this.master.addElementUI((IGUI) widget);
             } else if (values instanceof BindBox) {
                 BindBoxWidget widget = new BindBoxWidget(this.master, this, (BindBox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-                this.master.addElementUI(widget);
+                this.master.addElementUI((IGUI) widget);
             } else if (values instanceof Combobox) {
                 ComboboxWidget widget = new ComboboxWidget(this.master, this, (Combobox) values);
                 widget.init();
 
                 this.loadedWidgetList.add(widget);
-                this.master.addElementUI(widget);
+                this.master.addElementUI((IGUI) widget);
             }
         }
 
@@ -105,6 +109,8 @@ public class ModuleWidget extends Widget {
         int l = this.loadedWidgetList.size();
 
         for (Widget widgets : this.loadedWidgetList) {
+            widgets.onUpdate();
+
             if (widgets.getFlag().isEnabled()) {
                 widgets.setOffsetY((float) size);
 
@@ -145,7 +151,7 @@ public class ModuleWidget extends Widget {
         for (Widget widgets : this.loadedWidgetList) {
             widgets.clear();
 
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -158,7 +164,7 @@ public class ModuleWidget extends Widget {
         for (Widget widgets : this.loadedWidgetList) {
             widgets.clear();
 
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -169,7 +175,7 @@ public class ModuleWidget extends Widget {
     @Override
     public void onKeyboard(char charCode, int keyCode) {
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -180,7 +186,7 @@ public class ModuleWidget extends Widget {
     @Override
     public void onCustomKeyboard(char charCode, int keyCode) {
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -208,10 +214,10 @@ public class ModuleWidget extends Widget {
 
         if (this.flag.isMouseClickedRight()) {
             if (this.flag.isMouseOver()) {
-                this.flag.setEnabled(!this.flag.isEnabled());
+                this.flag.setSelected(!this.flag.isSelected());
                 this.getMother().reloadPositionConfiguration();
 
-                Textures.set(this.textureArrow, this.flag.isEnabled() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
+                Textures.set(this.textureArrow, this.flag.isSelected() ? Texturing.get(Textures.UI_ARROW_UP) : Texturing.get(Textures.UI_ARROW_DOWN));
             }
 
             this.flag.setMouseClickedRight(false);
@@ -222,7 +228,7 @@ public class ModuleWidget extends Widget {
         }
 
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -243,7 +249,7 @@ public class ModuleWidget extends Widget {
         }
 
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -297,7 +303,7 @@ public class ModuleWidget extends Widget {
         this.flag.setMouseOver((!this.master.getPopupMenuFrame().getFlag().isEnabled() || !this.master.getPopupMenuFrame().getFlag().isMouseOver()) && this.rect.collideWithMouse(this.master.getMouse()) && this.mother.getProtectedScrollRect().collideWithMouse(this.master.getMouse()));
 
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || !this.flag.isSelected()) {
                 continue;
             }
 
@@ -307,6 +313,10 @@ public class ModuleWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
         // Selected draw.
         this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.module.isEnabled() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
 
@@ -336,7 +346,7 @@ public class ModuleWidget extends Widget {
 
         // Render.
         for (Widget widgets : this.loadedWidgetList) {
-            if (!widgets.getFlag().isEnabled() || !this.flag.isEnabled()) {
+            if (!widgets.getFlag().isEnabled() || this.master.wsync()) {
                 continue;
             }
 
@@ -344,6 +354,8 @@ public class ModuleWidget extends Widget {
             widgets.onRender();
             Processor.setScissor(this.mother.getProtectedScrollRect(), this.master.getDisplay());
         }
+
+        Processor.unsetScissor();
     }
 
     @Override

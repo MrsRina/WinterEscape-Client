@@ -4,9 +4,11 @@ import me.rina.hyperpop.api.value.type.Slider;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.management.TurokFontManager;
 import me.rina.turok.util.TurokMath;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -116,14 +118,14 @@ public class SliderWidget extends Widget {
         this.rect.setHeight(6 + TurokFontManager.getStringHeight(GUI.FONT_NORMAL, this.rect.getTag()));
 
         this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
-        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getMother().getOffsetY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         int diff = 1;
 
         this.setOffsetX(diff);
         this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
-        this.flag.setEnabled(this.value.isShow());
+        this.flag.setEnabled(this.value.isShow() && this.mother.getFlag().isSelected());
     }
 
     @Override
@@ -133,6 +135,9 @@ public class SliderWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
     	// Selected draw.
     	float current = this.value.getValue().floatValue();
 
@@ -163,6 +168,9 @@ public class SliderWidget extends Widget {
 
         float updateValue = (this.rect.getWidth()) * (current - minimum) / (maximum - minimum);
 
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
         // Focused background.
         Processor.prepare(Theme.INSTANCE.focused);
         Processor.solid(this.rect.x, this.rect.y + this.master.getDistance(), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
@@ -188,6 +196,7 @@ public class SliderWidget extends Widget {
         // The tag.
         Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag() + " " + this.value.getValue().toString(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);
+        Processor.unsetScissor();
     }
 
     @Override

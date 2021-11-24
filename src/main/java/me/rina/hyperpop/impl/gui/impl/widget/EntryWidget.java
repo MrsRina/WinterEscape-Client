@@ -4,9 +4,11 @@ import me.rina.hyperpop.api.value.type.Entry;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.base.widget.Widget;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
 import me.rina.hyperpop.impl.gui.api.imperador.widget.ImperadorEntryBox;
 import me.rina.hyperpop.impl.gui.api.theme.Theme;
 import me.rina.turok.render.font.management.TurokFontManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author SrRina
@@ -138,7 +140,7 @@ public class EntryWidget extends Widget {
     @Override
     public void onUpdate() {
         this.rect.setX(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2);
-        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getOffsetY() + this.getOffsetY());
+        this.rect.setY(this.getMother().getMother().getRect().getY() + this.getMother().getMother().getOffsetY() + this.getMother().getOffsetY() + this.getOffsetY());
 
         int diff = 1;
 
@@ -172,7 +174,7 @@ public class EntryWidget extends Widget {
 
         this.value.setFocused(this.imperadorEntryBox.isFocused());
         this.imperadorEntryBox.getRect().set(this.rect.getX(), this.rect.getY() + (this.master.getDistance()), this.rect.getWidth(), this.rect.getHeight() - (this.master.getDistance() * 2));
-        this.flag.setEnabled(this.value.isShow());
+        this.flag.setEnabled(this.value.isShow() && this.mother.getFlag().isSelected());
         this.imperadorEntryBox.setFont(GUI.FONT_NORMAL);
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
         this.imperadorEntryBox.getScissor().set(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth(), this.mother.getMother().getProtectedScrollRect().getHeight());
@@ -189,6 +191,10 @@ public class EntryWidget extends Widget {
 
     @Override
     public void onRender() {
+        // Scissor.
+        Statement.set(GL11.GL_SCISSOR_TEST);
+        Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
+
     	// Smooth ticks.
     	this.imperadorEntryBox.doMouseScroll(this.master.getMouse());
 
@@ -209,6 +215,8 @@ public class EntryWidget extends Widget {
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
         Processor.solid(this.imperadorEntryBox.getRect());
+
+        Processor.unsetScissor();
     }
 
     @Override
