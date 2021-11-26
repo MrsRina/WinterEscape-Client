@@ -26,13 +26,8 @@ public class OverlayElementWelcome extends OverlayElement {
         this.message = "Welcome " + mc.player.getName();
         this.string(this.message, 0, 0);
 
-        if (this.lastSizeWidth == -1) {
-            this.lastSizeWidth = this.getStringWidth(this.message);
-        }
-
-        if (this.lastSizeHeight == -1) {
-            this.lastSizeHeight = this.getStringHeight(this.message);
-        }
+        this.lastSizeWidth = this.getStringWidth(this.message);
+        this.lastSizeHeight = this.getStringHeight(this.message);
 
         this.rect.setWidth(this.lastSizeWidth);
         this.rect.setHeight(this.lastSizeHeight);

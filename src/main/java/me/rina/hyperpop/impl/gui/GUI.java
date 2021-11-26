@@ -1,8 +1,10 @@
 package me.rina.hyperpop.impl.gui;
 
+import com.google.gson.*;
 import me.rina.hyperpop.Client;
 import me.rina.hyperpop.api.module.overlay.OverlayElement;
 import me.rina.hyperpop.api.module.type.ModuleType;
+import me.rina.hyperpop.api.preset.management.PresetManager;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.frame.Frame;
 import me.rina.hyperpop.impl.gui.api.engine.Processor;
@@ -25,6 +27,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +207,76 @@ public class GUI extends GuiScreen {
      * @return True if vsync is needed, else False.
      */
     public boolean wsync() {
-        return this.focusedFrame != null && this.focusedFrame.getFlag().isDragging();
+        return 2 == 3 && this.focusedFrame != null && this.focusedFrame.getFlag().isDragging();
+    }
+
+    public void load() {
+        try {
+            String thePath = "/" + Client.CLIENT_NAME + "/" + "ui.json";
+
+            JsonParser parser = new JsonParser();
+            InputStream input = Files.newInputStream(Paths.get(thePath));
+
+            JsonObject data = parser.parse(new InputStreamReader(input)).getAsJsonObject();
+
+            for (Frame frames : this.loadedFrameList) {
+                JsonObject object = data.get(frames.getRect().getTag()).getAsJsonObject();
+
+                if (object == null) {
+                    continue;
+                }
+
+                frames.getRect().setX(object.get("x").getAsFloat());
+                frames.getRect().setY(object.get("y").getAsFloat());
+            }
+
+            input.close();
+        } catch (IOException | IllegalStateException exc) {
+
+        }
+    }
+
+    public void save() {
+        try {
+            Gson gsonBuilder = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser parser = new JsonParser();
+
+            String superiorFile = "ui.json";
+            String superiorFolder = "/" + Client.CLIENT_NAME + "/";
+
+            if (!Files.exists(Paths.get(superiorFolder))) {
+                Files.createDirectories(Paths.get(superiorFolder));
+            }
+
+            if (Files.exists(Paths.get(superiorFile))) {
+                java.io.File file = new java.io.File(superiorFile);
+                file.delete();
+            }
+
+            Files.createFile(Paths.get(superiorFile));
+
+            JsonObject data = new JsonObject();
+
+            for (Frame frames : this.loadedFrameList) {
+                if (!(frames instanceof ModuleFrame)) {
+                    continue;
+                }
+
+                JsonObject object = new JsonObject();
+
+                object.add("x", new JsonPrimitive(frames.getRect().getX()));
+                object.add("y", new JsonPrimitive(frames.getRect().getY()));
+
+                data.add(frames.getRect().getTag(), object);
+            }
+
+            String string = gsonBuilder.toJson(parser.parse(data.toString()));
+            OutputStreamWriter fileOutputStream = new OutputStreamWriter(new FileOutputStream(superiorFile), "UTF-8");
+
+            fileOutputStream.write(string);
+            fileOutputStream.close();
+        } catch (IOException | IllegalStateException exc) {
+        }
     }
 
     @Override
@@ -250,7 +324,7 @@ public class GUI extends GuiScreen {
 
         boolean keyFlagCtrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
 
-        if (keyFlagCtrl && keyCode == Keyboard.KEY_A) {
+        if (keyFlagCtrl && keyCode == Keyboard.KEY_A && !this.isUpdate) {
             this.focusedFrameList.clear();
 
             for (Frame frames : this.loadedFrameList) {
@@ -382,24 +456,14 @@ public class GUI extends GuiScreen {
 
         Statement.unset(GL11.GL_TEXTURE_2D);
 
-        boolean flag = this.focusedFrame != null && this.focusedFrame.getFlag().isDragging();
-
         for (IGUI element : this.elementList) {
             element.onUpdate();
-
-            if (flag && element.getFlag().isEnabled()) {
-                element.onRender();
-            }
         }
 
         Frame frame = null;
 
         for (Frame frames : this.loadedFrameList) {
             if (frames.getFlag().isEnabled()) {
-                if (!flag || this.focusedFrame == null) {
-                    frames.onRender();
-                }
-
                 if (frames.getFlag().isFocusing(frames.getRect().collideWithMouse(this.getMouse()))) {
                     frame = frames;
                 }
@@ -415,14 +479,19 @@ public class GUI extends GuiScreen {
                         }
                     }
                 }
-
-                this.drawSelect(frames);
             }
-
-            frames.clear();
         }
 
         this.focusedFrame = frame;
+
+        for (Frame frames : this.loadedFrameList) {
+            if (frames.getFlag().isEnabled()) {
+                frames.onRender();
+                frames.clear();
+
+                this.drawSelect(frames);
+            }
+        }
 
         if (this.focusedFrame != null) {
             this.focusedFrame.onCustomUpdate();

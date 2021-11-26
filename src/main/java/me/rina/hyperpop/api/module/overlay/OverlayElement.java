@@ -4,6 +4,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import me.rina.hyperpop.impl.gui.GUI;
 import me.rina.hyperpop.impl.gui.api.IGUI;
 import me.rina.hyperpop.impl.gui.api.base.Flag;
+import me.rina.hyperpop.impl.gui.api.engine.caller.Statement;
+import me.rina.turok.render.font.TurokFont;
 import me.rina.turok.util.TurokMath;
 import net.minecraft.entity.passive.AbstractHorse;
 import me.rina.hyperpop.Client;
@@ -103,31 +105,32 @@ public class OverlayElement extends Module implements IGUI {
 
 		int alignedX = this.getAlignedPositionX(x, this.getStringWidth(string));
 
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
 		if (color == null) {
-			this.drawCustomHUE(string, this.rect.x + alignedX, this.rect.y + alignedY);
-		} else {
-			if (this.customFont.getValue()) {
-				if (this.shadowFont.getValue()) {
-					Client.OVERLAY_FONT.drawString(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
-				} else {
-					Client.OVERLAY_FONT.drawStringWithShadow(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
-				}
+			TurokFontManager.render(Client.OVERLAY_FONT, string, this.rect.x + alignedX, this.rect.y + alignedY, this.shadowFont.getValue(), 20);
+			// this.drawCustomHUE(string, this.rect.x + alignedX, this.rect.y + alignedY);
+
+			return;
+		}
+
+		Statement.matrix();
+		Statement.set(GL11.GL_TEXTURE_2D);
+		Statement.blend();
+
+		if (this.customFont.getValue()) {
+			if (this.shadowFont.getValue()) {
+				Client.OVERLAY_FONT.drawStringWithShadow(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
 			} else {
-				if (this.shadowFont.getValue()) {
-					mc.fontRenderer.drawString(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
-				} else {
-					mc.fontRenderer.drawStringWithShadow(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
-				}
+				Client.OVERLAY_FONT.drawString(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
+			}
+		} else {
+			if (this.shadowFont.getValue()) {
+				mc.fontRenderer.drawStringWithShadow(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
+			} else {
+				mc.fontRenderer.drawString(string, (int) this.rect.x + alignedX, (int) this.rect.y + alignedY, color.getRGB());
 			}
 		}
 
-		GL11.glPopMatrix();
+		Statement.refresh();
 	}
 
 	public void drawCustomHUE(String string, float alignedX, float alignedY) {
@@ -135,7 +138,7 @@ public class OverlayElement extends Module implements IGUI {
 
 		Color currentColor = new Color(((cycleColor >> 16) & 0xFF), ((cycleColor >> 8) & 0xFF), ((cycleColor) & 0xFF));
 
-		float hueIncrement = 1.0f / 2f;
+		float hueIncrement = 1.0f / 8f;
 		float currentHue = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[0];
 		float saturation = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[1];
 		float brightness = Color.RGBtoHSB(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), null)[2];
@@ -174,19 +177,25 @@ public class OverlayElement extends Module implements IGUI {
 				continue;
 			}
 
+			Statement.matrix();
+			Statement.set(GL11.GL_TEXTURE_2D);
+			Statement.blend();
+
 			if (this.customFont.getValue()) {
 				if (this.shadowFont.getValue()) {
-					Client.OVERLAY_FONT.drawString(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
-				} else {
 					Client.OVERLAY_FONT.drawStringWithShadow(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
+				} else {
+					Client.OVERLAY_FONT.drawString(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
 				}
 			} else {
 				if (this.shadowFont.getValue()) {
-					mc.fontRenderer.drawString(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
-				} else {
 					mc.fontRenderer.drawStringWithShadow(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
+				} else {
+					mc.fontRenderer.drawString(string, (int) alignedX, (int) alignedY, currentColor.getRGB());
 				}
 			}
+
+			Statement.refresh();
 
 			currentWidth += this.getStringWidth(String.valueOf(currentChar));
 

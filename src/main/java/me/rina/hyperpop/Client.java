@@ -112,9 +112,13 @@ public class Client {
     public static void save() {
         ModuleManager.INSTANCE.onShutdown();
         ModuleManager.INSTANCE.saveModuleList();
+
+        Client.INSTANCE.userInterfaceGUI.save();
     }
 
     public static void load() {
         ModuleManager.INSTANCE.loadModuleList();
+
+        Client.INSTANCE.userInterfaceGUI.load();
     }
 }
