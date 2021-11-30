@@ -1,9 +1,0 @@
-{
-  "required": true,
-  "compatibilityLevel": "JAVA_8",
-  "package": "me.rina.hyperpop.impl.mixin.impl",
-  "refmap": "mixins.hyperpop.refmap.json",
-  "mixins": [
-    "MixinMinecraft"
-  ]
-}
