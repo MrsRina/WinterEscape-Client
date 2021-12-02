@@ -2,6 +2,11 @@ package me.rina.zyra.impl.gui.api.engine.texture;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -82,19 +87,45 @@ public class Texturing {
             return;
         }
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture.getResourceLocation());
+
+        RenderHelper.enableGUIStandardItemLighting();
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
         GL11.glColor4f(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        Minecraft.getMinecraft().getTextureManager().bindTexture(texture.getResourceLocation());
+        float x = texture.x;
+        float y = texture.y;
+        float textureWidth = texture.width;
+        float textureHeight = texture.height;
 
-        GuiScreen.drawModalRectWithCustomSizedTexture((int) texture.x, (int) texture.y, 0, 0, (int) texture.getWidth(), (int) texture.getHeight(), (int) texture.getTextureWidth(), (int) texture.getTextureHeight());
+        float u = 0;
+        float v = 0;
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        float t = 1;
+        float s = 1;
+
+        float width = textureWidth;
+        float height = textureHeight;
+
+        final Tessellator tessellator = Tessellator.getInstance();
+        final BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x + width, y, 0F).tex(t, v).endVertex();
+        bufferbuilder.pos(x, y, 0F).tex(u, v).endVertex();
+        bufferbuilder.pos(x, y + height, 0F).tex(u, s).endVertex();
+        bufferbuilder.pos(x, y + height, 0F).tex(u, s).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0F).tex(t, s).endVertex();
+        bufferbuilder.pos(x + width, y, 0F).tex(t, v).endVertex();
+        tessellator.draw();
+
+        RenderHelper.disableStandardItemLighting();
     }
 
     public static void renderPrimitive(Texture texture) {

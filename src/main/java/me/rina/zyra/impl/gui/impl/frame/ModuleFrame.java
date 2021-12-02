@@ -210,7 +210,7 @@ public class ModuleFrame extends ImperadorFrame {
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight() - this.master.getDistance() * 2);
 
         float off_space = 2;
-        float size = (this.getTitleHeight() - 1);
+        float size = (this.getTitleHeight() - 2);
 
         this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - off_space);
         this.textureGeneric.setY(this.rect.getY() + 1);
@@ -218,8 +218,8 @@ public class ModuleFrame extends ImperadorFrame {
         this.textureGeneric.setWidth(size);
         this.textureGeneric.setHeight(size);
 
-        this.textureGeneric.setTextureWidth((int) size);
-        this.textureGeneric.setTextureHeight((int) size);
+        this.textureGeneric.setTextureWidth(27);
+        this.textureGeneric.setTextureHeight(37);
 
         this.rect.setHeight(Processor.interpolation(this.rect.getHeight(), Processor.clamp(this.sizeamount, 0, GUI.HEIGHT_LIMIT), this.master.getDisplay()));
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
