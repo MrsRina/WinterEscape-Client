@@ -7,6 +7,7 @@ import me.rina.zyra.api.module.type.ModuleType;
 import me.rina.zyra.api.value.type.Entry;
 import me.rina.zyra.impl.event.ClientTickEvent;
 import me.rina.zyra.impl.gui.GUI;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 
@@ -26,6 +27,8 @@ public class ModuleUserInterface extends Module {
         super("GUI", "User interface for client.", ModuleType.CLIENT);
 
         INSTANCE = this;
+
+        this.setKey(Keyboard.KEY_P);
     }
 
     @Override
