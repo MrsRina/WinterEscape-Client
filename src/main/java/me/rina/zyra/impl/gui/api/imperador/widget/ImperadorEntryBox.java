@@ -62,7 +62,7 @@ public class ImperadorEntryBox extends Widget {
     private float partialTicks = 1f;
 
     private boolean isShadow;
-    private boolean isRendering;
+    private boolean isRendering = true;
 
     private boolean isToDrawOutline;
     private boolean isFocused;
@@ -391,23 +391,23 @@ public class ImperadorEntryBox extends Widget {
     }
 
     public void doMouseScroll(TurokMouse mouse) {
-        float m = (this.rect.getWidth() - 2f) - TurokMath.min(this.lastSize, this.rect.getWidth());
+        float m = (this.rect.getWidth() - this.offsetX) - TurokMath.min(this.lastSize, this.rect.getWidth());
         float x = TurokMath.clamp(mouse.getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
 
-        float size = 2f + this.getSizeByIndex(this.indexA);
+        float size = this.offsetX + this.getSizeByIndex(this.indexA);
 
-        if (2f + this.lastSize < this.rect.getWidth()) {
-            this.scroll = 2f;
+        if (this.offsetX + this.lastSize < this.rect.getWidth()) {
+            this.scroll = this.offsetX;
         }
 
-        if ((this.rect.getX() + this.offsetX + size <= this.rect.getX() + 2f || this.rect.getX() + this.offsetX + size >= this.rect.getX() + this.rect.getWidth()) && !this.isDragging()) {
+        if ((this.rect.getX() + this.offsetX + size <= this.rect.getX() + this.offsetX || this.rect.getX() + this.offsetX + size >= this.rect.getX() + this.rect.getWidth()) && !this.isDragging()) {
             float value = this.rect.getWidth() - TurokMath.min(size, this.rect.getWidth());
 
             this.scroll = value + (value >= 0 ? 2f : 0f);
         }
 
-        if (this.scroll >= 2f) {
-            this.scroll = 2f;
+        if (this.scroll >= this.offsetX) {
+            this.scroll = 1f;
         } else if (this.scroll <= m) {
             this.scroll = m;
         }

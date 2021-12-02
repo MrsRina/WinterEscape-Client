@@ -37,6 +37,7 @@ public class ColorPicker extends Value {
         super(tag, description, ValueType.COLOR_PICKER);
 
         this.containsAdditionalCheckBox = false;
+        this.setColor(color);
     }
 
     public void setBrightness(float brightness) {
@@ -71,7 +72,7 @@ public class ColorPicker extends Value {
     }
 
     public void setRed(int red) {
-        this.red = red;
+        this.red = Processor.clamp(red);
     }
 
     public int getRed() {
@@ -79,7 +80,7 @@ public class ColorPicker extends Value {
     }
 
     public void setGreen(int green) {
-        this.green = green;
+        this.green = Processor.clamp(green);
     }
 
     public int getGreen() {
@@ -87,7 +88,7 @@ public class ColorPicker extends Value {
     }
 
     public void setBlue(int blue) {
-        this.blue = blue;
+        this.blue = Processor.clamp(blue);
     }
 
     public int getBlue() {
@@ -95,7 +96,7 @@ public class ColorPicker extends Value {
     }
 
     public void setAlpha(int alpha) {
-        this.alpha = alpha;
+        this.alpha = Processor.clamp(alpha);
     }
 
     public int getAlpha() {
