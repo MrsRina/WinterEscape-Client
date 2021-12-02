@@ -11,6 +11,7 @@ import me.rina.zyra.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.zyra.impl.module.impl.client.ModuleUserInterface;
 import me.rina.zyra.impl.module.impl.combat.ModuleFastBow;
 import me.rina.zyra.impl.module.impl.combat.ModuleKillAura;
+import me.rina.zyra.impl.module.impl.player.FastUse;
 import me.rina.zyra.impl.module.internal.OverlayElementWelcome;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
@@ -66,6 +67,9 @@ public class ModuleManager extends Feature {
         this.add(new ModuleFastBow());
         this.add(new ModuleFastBow());
         this.add(new ModuleFastBow());
+
+        // Player.
+        this.add(new FastUse());
 
         // Overlay.
         this.add(new OverlayElementWelcome());
