@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,7 @@ public class Texturing {
         }
 
         GL11.glPushMatrix();
-
+        GL11.glTranslatef(texture.x, texture.y, 0f);
         renderPrimitive(texture, repeat);
 
         GL11.glPopMatrix();
@@ -94,13 +94,15 @@ public class Texturing {
 
         Minecraft.getMinecraft().renderEngine.bindTexture(texture.getResourceLocation());
 
-        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
+
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 
         GlStateManager.color(1f, 1f, 1f, 1f);
 
-        float x = texture.x;
-        float y = texture.y;
+        float x = 0;
+        float y = 0;
         float textureWidth = texture.width;
         float textureHeight = texture.height;
 
@@ -116,7 +118,7 @@ public class Texturing {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR);
-        bufferbuilder.pos(x + width, y, 0F).tex(t, v).color(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f).endVertex();
+        bufferbuilder.pos(width, y, 0F).tex(t, v).color(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f).endVertex();
         bufferbuilder.pos(x, y, 0F).tex(u, v).color(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f).endVertex();
         bufferbuilder.pos(x, y + height, 0F).tex(u, s).color(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f).endVertex();
         bufferbuilder.pos(x, y + height, 0F).tex(u, s).color(texture.getColor().getRed() / 255f, texture.getColor().getGreen() / 255f, texture.getColor().getBlue() / 255f, texture.getColor().getAlpha() / 255f).endVertex();

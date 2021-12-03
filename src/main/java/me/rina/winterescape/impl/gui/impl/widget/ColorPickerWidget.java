@@ -353,7 +353,7 @@ public class ColorPickerWidget extends Widget {
     public void onRender() {
         // Preview.
         Processor.prepare(this.value.getColor());
-        Processor.solid(this.rect.getX() + this.rect.getWidth() - (this.normalHeight), this.rect.getY() + 2, (this.normalHeight - 2), (this.normalHeight - 2));
+        Processor.solid(this.rect.getX() + this.rect.getWidth() - this.normalHeight + 2, this.rect.getY() + 2, (this.normalHeight - 4), (this.normalHeight - 4));
 
         // Tag.
         Statement.set(GL11.GL_SCISSOR_TEST);

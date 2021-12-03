@@ -209,11 +209,11 @@ public class ModuleFrame extends ImperadorFrame {
         this.rectDrag.set(this.rect.getX(), this.rect.getY(), this.rect.getWidth(), this.getTitleHeight());
         this.scrollRect.set(this.rect.getX(), this.rect.getY() + this.getTitleHeight() + this.master.getDistance() * 2, this.rect.getWidth(), this.rect.getHeight() - this.getTitleHeight() - this.master.getDistance() * 2);
 
-        float off_space = 2;
+        float off_space = 3;
         float size = (this.getTitleHeight() - 2);
 
         this.textureGeneric.setX(this.rect.getX() + this.rect.getWidth() - this.textureGeneric.getWidth() - off_space);
-        this.textureGeneric.setY(this.rect.getY() + 1);
+        this.textureGeneric.setY(this.rect.getY() + 0.5f);
 
         this.textureGeneric.setWidth(size);
         this.textureGeneric.setHeight(size);
@@ -255,7 +255,11 @@ public class ModuleFrame extends ImperadorFrame {
         Processor.outline(this.rect.x + 0.1f, this.rect.y + this.getTitleHeight() + this.master.getDistance(), this.rect.width - 0.5f, this.rect.height - this.getTitleHeight() - this.master.getDistance() - 0.2f);
 
         // Render the icon.
-        Texturing.render(this.textureGeneric);
+        Statement.matrix();
+        Statement.translate(this.textureGeneric.x, this.textureGeneric.y, 0);
+        Statement.scale(1.2f, 1.2f, 1f);
+        Texturing.renderPrimitive(this.textureGeneric, false);
+        Statement.refresh();
 
         // Title.
         Processor.string(GUI.FONT_NORMAL, this.rect.getTag(), this.rect.getX() + 2, this.rect.getY() + 3, Theme.INSTANCE.background);

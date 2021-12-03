@@ -5,6 +5,7 @@ package me.rina.winterescape.impl.gui.api.imperador.widget;
  * @since 09/09/2021 at 19:00
  **/
 
+import me.rina.winterescape.Client;
 import me.rina.winterescape.impl.gui.GUI;
 import me.rina.winterescape.impl.gui.api.base.widget.Widget;
 import me.rina.winterescape.impl.gui.api.engine.Processor;
@@ -312,7 +313,7 @@ public class ImperadorEntryBox extends Widget {
             float w = TurokFontManager.getStringWidth(this.getFont(), c) / 2f;
 
             boolean k = x >= this.rect.getX() + this.offsetX + w && x <= this.rect.getX() + this.offsetX + w + size;
-            boolean l = x >= this.rect.getX() + this.offsetX + (w * 2) && x <= this.rect.getX() + this.offsetX + (w * 2) + size;
+            boolean l = x >= this.rect.getX() + this.offsetX + (w * 2f) && x <= this.rect.getX() + this.offsetX + (w * 2f) + size;
 
             if (k) {
                 index = i;
@@ -321,12 +322,12 @@ public class ImperadorEntryBox extends Widget {
             }
 
             if (l) {
-                index = i + 1;
+                index = (i + 1);
 
                 break;
             }
 
-            size += (w * 2) + this.getKerning();
+            size += (w * 2f) + this.getKerning();
             i++;
         }
 
@@ -368,25 +369,27 @@ public class ImperadorEntryBox extends Widget {
             return;
         }
 
-        this.offsetW = TurokMath.clamp(mouse.getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
-        this.offsetH = this.getIndexByPosition(this.offsetW);
-
         this.splitTick.reset();
 
-        int index = 0;
-
-        if (this.text.isEmpty()) {
-            this.setIndexA(index);
-            this.setIndexB(index);
-
-            return;
-        }
-
-        index = this.getIndexByPosition(mouse.getX());
+        int index = this.getIndexByPosition(mouse.getX());
 
         if (index == -1) {
-            index = this.text.length();
+            if (this.text.isEmpty()) {
+                index = 0;
+            } else {
+                float size = this.size() / 2f;
+
+                if (mouse.getX() >= this.rect.getX() + this.offsetX + size) {
+                    index = this.text.length();
+                }
+            }
         }
+
+        this.offsetW = TurokMath.clamp(mouse.getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
+        this.offsetH = index;
+
+        this.setIndexA(index);
+        this.setIndexB(index);
     }
 
     public void doMouseScroll(TurokMouse mouse) {
@@ -441,15 +444,13 @@ public class ImperadorEntryBox extends Widget {
             }
         }
 
-        // Without the 250ms delay, the double click for select all never will works right.
-        if (this.pressTick.isPassedMS(250)) {
-            if (this.lastIndexCurrent > this.offsetH) {
-                this.indexA = (int) this.offsetH;
-                this.indexB = this.lastIndexCurrent;
-            } else {
-                this.indexA = this.lastIndexCurrent;
-                this.indexB = (int) this.offsetH;
-            }
+        // No more 250ms delay. '// Without the 250ms delay, the double click for select all never will works right.'
+        if (this.lastIndexCurrent > this.offsetH) {
+            this.indexA = (int) this.offsetH;
+            this.indexB = this.lastIndexCurrent;
+        } else {
+            this.indexA = this.lastIndexCurrent;
+            this.indexB = (int) this.offsetH;
         }
 
         if (mouse.getX() >= this.rect.getX() + this.rect.getWidth() - 1f && this.lastSize + 2f >= this.rect.getWidth()) {
@@ -764,70 +765,75 @@ public class ImperadorEntryBox extends Widget {
 
         if (this.isMouseOver() && (button == 0 || button == 1)) {
             this.splitTick.reset();
-            this.setFocused(this.isMouseOver());
 
             this.setPressed(true);
             this.setDragging(true);
 
-            if (this.pressTick.isPassedMS(750)) {
-                this.pressTick.reset();
-            } else if (this.isFocused()) {
-                if (this.text.isEmpty()) {
-                    this.setIndexA(0);
-                    this.setIndexB(0);
+            this.setFocused(this.isMouseOver());
 
-                    return;
-                }
+            //if (this.pressTick.isPassedMS(500)) {
+                //this.pressTick.reset();
 
-                this.offsetW = TurokMath.clamp(this.master.getMouse().getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
-                this.offsetH = this.getIndexByPosition(this.offsetW);
+                //return;
+            //}
 
-                int i = 0;
+            //if (!this.pressTick.isPassedMS(500) && this.isFocused()) {
+                //if (this.text.isEmpty()) {
+                //    this.setIndexA(0);
+                //    this.setIndexB(0);
 
-                int foundSpace = 0;
-                int start = 0;
+                //    return;
+                //}
 
-                for (String c : this.text.split("")) {
-                    if (c.equals(" ")) {
-                        foundSpace++;
-                    }
+                //this.offsetW = TurokMath.clamp(this.master.getMouse().getX(), this.rect.getX() + this.offsetX, this.rect.getX() + this.rect.getWidth());
+                //this.offsetH = this.getIndexByPosition(this.offsetW);
 
-                    if (i == this.offsetH) {
-                        break;
-                    }
+                //int i = 0;
 
-                    i++;
-                }
+                //int foundSpace = 0;
+                //int start = 0;
 
-                int countSpace = 0;
-                int end = -1;
+                //for (String c : this.text.split("")) {
+                //    if (c.equals(" ")) {
+                //        foundSpace++;
+                //    }
 
-                i = 0;
+                //    if (i == this.offsetH) {
+                //        break;
+                //    }
 
-                for (String c : this.text.split("")) {
-                    if (countSpace == foundSpace && end == -1) {
-                        start = i;
-                        end = i;
-                    }
+                //    i++;
+                //}
 
-                    i++;
+                //int countSpace = 0;
+                //int end = -1;
 
-                    if (c.equals(" ")) {
-                        countSpace++;
+                //i = 0;
 
-                        if (end != -1) {
-                            break;
-                        }
-                    } else {
-                        if (end != -1) {
-                            end = i;
-                        }
-                    }
-                }
+                //for (String c : this.text.split("")) {
+                //    if (countSpace == foundSpace && end == -1) {
+                //        start = i;
+                //        end = i;
+                //    }
 
-                this.setIndexA(start);
-                this.setIndexB(end);
-            }
+                //    i++;
+
+                //    if (c.equals(" ")) {
+                //        countSpace++;
+
+                //        if (end != -1) {
+                //            break;
+                //        }
+                //    } else {
+                //        if (end != -1) {
+                //            end = i;
+                //        }
+                //    }
+                //}
+
+                //this.setIndexA(start);
+                //this.setIndexB(end);
+            //}
         }
     }
 

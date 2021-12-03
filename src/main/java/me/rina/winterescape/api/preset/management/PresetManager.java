@@ -28,7 +28,7 @@ public class PresetManager extends Feature {
     public static final int TASK_DATA = 140;
     public static final int TASK_SYNC = 132;
 
-    public static ValueGeneric<String> PATH = new ValueGeneric<>("Path", "The path for save presets.", "hyperpop/data/");
+    public static ValueGeneric<String> PATH = new ValueGeneric<>("Path", "The path for save presets.", "winterescape/data/");
     public static Preset DEFAULT = new Preset("Default", "Default preset.", "Today", "default", new JsonObject());
 
     private final List<Preset> presetList = new ArrayList<>();
