@@ -11,7 +11,7 @@ import me.rina.winterescape.impl.module.impl.client.ModuleHUDEditor;
 import me.rina.winterescape.impl.module.impl.client.ModuleUserInterface;
 import me.rina.winterescape.impl.module.impl.combat.ModuleFastBow;
 import me.rina.winterescape.impl.module.impl.combat.ModuleKillAura;
-import me.rina.winterescape.impl.module.impl.player.FastUse;
+import me.rina.winterescape.impl.module.impl.player.ModuleFastUse;
 import me.rina.winterescape.impl.module.internal.OverlayElementWelcome;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
@@ -49,7 +49,7 @@ public class ModuleManager extends Feature {
         this.add(new ModuleFastBow());
 
         // Player.
-        this.add(new FastUse());
+        this.add(new ModuleFastUse());
 
         // Overlay.
         this.add(new OverlayElementWelcome());
