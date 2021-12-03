@@ -38,7 +38,7 @@ minecraft {
 	version = '1.12.2-14.23.5.2768'
 	runDir = 'run'
 	mappings = 'snapshot_20180814'
-	coreMod = 'me.rina.zyra.impl.mixin.loader.MixinLoader'
+	coreMod = 'me.rina.winterescape.impl.mixin.loader.MixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -109,17 +109,17 @@ shadowJar {
 
 mixin {
 	defaultObfuscationEnv searge
-	add sourceSets.main, 'mixins.zyra.refmap.json'
+	add sourceSets.main, 'mixins.winterescape.refmap.json'
 }
 
 jar.manifest.attributes(
-		'MixinConfigs': 'mixins.zyra.json',
+		'MixinConfigs': 'mixins.winterescape.json',
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 		'TweakOrder': 0,
 		'FMLCorePluginContainsFMLMod': true,
-		'FMLCorePlugin': 'me.rina.zyra.impl.mixin.loader.MixinLoader',
+		'FMLCorePlugin': 'me.rina.winterescape.impl.mixin.loader.MixinLoader',
 		'ForceLoadAsMod': true,
-		'FMLAT': 'zyra_at.cfg'
+		'FMLAT': 'winterescape_at.cfg'
 )
 
 reobf {

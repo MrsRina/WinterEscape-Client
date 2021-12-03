@@ -1,9 +1,0 @@
-{
-  "required": true,
-  "compatibilityLevel": "JAVA_8",
-  "package": "me.rina.zyra.impl.mixin.impl",
-  "refmap": "mixins.zyra.refmap.json",
-  "mixins": [
-    "MixinMinecraft"
-  ]
-}

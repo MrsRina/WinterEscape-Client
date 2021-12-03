@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "me.rina.winterescape.impl.mixin.impl",
+  "refmap": "mixins.winterescape.refmap.json",
+  "mixins": [
+    "MixinMinecraft"
+  ]
+}
