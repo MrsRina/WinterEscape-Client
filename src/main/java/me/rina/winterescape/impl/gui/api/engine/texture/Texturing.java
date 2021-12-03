@@ -92,12 +92,12 @@ public class Texturing {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
 
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
         Minecraft.getMinecraft().renderEngine.bindTexture(texture.getResourceLocation());
 
-        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
-        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
-
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
+        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
 
         GlStateManager.color(1f, 1f, 1f, 1f);
 

@@ -292,12 +292,12 @@ public class ColorPickerWidget extends Widget {
 
         if (this.flag.isLocked()) {
             if (selecting) {
-                colorWidth = (this.master.getMouse().getX() - (this.SBRect.getX())) / (this.SBRect.getWidth());
-                colorHeight = (this.master.getMouse().getY() - (this.SBRect.getY())) / (this.SBRect.getHeight());
+                colorWidth = ((this.master.getMouse().getX() + 0.5f) - (this.SBRect.getX())) / (this.SBRect.getWidth());
+                colorHeight = ((this.master.getMouse().getY() + 0.5f) - (this.SBRect.getY())) / (this.SBRect.getHeight());
             }
 
             if (hueSelecting) {
-                hue = (this.master.getMouse().getY() - (this.hueRect.getY())) / (this.hueRect.getHeight());
+                hue = ((this.master.getMouse().getY() + 0.5f) - (this.hueRect.getY())) / (this.hueRect.getHeight());
 
                 Color theNewestColor = getColorFromCoordinates();
 
@@ -308,7 +308,7 @@ public class ColorPickerWidget extends Widget {
             }
 
             if (alphaSelecting) {
-                alpha = (this.master.getMouse().getY() - (this.alphaRect.getY())) / (this.alphaRect.getHeight());
+                alpha = ((this.master.getMouse().getY() + 0.5f) - (this.alphaRect.getY())) / (this.alphaRect.getHeight());
 
                 Color theNewestColor = getColorFromCoordinates();
 
@@ -353,7 +353,7 @@ public class ColorPickerWidget extends Widget {
     public void onRender() {
         // Preview.
         Processor.prepare(this.value.getColor());
-        Processor.solid(this.rect.getX() + this.rect.getWidth() - this.normalHeight + 2, this.rect.getY() + 2, (this.normalHeight - 4), (this.normalHeight - 4));
+        Processor.solid(this.rect.getX() + this.rect.getWidth() - this.normalHeight + 2 - 1f, this.rect.getY() + 2, (this.normalHeight - 4), (this.normalHeight - 4));
 
         // Tag.
         Statement.set(GL11.GL_SCISSOR_TEST);
@@ -383,9 +383,11 @@ public class ColorPickerWidget extends Widget {
             Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
             Processor.unsetScissor();
 
+            Statement.color(255, 255, 255, 255);
+
             // Draw stuff.
-            this.drawHueSliderBetter(this.hueRect.getX(), this.hueRect.getY(), this.hueRect.getWidth(), this.hueRect.getHeight(), this.hue);
             this.drawAlphaSlider(this.alphaRect.getX(), this.alphaRect.getY(), this.alphaRect.getWidth(), this.alphaRect.getHeight(), this.alpha);
+            this.drawHueSliderBetter(this.hueRect.getX(), this.hueRect.getY(), this.hueRect.getWidth(), this.hueRect.getHeight(), this.hue);
             this.drawSquareColorPicker(this.SBRect.getX(), this.SBRect.getY(), this.SBRect.getWidth(), this.SBRect.getHeight(), this.SBRect.getX() + this.colorWidth * (this.SBRect.getWidth()), this.SBRect.getY() + (this.colorHeight * this.SBRect.getHeight()), 1.0f, Color.getHSBColor(hue, 1.0f, 1.0f));
         }
     }
@@ -507,15 +509,14 @@ public class ColorPickerWidget extends Widget {
         GlStateManager.popMatrix();
     }
 
-    public void drawHueSliderBetter(float x, float y, float width, float height, float progress) {
+    public void drawHueSliderBetter(float originX, float y, float w, float height, float progress) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
         GlStateManager.shadeModel(7425);
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.glLineWidth(width);
-        GL11.glBegin(GL11.GL_LINE_STRIP);
+
         Color color1 = new Color(255, 0, 0, 255); // 0.0
         Color color2 = new Color(255, 255, 0, 255); // 0.1666
         Color color3 = new Color(0, 255, 0, 255); // 0.3333
@@ -524,23 +525,70 @@ public class ColorPickerWidget extends Widget {
         Color color6 = new Color(255, 0, 255, 255); // 0.8333
         float offset = height / 6;
 
+        float width = w - (w / 10f);
+        float x = originX + (w / 10f) / 2f;
+
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glColor4f(color1.getRed() / 255f, color1.getGreen() / 255f, color1.getBlue() / 255f, color1.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y);
+        GL11.glVertex2f(x, y);
         GL11.glColor4f(color2.getRed() / 255f, color2.getGreen() / 255f, color2.getBlue() / 255f, color2.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + offset);
-        GL11.glColor4f(color3.getRed() / 255f, color3.getGreen() / 255f, color3.getBlue() / 255f, color3.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + offset * 2);
-        GL11.glColor4f(color4.getRed() / 255f, color4.getGreen() / 255f, color4.getBlue() / 255f, color4.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + offset * 3);
-        GL11.glColor4f(color5.getRed() / 255f, color5.getGreen() / 255f, color5.getBlue() / 255f, color5.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + offset * 4);
-        GL11.glColor4f(color6.getRed() / 255f, color6.getGreen() / 255f, color6.getBlue() / 255f, color6.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + offset * 5);
+        GL11.glVertex2f(x, y + offset);
+        GL11.glVertex2f(x + width, y + offset);
         GL11.glColor4f(color1.getRed() / 255f, color1.getGreen() / 255f, color1.getBlue() / 255f, color1.getAlpha() / 255f);
-        GL11.glVertex2f(x + width / 2, y + height);
+        GL11.glVertex2f(x + width, y);
         GL11.glEnd();
 
-        drawRectangle(x, y + (height * progress), width, 2, 1.0f, Color.BLACK);
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor4f(color2.getRed() / 255f, color2.getGreen() / 255f, color2.getBlue() / 255f, color2.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset);
+        GL11.glColor4f(color3.getRed() / 255f, color3.getGreen() / 255f, color3.getBlue() / 255f, color3.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 2);
+        GL11.glVertex2f(x + width, y + offset * 2);
+        GL11.glColor4f(color2.getRed() / 255f, color2.getGreen() / 255f, color2.getBlue() / 255f, color2.getAlpha() / 255f);
+        GL11.glVertex2f(x + width, y + offset);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor4f(color3.getRed() / 255f, color3.getGreen() / 255f, color3.getBlue() / 255f, color3.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 2);
+        GL11.glColor4f(color4.getRed() / 255f, color4.getGreen() / 255f, color4.getBlue() / 255f, color4.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 3);
+        GL11.glVertex2f(x + width, y + offset * 3);
+        GL11.glColor4f(color3.getRed() / 255f, color3.getGreen() / 255f, color3.getBlue() / 255f, color3.getAlpha() / 255f);
+        GL11.glVertex2f(x + width, y + offset * 2);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor4f(color4.getRed() / 255f, color4.getGreen() / 255f, color4.getBlue() / 255f, color4.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 3);
+        GL11.glColor4f(color5.getRed() / 255f, color5.getGreen() / 255f, color5.getBlue() / 255f, color5.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 4);
+        GL11.glVertex2f(x + width, y + offset * 4);
+        GL11.glColor4f(color4.getRed() / 255f, color4.getGreen() / 255f, color4.getBlue() / 255f, color4.getAlpha() / 255f);
+        GL11.glVertex2f(x + width, y + offset * 3);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor4f(color5.getRed() / 255f, color5.getGreen() / 255f, color5.getBlue() / 255f, color5.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 4);
+        GL11.glColor4f(color6.getRed() / 255f, color6.getGreen() / 255f, color6.getBlue() / 255f, color6.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 5);
+        GL11.glVertex2f(x + width, y + offset * 5);
+        GL11.glColor4f(color5.getRed() / 255f, color5.getGreen() / 255f, color5.getBlue() / 255f, color5.getAlpha() / 255f);
+        GL11.glVertex2f(x + width, y + offset * 4);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor4f(color6.getRed() / 255f, color6.getGreen() / 255f, color6.getBlue() / 255f, color6.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 5);
+        GL11.glColor4f(color1.getRed() / 255f, color1.getGreen() / 255f, color1.getBlue() / 255f, color1.getAlpha() / 255f);
+        GL11.glVertex2f(x, y + offset * 6);
+        GL11.glVertex2f(x + width, y + offset * 6);
+        GL11.glColor4f(color6.getRed() / 255f, color6.getGreen() / 255f, color6.getBlue() / 255f, color6.getAlpha() / 255f);
+        GL11.glVertex2f(x + width, y + offset * 5);
+        GL11.glEnd();
+
+        drawRectangle(x, y + (height * progress), width, 1, 1.0f, Color.BLACK);
 
         GlStateManager.shadeModel(7424);
         GlStateManager.enableAlpha();

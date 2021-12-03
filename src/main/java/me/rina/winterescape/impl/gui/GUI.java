@@ -546,11 +546,8 @@ public class GUI extends GuiScreen {
         }
 
         // POST FX.
-
-        Statement.unset(GL11.GL_TEXTURE_2D);
-        Statement.unset(GL11.GL_BLEND);
-
         Statement.set(GL11.GL_TEXTURE_2D);
-        Statement.unset(GL11.GL_BLEND);
+
+        GL11.glGetError();
     }
 }

@@ -221,8 +221,6 @@ public class ModuleFrame extends ImperadorFrame {
         this.textureGeneric.setTextureWidth(27);
         this.textureGeneric.setTextureHeight(37);
 
-        this.textureGeneric.setColor(255, 255, 255, 255);
-
         this.rect.setHeight(Processor.interpolation(this.rect.getHeight(), Processor.clamp(this.sizeamount, 0, GUI.HEIGHT_LIMIT), this.master.getDisplay()));
         this.flag.setEnabled(GUI.HUD_EDITOR == (this.moduleType == ModuleType.HUD));
 
@@ -257,7 +255,7 @@ public class ModuleFrame extends ImperadorFrame {
         // Render the icon.
         Statement.matrix();
         Statement.translate(this.textureGeneric.x, this.textureGeneric.y, 0);
-        Statement.scale(1.2f, 1.2f, 1f);
+        Statement.scale(1.2f, 1.2f, 1.2f);
         Texturing.renderPrimitive(this.textureGeneric, false);
         Statement.refresh();
 

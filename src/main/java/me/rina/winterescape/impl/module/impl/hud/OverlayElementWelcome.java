@@ -1,4 +1,4 @@
-package me.rina.winterescape.impl.module.internal;
+package me.rina.winterescape.impl.module.impl.hud;
 
 import me.rina.winterescape.api.module.overlay.OverlayElement;
 

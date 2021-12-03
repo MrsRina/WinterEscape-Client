@@ -181,7 +181,7 @@ public class EntryWidget extends Widget {
         this.imperadorEntryBox.setPartialTicks(this.master.getDisplay().getPartialTicks());
         this.imperadorEntryBox.getScissor().set(this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, this.mother.getMother().getProtectedScrollRect().getY(), this.rect.getWidth(), this.mother.getMother().getProtectedScrollRect().getHeight());
 
-        this.imperadorEntryBox.setOffsetY(1f);
+        this.imperadorEntryBox.setOffsetY(2f);
         this.imperadorEntryBox.doMouseScroll(this.master.getMouse());
     }
 

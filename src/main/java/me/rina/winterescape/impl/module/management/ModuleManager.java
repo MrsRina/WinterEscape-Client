@@ -12,7 +12,7 @@ import me.rina.winterescape.impl.module.impl.client.ModuleUserInterface;
 import me.rina.winterescape.impl.module.impl.combat.ModuleFastBow;
 import me.rina.winterescape.impl.module.impl.combat.ModuleKillAura;
 import me.rina.winterescape.impl.module.impl.player.ModuleFastUse;
-import me.rina.winterescape.impl.module.internal.OverlayElementWelcome;
+import me.rina.winterescape.impl.module.impl.hud.OverlayElementWelcome;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
