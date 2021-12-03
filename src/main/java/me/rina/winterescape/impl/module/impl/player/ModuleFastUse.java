@@ -10,17 +10,17 @@ import net.minecraft.item.ItemExpBottle;
 public class ModuleFastUse extends Module
 {
     /* Check box settings. */
-    public static CheckBox xpSetting = new CheckBox("Experience", "Experience Bottles", true);
-    public static CheckBox crystalSetting = new CheckBox("Crystals", "End Crystals", true);
-    public static CheckBox blocksSetting = new CheckBox("Blocks", "Blocks", true);
+    public static CheckBox settingXP = new CheckBox("Experience", "Experience Bottles", true);
+    public static CheckBox settingCrystal = new CheckBox("Crystals", "End Crystals", true);
+    public static CheckBox settingBlocks = new CheckBox("Blocks", "Blocks", true);
 
     public ModuleFastUse() {
-        super("ModuleFastUse", "Fast Use", ModuleType.PLAYER);
+        super("FastUse", "Allows you to use certain things with no delay.", ModuleType.PLAYER);
     }
 
     public void onUpdate()
     {
-        if (xpSetting.getValue())
+        if (settingXP.getValue())
         {
             if (mc.player.getHeldItemMainhand().getItem() instanceof ItemExpBottle)
             {
@@ -28,7 +28,7 @@ public class ModuleFastUse extends Module
             }
         }
 
-        if (crystalSetting.getValue())
+        if (settingCrystal.getValue())
         {
             if (mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal)
             {
@@ -36,13 +36,11 @@ public class ModuleFastUse extends Module
             }
         }
 
-        if (blocksSetting.getValue())
+        if (settingBlocks.getValue())
         {
             if (Block.getBlockFromItem(mc.player.getHeldItemMainhand().getItem()).getDefaultState().isFullBlock()) {
                 mc.rightClickDelayTimer = 0;
             }
         }
     }
-
-
 }
