@@ -168,16 +168,6 @@ public class CheckBoxWidget extends Widget {
         Statement.set(GL11.GL_SCISSOR_TEST);
         Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
 
-        // Focused background.
-        Processor.prepare(Theme.INSTANCE.focused);
-        Processor.solid(this.textureCheckBox);
-
-        // Selected draw.
-        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
-        this.textureCheckBox.setColor(255, 255, 255, this.interpolatedSelectedAlpha);
-
-        Texturing.render(this.textureCheckBox);
-
         // Pressed draw.
         this.interpolatedPressedAlpha = Processor.interpolation(this.interpolatedPressedAlpha, this.flag.isMouseClickedLeft() ? Theme.INSTANCE.pressed.getAlpha() : 0, this.master.getDisplay());
 
@@ -189,6 +179,16 @@ public class CheckBoxWidget extends Widget {
 
         Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
         Processor.solid(this.rect);
+
+        // Selected draw.
+        this.interpolatedSelectedAlpha = Processor.interpolation(this.interpolatedSelectedAlpha, this.value.getValue() ? Theme.INSTANCE.selected.getAlpha() : 0, this.master.getDisplay());
+        this.textureCheckBox.setColor(255, 255, 255, this.interpolatedSelectedAlpha);
+
+        // Focused background.
+        Processor.prepare(Theme.INSTANCE.focused);
+        Processor.solid(this.textureCheckBox);
+
+        Texturing.render(this.textureCheckBox);
 
         // The tag.
         Processor.setScissor((int) this.mother.getMother().getRect().getX() + this.master.getDistance() * 2, (int) this.mother.getMother().getProtectedScrollRect().getY(), this.rect.width - this.textureCheckBox.getWidth() - 1f, this.mother.getMother().getProtectedScrollRect().getHeight(), this.master.getDisplay());

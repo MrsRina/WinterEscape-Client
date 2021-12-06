@@ -1,5 +1,7 @@
 package me.rina.winterescape.impl.gui.api.theme;
 
+import me.rina.winterescape.impl.module.impl.client.ModuleUserInterface;
+
 import java.awt.*;
 
 /**
@@ -91,6 +93,11 @@ public class Theme {
     }
 
     public void updateAllColor() {
-
+        this.background = ModuleUserInterface.settingBackground.getColor();
+        this.focused = ModuleUserInterface.settingFocused.getColor();
+        this.selected = ModuleUserInterface.settingSelected.getColor();
+        this.highlight = ModuleUserInterface.settingHighlight.getColor();
+        this.pressed = ModuleUserInterface.settingPressed.getColor();
+        this.string = ModuleUserInterface.settingString.getColor();
     }
 }

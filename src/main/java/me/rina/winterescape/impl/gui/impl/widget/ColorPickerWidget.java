@@ -40,6 +40,12 @@ public class ColorPickerWidget extends Widget {
     protected boolean isFocusedByCPU;
     protected boolean isStarted;
 
+    protected int interpolatedHighlightRed;
+    protected int interpolatedHighlightGreen;
+    protected int interpolatedHighlightBlue;
+    protected int interpolatedHighlightAlpha;
+    protected int interpolatedHighlightWidget;
+
     protected ImperadorEntryBox imperadorEntryBoxRed;
     protected ImperadorEntryBox imperadorEntryBoxGreen;
     protected ImperadorEntryBox imperadorEntryBoxBlue;
@@ -211,6 +217,8 @@ public class ColorPickerWidget extends Widget {
         this.rect.setHeight(this.flag.isLocked() ? this.fullHeight : this.normalHeight);
         this.rect.setWidth(this.getMother().getRect().getWidth() - this.getOffsetX() * 2);
 
+        this.setOffsetX(1);
+
         float divisionBy1 = this.rect.getWidth() / 1.9f;
         float divisionBy2 = this.rect.getWidth() / 2f;
         float divisionBy7 = this.rect.getWidth() / 7;
@@ -351,9 +359,14 @@ public class ColorPickerWidget extends Widget {
 
     @Override
     public void onRender() {
+        this.interpolatedHighlightWidget = Processor.interpolation(this.interpolatedHighlightWidget, this.flag.isMouseOver() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+        Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightWidget));
+        Processor.solid(this.rect);
+
         // Preview.
         Processor.prepare(this.value.getColor());
-        Processor.solid(this.rect.getX() + this.rect.getWidth() - this.normalHeight + 2 - 1f, this.rect.getY() + 2, (this.normalHeight - 4), (this.normalHeight - 4));
+        Processor.solid(this.rect.getX() + this.rect.getWidth() - (this.normalHeight - 3), this.rect.getY() + 2, (this.normalHeight - 4), (this.normalHeight - 4));
 
         // Tag.
         Statement.set(GL11.GL_SCISSOR_TEST);
@@ -368,20 +381,46 @@ public class ColorPickerWidget extends Widget {
             Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
             Processor.unsetScissor();
 
+            Statement.set(GL11.GL_SCISSOR_TEST);
+
             this.imperadorEntryBoxGreen.onRender();
 
             Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
             Processor.unsetScissor();
+
+            Statement.set(GL11.GL_SCISSOR_TEST);
 
             this.imperadorEntryBoxBlue.onRender();
 
             Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
             Processor.unsetScissor();
 
+            Statement.set(GL11.GL_SCISSOR_TEST);
+
             this.imperadorEntryBoxAlpha.onRender();
 
             Processor.setScissor(this.mother.getMother().getProtectedScrollRect(), this.master.getDisplay());
-            Processor.unsetScissor();
+
+            // render post highlight entry box.
+            this.interpolatedHighlightRed = Processor.interpolation(this.interpolatedHighlightRed, this.imperadorEntryBoxRed.isMouseOver() && !this.imperadorEntryBoxRed.isFocused() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+            Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightRed));
+            Processor.solid(this.imperadorEntryBoxRed.getRect());
+
+            this.interpolatedHighlightGreen = Processor.interpolation(this.interpolatedHighlightGreen, this.imperadorEntryBoxGreen.isMouseOver() && !this.imperadorEntryBoxGreen.isFocused() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+            Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightGreen));
+            Processor.solid(this.imperadorEntryBoxGreen.getRect());
+
+            this.interpolatedHighlightBlue = Processor.interpolation(this.interpolatedHighlightBlue, this.imperadorEntryBoxBlue.isMouseOver() && !this.imperadorEntryBoxBlue.isFocused() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+            Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightBlue));
+            Processor.solid(this.imperadorEntryBoxBlue.getRect());
+
+            this.interpolatedHighlightAlpha = Processor.interpolation(this.interpolatedHighlightAlpha, this.imperadorEntryBoxAlpha.isMouseOver() && !this.imperadorEntryBoxAlpha.isFocused() ? Theme.INSTANCE.highlight.getAlpha() : 0, this.master.getDisplay());
+
+            Processor.prepare(Theme.INSTANCE.getHighlight(this.interpolatedHighlightAlpha));
+            Processor.solid(this.imperadorEntryBoxAlpha.getRect());
 
             Statement.color(255, 255, 255, 255);
 
@@ -390,6 +429,8 @@ public class ColorPickerWidget extends Widget {
             this.drawHueSliderBetter(this.hueRect.getX(), this.hueRect.getY(), this.hueRect.getWidth(), this.hueRect.getHeight(), this.hue);
             this.drawSquareColorPicker(this.SBRect.getX(), this.SBRect.getY(), this.SBRect.getWidth(), this.SBRect.getHeight(), this.SBRect.getX() + this.colorWidth * (this.SBRect.getWidth()), this.SBRect.getY() + (this.colorHeight * this.SBRect.getHeight()), 1.0f, Color.getHSBColor(hue, 1.0f, 1.0f));
         }
+
+        Processor.unsetScissor();
     }
 
     @Override
@@ -413,7 +454,6 @@ public class ColorPickerWidget extends Widget {
         this.colorWidth = hsb[1];
         this.colorHeight = 1f - hsb[2];
     }
-
 
     public Color getColorFromCoordinates() {
         float saturation = colorWidth;

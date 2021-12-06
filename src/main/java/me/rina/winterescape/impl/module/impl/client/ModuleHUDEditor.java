@@ -18,15 +18,13 @@ import java.awt.*;
  **/
 public class ModuleHUDEditor extends Module {
 	public static ModuleHUDEditor INSTANCE;
+	public static Color COLOR_HUD = new Color(255, 255, 255, 255);
 
-	public static Slider settingRed = new Slider("Red", "Red color value of all HUD color mode.", 255, 0, 255);
-	public static Slider settingGreen = new Slider("Green", "Green value of all HUD color mode.", 255, 0, 255);
-	public static Slider settingBlue = new Slider("Blue", "Blue value of all HUD color mode.", 0, 0, 255);
-
+	/* Color font. */
 	public static ColorPicker settingColor = new ColorPicker("Orange", "Yellow", Color.BLACK);
 
+	/* By default I want Arial. */
 	public static Entry settingFont = new Entry("Font", "The font for overlay.", "Arial");
-	public static Color COLOR_HUD = new Color(255, 255, 255, 255); 
 
 	public ModuleHUDEditor() {
 		super("Overlay", "HUD editor.", ModuleType.CLIENT);
@@ -36,9 +34,7 @@ public class ModuleHUDEditor extends Module {
 
 	@Override
 	public void onSetting() {
-		if (COLOR_HUD.getRed() != settingRed.getValue().intValue() || COLOR_HUD.getGreen() != settingGreen.getValue().intValue() || COLOR_HUD.getBlue() != settingBlue.getValue().intValue()) {
-			COLOR_HUD = new Color(this.clamp(settingRed.getValue().intValue()), this.clamp(settingGreen.getValue().intValue()), this.clamp(settingBlue.getValue().intValue()), 255);
-		}
+		COLOR_HUD = settingColor.getColor();
 
 		GUI.HUD_EDITOR = this.isEnabled();
 	}
