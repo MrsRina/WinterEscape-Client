@@ -1,8 +1,10 @@
 package me.rina.winterescape.impl.module.impl.player;
 
+import event.bus.EventListener;
 import me.rina.winterescape.api.module.Module;
 import me.rina.winterescape.api.module.type.ModuleType;
 import me.rina.winterescape.api.value.type.CheckBox;
+import me.rina.winterescape.impl.event.RunTickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemExpBottle;
@@ -18,7 +20,8 @@ public class ModuleFastUse extends Module
         super("FastUse", "Allows you to use certain things with no delay.", ModuleType.PLAYER);
     }
 
-    public void onUpdate()
+    @EventListener
+    public void onUpdate(RunTickEvent event)
     {
         if (settingXP.getValue())
         {

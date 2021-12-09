@@ -176,7 +176,7 @@ public class SliderWidget extends Widget {
         Processor.solid(this.rect.x, this.rect.y + this.master.getDistance(), this.rect.getWidth(), this.rect.height - (this.master.getDistance() * 2));
 
         // Width;
-    	this.interpolatedWidth = (int) Processor.clamp((int) Processor.interpolation(this.interpolatedWidth, updateValue + 2, this.master.getDisplay()), 0f, updateValue);
+    	this.interpolatedWidth = (int) Processor.clamp((int) Processor.interpolation(this.interpolatedWidth, updateValue * 2, this.master.getDisplay()), 0f, updateValue);
 
         Processor.prepare(Theme.INSTANCE.selected);
         Processor.solid(this.rect.x, this.rect.y + this.master.getDistance(), this.interpolatedWidth, this.rect.height - (this.master.getDistance() * 2));
