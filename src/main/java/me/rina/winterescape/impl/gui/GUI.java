@@ -46,7 +46,7 @@ public class GUI extends GuiScreen {
     public static boolean HUD_EDITOR = false;
 
     public static double VERSION = 1.6;
-    public static String GUI_WATERMARK = "UI by SrRina, version: " + VERSION + " official.";
+    public static String GUI_WATERMARK = "GUI by MsRina, version: " + VERSION + " official.";
 
     public static int SCALE_FACTOR = 2;
     public static int HEIGHT_LIMIT = 250;
