@@ -6,6 +6,6 @@ Thank you for giving us a try - Winter Escape Development Team & Friends.
 
 ---
 
-The GUI contains some cool animations and is very easy to create new modules.
+The GUI contains some cool animations and is very easy to create new modules.  
 Here is some showcase:
-![yotube](https://youtu.be/WCN9H0Uuds8?raw=true)
+https://youtu.be/WCN9H0Uuds8
